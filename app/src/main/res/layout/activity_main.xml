@@ -15,5 +15,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:id="@+id/imageButton"
+        android:onClick="sendMessage"
         android:elevation="0dp" />
 </RelativeLayout>
