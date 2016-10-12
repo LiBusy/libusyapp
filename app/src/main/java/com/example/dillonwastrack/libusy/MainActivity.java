@@ -1,5 +1,7 @@
 package com.example.dillonwastrack.libusy;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
@@ -24,10 +26,13 @@ public class MainActivity extends AppCompatActivity {
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
-//                if (tabId == R.id.tab_favorites) {
-//                    // The tab with id R.id.tab_favorites was selected,
-//                    // change your content accordingly.
-//                }
+                FragmentManager fm = getFragmentManager();
+                if (tabId == R.id.tab_map) {
+                    fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
+                }
+                else if (tabId == R.id.tab_list){
+                    fm.beginTransaction().replace(R.id.contentContainer, new ListViewFragment()).commit();
+                }
             }
         });
     }
