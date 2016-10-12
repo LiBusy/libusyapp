@@ -37,9 +37,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /** Called when the user clicks the Send button */
-    public void sendMessage(View view) {
-        Intent intent = new Intent(this, InteractiveMapActivity.class);
-        startActivity(intent);
-    }
 }
