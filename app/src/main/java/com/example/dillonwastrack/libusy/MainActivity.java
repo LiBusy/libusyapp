@@ -14,14 +14,16 @@ public class MainActivity extends AppCompatActivity {
     private BottomBar mBottomBar;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 //        this.getSupportActionBar().setShowHideAnimationEnabled(false);
         setContentView(R.layout.activity_main);
 
         // set up bottom navigation
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
-        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+        bottomBar.setOnTabSelectListener(new OnTabSelectListener()
+        {
             @Override
             public void onTabSelected(@IdRes int tabId) {
                 FragmentManager fm = getFragmentManager();

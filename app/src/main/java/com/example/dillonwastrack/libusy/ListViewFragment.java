@@ -16,7 +16,8 @@ public class ListViewFragment extends Fragment{
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
 //        ((AppCompatActivity) getActivity()).getSupportActionBar().hide(); // hide action bar
         return inflater.inflate(R.layout.fragment_list, container,false);
     }

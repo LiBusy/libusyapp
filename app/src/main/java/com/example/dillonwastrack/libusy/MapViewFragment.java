@@ -37,14 +37,16 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
 //        ((AppCompatActivity) getActivity()).getSupportActionBar().show(); // show action bar
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_gmaps, container,false);
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState)
+    {
         super.onViewCreated(view, savedInstanceState);
 
         MapFragment fragment = (MapFragment)getChildFragmentManager().findFragmentById(R.id.map);
@@ -52,15 +54,26 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
         inflater.inflate(R.menu.location_menu, menu);
         super.onCreateOptionsMenu(menu,inflater);
     }
 
+    /**
+     *
+     * The menu for selecting locations
+     *
+     * @param item: a menu item
+     * @return boolean
+     *
+     */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         int id = item.getItemId();
-        switch (id) {
+        switch (id)
+        {
             case R.id.rodgers_library:
                 LatLng rodgers = new LatLng(33.2134, -87.5427); // Rodgers Library coordinates
                 this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(rodgers, 17)); // move camera
@@ -82,23 +95,24 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
                 return true;
         }
 
-        return super.onOptionsItemSelected(item); // important line
+        return super.onOptionsItemSelected(item);
     }
 
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(GoogleMap googleMap)
+    {
 
         this.googleMap = googleMap;
 
-       if(ContextCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
-       {
-           ActivityCompat.requestPermissions(this.getActivity(),
-                   new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                   1);
+        if(ContextCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(
+                    this.getActivity(),
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
 
-       }
-
+        }
         // Get LocationManager object from System Service LOCATION_SERVICE
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
@@ -108,7 +122,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
         // Get the name of the best provider
         String provider = locationManager.getBestProvider(criteria, true);
 
-        // Get Current Location, permission requested in onMapReady
+        // Get Current Location
         Location myLocation = locationManager.getLastKnownLocation(provider);
 
 
@@ -136,8 +150,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
                 .position(new LatLng(33.2118, -87.5460))
                 .title("Gorgas Library"));
 
-        //LatLng latLng = new LatLng(33.2134, -87.5427); // TODO move this stuff to another method, it isn't initializing markers
-        //this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
     }
 
     private void zoomToUserLocation(GoogleMap googleMap, Location myLocation)
@@ -162,6 +174,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
         this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
         //googleMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("You are here!"));
 
-        // googleMap.addMarker(new MarkerOptions().title("Hello Google Maps!").position(marker));
+        // googleMap.addMarker(new MarkerOptions().title("You are here.").position(marker));
     }
 }
