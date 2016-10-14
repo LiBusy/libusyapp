@@ -47,8 +47,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        LatLng marker = new LatLng(-33.867, 151.206);
-
        if(ContextCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
        {
            ActivityCompat.requestPermissions(this.getActivity(),
