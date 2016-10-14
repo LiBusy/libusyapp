@@ -25,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
         bottomBar.setOnTabSelectListener(new OnTabSelectListener()
         {
             @Override
-            public void onTabSelected(@IdRes int tabId) {
+            public void onTabSelected(@IdRes int tabId)
+            {
                 FragmentManager fm = getFragmentManager();
                 if (tabId == R.id.tab_map)
                 {
