@@ -19,15 +19,18 @@ public class MainActivity extends AppCompatActivity {
 //        this.getSupportActionBar().setShowHideAnimationEnabled(false);
         setContentView(R.layout.activity_main);
 
+        // set up bottom navigation
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
                 FragmentManager fm = getFragmentManager();
-                if (tabId == R.id.tab_map) {
+                if (tabId == R.id.tab_map)
+                {
                     fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
                 }
-                else if (tabId == R.id.tab_list){
+                else if (tabId == R.id.tab_list)
+                {
                     fm.beginTransaction().replace(R.id.contentContainer, new ListViewFragment()).commit();
                 }
             }

@@ -14,6 +14,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toolbar;
@@ -30,6 +33,7 @@ import static android.content.Context.LOCATION_SERVICE;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
 
+    private GoogleMap googleMap;
 
     @Nullable
     @Override
@@ -47,9 +51,45 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
         fragment.getMapAsync(this);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.location_menu, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.rodgers_library:
+                LatLng rodgers = new LatLng(33.2134, -87.5427); // Rodgers Library coordinates
+                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(rodgers, 17)); // move camera
+                return true;
+
+            case R.id.mclure_library:
+                LatLng mclure = new LatLng(33.2104, -87.5490); // McLure Library coordinates
+                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mclure, 17)); // move camera
+                return true;
+
+            case R.id.bruno_library:
+                LatLng bruno = new LatLng(33.2111, -87.5493); // Bruno Library coordinates
+                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bruno, 17)); // move camera
+                return true;
+
+            case R.id.gorgas_library:
+                LatLng gorgas = new LatLng(33.2118, -87.5460); // Bruno Library coordinates
+                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gorgas, 17)); // move camera
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item); // important line
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        this.googleMap = googleMap;
 
        if(ContextCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
        {
@@ -72,27 +112,39 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
         Location myLocation = locationManager.getLastKnownLocation(provider);
 
 
-        googleMap.setMyLocationEnabled(true);
-        zoomToUserLocation(googleMap, myLocation);
-        initializeMarkers(googleMap);
+        this.googleMap.setMyLocationEnabled(true);
+        initializeMarkers(this.googleMap);
+        zoomToUserLocation(this.googleMap, myLocation);
 
     }
 
     private void initializeMarkers(GoogleMap googleMap)
     {
-        googleMap.addMarker(new MarkerOptions()
+        this.googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(33.2134, -87.5427))
                 .title("Rodgers Library"));
 
-        LatLng latLng = new LatLng(33.2134, -87.5427);
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+        this.googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(33.2104, -87.5490))
+                .title("Mclure Library"));
+
+        this.googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(33.2111, -87.5493))
+                .title("Bruno Library"));
+
+        this.googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(33.2118, -87.5460))
+                .title("Gorgas Library"));
+
+        //LatLng latLng = new LatLng(33.2134, -87.5427); // TODO move this stuff to another method, it isn't initializing markers
+        //this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
     }
 
     private void zoomToUserLocation(GoogleMap googleMap, Location myLocation)
     {
 
         //set map type
-        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         // Get latitude of the current location
         double latitude = myLocation.getLatitude();
@@ -104,10 +156,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
         LatLng latLng = new LatLng(latitude, longitude);
 
         // Show the current location in Google Map
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
         // Zoom in the Google Map
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+        this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
         //googleMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("You are here!"));
 
         // googleMap.addMarker(new MarkerOptions().title("Hello Google Maps!").position(marker));

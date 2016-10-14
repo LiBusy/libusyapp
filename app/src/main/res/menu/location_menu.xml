@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" >
+
+
+    <item android:id="@+id/rodgers_library"
+        android:title="Rodgers Library"
+        app:showAsAction="never"/>
+    <item android:id="@+id/mclure_library"
+        android:title="McLure Library"
+        app:showAsAction="never"/>
+    <item android:id="@+id/bruno_library"
+        android:title="Bruno Library"
+        app:showAsAction="never"/>
+    <item android:id="@+id/gorgas_library"
+        android:title="Gorgas Library"
+        app:showAsAction="never"/>
+
+</menu>
