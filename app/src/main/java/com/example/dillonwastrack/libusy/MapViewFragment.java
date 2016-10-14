@@ -11,10 +11,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toolbar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -32,6 +34,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//        ((AppCompatActivity) getActivity()).getSupportActionBar().show(); // show action bar
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_gmaps, container,false);
     }
 
@@ -55,15 +59,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
 
        }
 
-
-        googleMap.setMyLocationEnabled(true);
-        zoomToUserLocation(googleMap);
-
-
-    }
-
-    private void zoomToUserLocation(GoogleMap googleMap)
-    {
         // Get LocationManager object from System Service LOCATION_SERVICE
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
@@ -75,6 +70,26 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
 
         // Get Current Location, permission requested in onMapReady
         Location myLocation = locationManager.getLastKnownLocation(provider);
+
+
+        googleMap.setMyLocationEnabled(true);
+        zoomToUserLocation(googleMap, myLocation);
+        initializeMarkers(googleMap);
+
+    }
+
+    private void initializeMarkers(GoogleMap googleMap)
+    {
+        googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(33.2134, -87.5427))
+                .title("Rodgers Library"));
+
+        LatLng latLng = new LatLng(33.2134, -87.5427);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+    }
+
+    private void zoomToUserLocation(GoogleMap googleMap, Location myLocation)
+    {
 
         //set map type
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -93,7 +108,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
 
         // Zoom in the Google Map
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("You are here!"));
+        //googleMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("You are here!"));
 
         // googleMap.addMarker(new MarkerOptions().title("Hello Google Maps!").position(marker));
     }
