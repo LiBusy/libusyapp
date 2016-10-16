@@ -17,7 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,7 +35,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import static android.content.Context.LOCATION_SERVICE;
 
 
-public class MapViewFragment extends Fragment implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback , GoogleMap.OnMarkerClickListener {
+public class MapViewFragment extends Fragment implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap googleMap;
 
@@ -61,6 +60,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
         this.bruno = new LatLng(33.2111, -87.5493); // Bruno Library coordinates
 
         setHasOptionsMenu(true);
+
         return inflater.inflate(R.layout.fragment_gmaps, container,false);
     }
 
@@ -115,9 +115,15 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
     }
 
 
+    /**
+     * Method called when the map is created.
+     * @param googleMap the map
+     *
+     */
     @Override
     public void onMapReady(GoogleMap googleMap)
     {
+
 
         this.googleMap = googleMap;
 
@@ -152,8 +158,21 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
 
         zoomToUserLocation(this.googleMap, myLocation);
 
+        // see if the user wants to check in
+        CheckInDialogFragment newFragment = new CheckInDialogFragment();
+        newFragment.show(getFragmentManager(), "check-in");
+
     }
 
+    /**
+     * Initialize markers for the study
+     * areas. Retrieve their busyness
+     * levels from the api, and set
+     * the marker's snippet
+     * accordingly.
+     *
+     * @throws AuthFailureError
+     */
     private void initializeMarkers() throws AuthFailureError {
 
         this.mRodgersMarker = this.googleMap.addMarker(new MarkerOptions()
@@ -213,6 +232,15 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
         return false;
     }
 
+    /**
+     * Get the busyness level of the library
+     * to place on the marker, performs an
+     * api request
+     *
+     * @param marker a google maps marker
+     * @param libraryName the name of the library for the api
+     * @throws AuthFailureError
+     */
     public void getBusynessLevel(final Marker marker, String libraryName) throws AuthFailureError {
         RequestQueue queue = Volley.newRequestQueue(this.getActivity());
         String url ="http://libusy.herokuapp.com/busyness/getlevel/"+libraryName;
@@ -220,14 +248,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
                         marker.setSnippet(createBusynessTextFromResponse(response));
-                        // mTextView.setText("Response is: "+ response.substring(0,500));
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //mTextView.setText("That didn't work!");
                 Log.d("level", "you suck");
             }
         });
@@ -239,6 +264,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
 
     }
 
+    /**
+     * The algorithm. Determines how busy
+     * the library is based on it's
+     * busyness rating.
+     *
+     * @param response the response from the api
+     * @return String to display in the marker snippet
+     */
     private String createBusynessTextFromResponse(String response)
     {
         Float level = Float.parseFloat(response);
@@ -257,6 +290,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
         }
     }
 
+    /**
+     * Zoom to the user's current location
+     * and place a marker there.
+     *
+     * @param googleMap the map to place the marker on
+     * @param myLocation location object with the user's current location
+     */
     private void zoomToUserLocation(GoogleMap googleMap, Location myLocation)
     {
 
@@ -280,4 +320,5 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
         googleMap.addMarker(new MarkerOptions().position(latLng).title("You are here!"));
 
     }
+
 }
