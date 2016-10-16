@@ -45,7 +45,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import static android.content.Context.LOCATION_SERVICE;
 
 
-public class MapViewFragment extends Fragment implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class MapViewFragment extends Fragment implements OnMapReadyCallback,
+        ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap googleMap;
 
