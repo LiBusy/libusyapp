@@ -177,7 +177,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
 
         getBusynessLevel(this.mGorgas, "gorgas");
 
-        //this.googleMap.setOnMarkerClickListener(this);
+        //this.googleMap.setOnMarkerClickListener(this); // TODO consider not using this
 
     }
 
@@ -185,25 +185,25 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
     @Override
     public boolean onMarkerClick(final Marker marker) {
 
-        RequestQueue queue = Volley.newRequestQueue(this.getActivity());
-        String url ="http://libusy.herokuapp.com/busyness/getlevel/rodgers";
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        marker.setSnippet(response);
-                        // mTextView.setText("Response is: "+ response.substring(0,500));
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //mTextView.setText("That didn't work!");
-                Log.d("level", "you suck");
-            }
-        });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+//        RequestQueue queue = Volley.newRequestQueue(this.getActivity());
+//        String url ="http://libusy.herokuapp.com/busyness/getlevel/rodgers";
+//        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        // Display the first 500 characters of the response string.
+//                        marker.setSnippet(response);
+//                        // mTextView.setText("Response is: "+ response.substring(0,500));
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                //mTextView.setText("That didn't work!");
+//                Log.d("level", "you suck");
+//            }
+//        });
+//        // Add the request to the RequestQueue.
+//        queue.add(stringRequest);
         // Log.d("request body",stringRequest.getBody().toString());
         //Float level = Float.parseFloat(stringRequest.getBody().toString());
         //return level;
