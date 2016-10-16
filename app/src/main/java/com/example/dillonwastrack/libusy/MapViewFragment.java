@@ -1,6 +1,5 @@
 package com.example.dillonwastrack.libusy;
 
-import android.*;
 import android.Manifest;
 import android.app.Fragment;
 import android.content.pm.PackageManager;
@@ -11,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,8 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -44,16 +40,26 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
 
     private GoogleMap googleMap;
 
-    private Marker mRodgers;
-    private Marker mMclure;
-    private Marker mGorgas;
-    private Marker mBruno;
+    private Marker mRodgersMarker;
+    private Marker mMclureMarker;
+    private Marker mGorgasMarker;
+    private Marker mBrunoMarker;
+
+    private LatLng rodgers;
+    private LatLng mclure;
+    private LatLng gorgas;
+    private LatLng bruno;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-//        ((AppCompatActivity) getActivity()).getSupportActionBar().show(); // show action bar
+        this.rodgers = new LatLng(33.2134, -87.5427); // Rodgers Library coordinates
+        this.mclure = new LatLng(33.2104, -87.5490); // McLure Library coordinates
+        this.gorgas = new LatLng(33.2118, -87.5460); // Bruno Library coordinates
+        this.bruno = new LatLng(33.2111, -87.5493); // Bruno Library coordinates
+
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_gmaps, container,false);
     }
@@ -89,23 +95,19 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
         switch (id)
         {
             case R.id.rodgers_library:
-                LatLng rodgers = new LatLng(33.2134, -87.5427); // Rodgers Library coordinates
-                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(rodgers, 17)); // move camera
+                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.rodgers, 17)); // move camera
                 return true;
 
             case R.id.mclure_library:
-                LatLng mclure = new LatLng(33.2104, -87.5490); // McLure Library coordinates
-                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mclure, 17)); // move camera
+                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.mclure, 17)); // move camera
                 return true;
 
             case R.id.bruno_library:
-                LatLng bruno = new LatLng(33.2111, -87.5493); // Bruno Library coordinates
-                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bruno, 17)); // move camera
+                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.bruno, 17)); // move camera
                 return true;
 
             case R.id.gorgas_library:
-                LatLng gorgas = new LatLng(33.2118, -87.5460); // Bruno Library coordinates
-                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gorgas, 17)); // move camera
+                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.gorgas, 17)); // move camera
                 return true;
         }
 
@@ -153,29 +155,30 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
     }
 
     private void initializeMarkers() throws AuthFailureError {
-        this.mRodgers = this.googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(33.2134, -87.5427))
+
+        this.mRodgersMarker = this.googleMap.addMarker(new MarkerOptions()
+                .position(this.rodgers)
                 .title("Rodgers Library"));
 
-        getBusynessLevel(this.mRodgers, "rodgers");
+        getBusynessLevel(this.mRodgersMarker, "rodgers"); // get busyness level from api, set marker text
 
-        this.mMclure = this.googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(33.2104, -87.5490))
+        this.mMclureMarker = this.googleMap.addMarker(new MarkerOptions()
+                .position(this.mclure)
                 .title("Mclure Library"));
 
-        getBusynessLevel(this.mMclure, "mclure");
+        getBusynessLevel(this.mMclureMarker, "mclure"); // get busyness level from api, set marker text
 
-        this.mBruno = this.googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(33.2111, -87.5493))
+        this.mBrunoMarker = this.googleMap.addMarker(new MarkerOptions()
+                .position(this.bruno)
                 .title("Bruno Library"));
 
-        getBusynessLevel(this.mBruno, "bruno");
+        getBusynessLevel(this.mBrunoMarker, "bruno"); // get busyness level from api, set marker text
 
-        this.mGorgas = this.googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(33.2118, -87.5460))
+        this.mGorgasMarker = this.googleMap.addMarker(new MarkerOptions()
+                .position(this.gorgas)
                 .title("Gorgas Library"));
 
-        getBusynessLevel(this.mGorgas, "gorgas");
+        getBusynessLevel(this.mGorgasMarker, "gorgas"); // get busyness level from api, set marker text
 
         //this.googleMap.setOnMarkerClickListener(this); // TODO consider not using this
 
@@ -274,8 +277,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
 
         // Zoom in the Google Map
         this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
-        //googleMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("You are here!"));
+        googleMap.addMarker(new MarkerOptions().position(latLng).title("You are here!"));
 
-        // googleMap.addMarker(new MarkerOptions().title("You are here.").position(marker));
     }
 }
