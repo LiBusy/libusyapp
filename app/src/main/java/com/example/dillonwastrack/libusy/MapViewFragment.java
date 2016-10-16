@@ -256,17 +256,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
                 Log.d("level", "you suck");
             }
         });
-// Add the request to the RequestQueue.
+        // Add the request to the RequestQueue.
         queue.add(stringRequest);
-       // Log.d("request body",stringRequest.getBody().toString());
-        //Float level = Float.parseFloat(stringRequest.getBody().toString());
-        //return level;
 
     }
 
     /**
      * The algorithm. Determines how busy
-     * the library is based on it's
+     * the library is based on its
      * busyness rating.
      *
      * @param response the response from the api
