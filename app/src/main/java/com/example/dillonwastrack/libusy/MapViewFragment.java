@@ -3,10 +3,12 @@ package com.example.dillonwastrack.libusy;
 import android.Manifest;
 import android.app.Fragment;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -24,10 +26,18 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -35,7 +45,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import static android.content.Context.LOCATION_SERVICE;
 
 
-public class MapViewFragment extends Fragment implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener {
+public class MapViewFragment extends Fragment implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap googleMap;
 
@@ -49,6 +59,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
     private LatLng gorgas;
     private LatLng bruno;
 
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
+
+    private Marker userLocationMarker;
+
+    private LatLng userLatLng;
+
 
     @Nullable
     @Override
@@ -61,6 +78,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
 
         setHasOptionsMenu(true);
 
+
         return inflater.inflate(R.layout.fragment_gmaps, container,false);
     }
 
@@ -68,6 +86,15 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+
+        // Create an instance of GoogleAPIClient.
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
 
         MapFragment fragment = (MapFragment)getChildFragmentManager().findFragmentById(R.id.map);
         fragment.getMapAsync(this);
@@ -124,7 +151,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
     public void onMapReady(GoogleMap googleMap)
     {
 
-
         this.googleMap = googleMap;
 
         if(ContextCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
@@ -135,18 +161,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
                     1);
 
         }
-        // Get LocationManager object from System Service LOCATION_SERVICE
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-
-        // Create a criteria object to retrieve provider
-        Criteria criteria = new Criteria();
-
-        // Get the name of the best provider
-        String provider = locationManager.getBestProvider(criteria, true);
-
-        // Get Current Location
-        Location myLocation = locationManager.getLastKnownLocation(provider);
-
 
         this.googleMap.setMyLocationEnabled(true);
 
@@ -156,7 +170,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
             authFailureError.printStackTrace();
         }
 
-        zoomToUserLocation(this.googleMap, myLocation);
 
         // see if the user wants to check in
         CheckInDialogFragment newFragment = new CheckInDialogFragment(); // TODO use shared preferences to store if user has already checked in
@@ -288,35 +301,88 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
         }
     }
 
-    /**
-     * Zoom to the user's current location
-     * and place a marker there.
-     *
-     * @param googleMap the map to place the marker on
-     * @param myLocation location object with the user's current location
-     */
-    private void zoomToUserLocation(GoogleMap googleMap, Location myLocation)
-    {
 
-        //set map type
-        this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        if(ContextCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(
+                    this.getActivity(),
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
 
-        // Get latitude of the current location
-        double latitude = myLocation.getLatitude();
+        }
+        this.mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (this.mLastLocation != null)
+        {
+            //place marker at current position
+            this.userLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(this.userLatLng);
+            markerOptions.title("Current Position");
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+            this.userLocationMarker = this.googleMap.addMarker(markerOptions);
 
-        // Get longitude of the current location
-        double longitude = myLocation.getLongitude();
 
-        // Create a LatLng object for the current location
-        LatLng latLng = new LatLng(latitude, longitude);
+            //zoom to current position:
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(this.userLatLng).zoom(14).build();
 
-        // Show the current location in Google Map
-        this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-
-        // Zoom in the Google Map
-        this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
-        googleMap.addMarker(new MarkerOptions().position(latLng).title("You are here!"));
+            this.googleMap.animateCamera(CameraUpdateFactory
+                    .newCameraPosition(cameraPosition));
+        }
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(5000); //5 seconds
+        //mLocationRequest.setFastestInterval(3000); //3 seconds
+        //mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        LocationServices.FusedLocationApi.requestLocationUpdates(this.mGoogleApiClient, mLocationRequest, this);
 
     }
 
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    public void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    public void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        this.mLastLocation = location;
+
+
+        if (this.userLocationMarker != null)
+        {
+            this.userLocationMarker.remove();
+        }
+
+        this.userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(this.userLatLng);
+        markerOptions.title("Current Position");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        this.userLocationMarker = this.googleMap.addMarker(markerOptions);
+
+
+        //zoom to current position:
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(this.userLatLng).zoom(14).build();
+
+        this.googleMap.animateCamera(CameraUpdateFactory
+                .newCameraPosition(cameraPosition));
+    }
 }
