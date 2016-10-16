@@ -18,12 +18,12 @@ public class CheckInDialogFragment extends DialogFragment {
         builder.setMessage("Would you like to check in?")
                 .setPositiveButton("check-in", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
+                        // TODO go to check in screen
                     }
                 })
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
+                        // TODO cancel operation
                     }
                 });
         return builder.create();

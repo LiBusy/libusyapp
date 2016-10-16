@@ -159,8 +159,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Act
         zoomToUserLocation(this.googleMap, myLocation);
 
         // see if the user wants to check in
-        CheckInDialogFragment newFragment = new CheckInDialogFragment();
+        CheckInDialogFragment newFragment = new CheckInDialogFragment(); // TODO use shared preferences to store if user has already checked in
         newFragment.show(getFragmentManager(), "check-in");
+        // TODO override onDestroy to delete preference
 
     }
 
