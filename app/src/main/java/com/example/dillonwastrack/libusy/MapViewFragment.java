@@ -176,10 +176,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         /* TODO Make this part location aware. need to know where the user is to ask where to check in */
         // see if the user wants to check in
         // TODO this is where we need to determine closest library
+        // find closest library
+        // if library within a mile or so, ask to check in
         // TODO set hasCheckedIn to true
         CheckInDialogFragment newFragment = new CheckInDialogFragment(); // TODO use shared preferences to store if user has already checked in
         Bundle args = new Bundle();
-        args.putString("library", "bruno");
+        args.putString("library", "bruno"); // whatever the closest library is
         newFragment.setArguments(args);
         newFragment.show(getFragmentManager(), "check-in");
         // TODO override onDestroy to delete preference
