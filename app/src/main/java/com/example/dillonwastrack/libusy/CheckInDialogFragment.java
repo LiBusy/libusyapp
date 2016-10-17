@@ -22,7 +22,7 @@ public class CheckInDialogFragment extends DialogFragment {
         final CheckInDialogListener mListener = (CheckInDialogListener) this.getActivity();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Would you like to check in?")
+        builder.setMessage("You seem to be near "+ getArguments().get("library") + " library, would you like to check in?")
                 .setPositiveButton("check-in", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // TODO go to check in screen

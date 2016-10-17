@@ -3,6 +3,7 @@ package com.example.dillonwastrack.libusy;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -49,6 +51,13 @@ public class CheckInFragment extends Fragment{
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
+                                // save that user has checked in
+                                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putBoolean("hasCheckedIn", true);
+                                editor.apply();
+
+                                Toast.makeText(homeActivity, "Thank you for your response!", Toast.LENGTH_LONG).show();
                                 FragmentManager fm = getFragmentManager();
                                 fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
                             }

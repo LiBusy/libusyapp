@@ -2,6 +2,8 @@ package com.example.dillonwastrack.libusy;
 
 import android.Manifest;
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Criteria;
@@ -12,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,6 +44,9 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -79,7 +85,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         this.bruno = new LatLng(33.2111, -87.5493); // Bruno Library coordinates
 
         setHasOptionsMenu(true);
-
 
         return inflater.inflate(R.layout.fragment_gmaps, container,false);
     }
@@ -171,20 +176,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         } catch (AuthFailureError authFailureError) {
             authFailureError.printStackTrace();
         }
-
-
-        /* TODO Make this part location aware. need to know where the user is to ask where to check in */
-        // see if the user wants to check in
-        // TODO this is where we need to determine closest library
-        // find closest library
-        // if library within a mile or so, ask to check in
-        // TODO set hasCheckedIn to true
-        CheckInDialogFragment newFragment = new CheckInDialogFragment(); // TODO use shared preferences to store if user has already checked in
-        Bundle args = new Bundle();
-        args.putString("library", "bruno"); // whatever the closest library is
-        newFragment.setArguments(args);
-        newFragment.show(getFragmentManager(), "check-in");
-        // TODO override onDestroy to delete preference
 
     }
 
@@ -348,6 +339,29 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         //mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(this.mGoogleApiClient, mLocationRequest, this);
 
+        /* TODO Make this part location aware. need to know where the user is to ask where to check in */
+        // see if the user wants to check in
+        // TODO this is where we need to determine closest library
+        // find closest library
+        // if library within a mile or so, ask to check in
+        // TODO set hasCheckedIn to true
+        // TODO might need to move this to onConnected
+
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        //int defaultValue = getResources().getInteger(R.string.saved_high_score_default);
+        boolean hasCheckedIn = sharedPref.getBoolean("hasCheckedIn", false);
+        Log.d("hasCheckedIn", Boolean.toString(hasCheckedIn));
+        if (! hasCheckedIn && mLastLocation != null)
+        {
+            //Log.d("Closest_library", getClosestLibrary());
+            CheckInDialogFragment newFragment = new CheckInDialogFragment(); // TODO use shared preferences to store if user has already checked in
+            Bundle args = new Bundle();
+            args.putString("library", getClosestLibrary()); // whatever the closest library is
+            newFragment.setArguments(args);
+            newFragment.show(getFragmentManager(), "check-in");
+            // TODO override onDestroy to delete preference
+        }
+
     }
 
     @Override
@@ -394,5 +408,66 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
         this.googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
+
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        //int defaultValue = getResources().getInteger(R.string.saved_high_score_default);
+        boolean hasCheckedIn = sharedPref.getBoolean("hasCheckedIn", false);
+        Log.d("hasCheckedIn", Boolean.toString(hasCheckedIn));
+        if (! hasCheckedIn)
+        {
+            //Log.d("Closest_library", getClosestLibrary());
+            CheckInDialogFragment newFragment = new CheckInDialogFragment(); // TODO use shared preferences to store if user has already checked in
+            Bundle args = new Bundle();
+            args.putString("library", getClosestLibrary()); // whatever the closest library is
+            newFragment.setArguments(args);
+            newFragment.show(getFragmentManager(), "check-in");
+            // TODO override onDestroy to delete preference
+        }
+    }
+
+    private double distance(double lat1, double lon1, double lat2, double lon2) {
+        // haversine great circle distance approximation, returns meters
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2))
+                + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2))
+                * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60; // 60 nautical miles per degree of seperation
+        dist = dist * 1852; // 1852 meters per nautical mile
+        return (dist);
+    }
+
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
+    }
+
+    private String getClosestLibrary()
+    {
+        //ArrayList<LatLng> locationList = new ArrayList<LatLng>();
+        ArrayMap<String, LatLng> locationList = new ArrayMap<String, LatLng>();
+        locationList.put("rodgers", this.rodgers);
+        locationList.put("bruno", this.bruno);
+        locationList.put("gorgas", this.gorgas);
+        locationList.put("mclure", this.mclure);
+
+        String closestLibraryName = "";
+        Double shortestDistance = Double.MAX_VALUE;
+        Log.d("user_location", this.userLatLng.toString());
+        for (ArrayMap.Entry<String, LatLng> loc : locationList.entrySet())
+        {
+            Double distanceToLocation = distance(this.userLatLng.latitude, this.userLatLng.longitude, loc.getValue().latitude, loc.getValue().longitude);
+            if (distanceToLocation < shortestDistance)
+            {
+                shortestDistance = distanceToLocation;
+                closestLibraryName = loc.getKey();
+            }
+        }
+        Log.d("shortest_distance", Double.toString(shortestDistance));
+        return closestLibraryName;
     }
 }

@@ -2,6 +2,8 @@ package com.example.dillonwastrack.libusy;
 
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +22,14 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
     {
         super.onCreate(savedInstanceState);
 //        this.getSupportActionBar().setShowHideAnimationEnabled(false);
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("hasCheckedIn", false);
+        editor.commit();
+
+        //int defaultValue = getResources().getInteger(R.string.saved_high_score_default);
+        //boolean hasCheckedIn = sharedPref.getBoolean("hasCheckedIn", false);
+        //Log.d("hasCheckedIn", Boolean.toString(hasCheckedIn));
         setContentView(R.layout.activity_main);
 
         // set up bottom navigation
@@ -42,6 +52,16 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
         });
     }
 
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        //int defaultValue = getResources().getInteger(R.string.saved_high_score_default);
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("hasCheckedIn", false);
+        editor.commit();
+    }
+
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         FragmentManager fm = getFragmentManager();
@@ -56,6 +76,13 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
-        Log.d("negative-click", "no");
+        //Log.d("negative-click", "no");
+        // user chose not to check in, stop bothering them
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("hasCheckedIn", true);
+        editor.apply();
     }
+
+
 }
