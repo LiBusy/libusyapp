@@ -1,0 +1,55 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:weightSum="4"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:background="@color/cast_libraries_material_featurehighlight_outer_highlight_default_color"
+    android:fillViewport="true">
+    <TextView
+        android:id="@+id/instructionText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Please select how busy the library is."
+        android:paddingBottom="40dp"
+        android:textSize="20sp"
+        android:gravity="center"
+        />
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/buttonLayout"
+        android:layout_below="@+id/instructionText"
+        android:layout_width="fill_parent"
+        android:layout_height="300dp"
+        android:orientation="vertical"
+        android:weightSum="4"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:background="@color/cast_libraries_material_featurehighlight_outer_highlight_default_color"
+        android:fillViewport="true">
+
+        <Button android:id="@+id/btnVeryBusy"
+
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:text="Very Busy" />
+
+        <Button android:id="@+id/btnBusy"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:text="Busy" />
+
+        <Button
+            android:id="@+id/btnNotBusy"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:text="Not Busy" />
+    </LinearLayout>
+</RelativeLayout>
