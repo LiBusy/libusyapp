@@ -5,15 +5,13 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.Pair;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,16 +38,9 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-
-import static android.content.Context.LOCATION_SERVICE;
-
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener,
@@ -339,13 +330,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         //mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(this.mGoogleApiClient, mLocationRequest, this);
 
-        /* TODO Make this part location aware. need to know where the user is to ask where to check in */
         // see if the user wants to check in
-        // TODO this is where we need to determine closest library
         // find closest library
         // if library within a mile or so, ask to check in
-        // TODO set hasCheckedIn to true
-        // TODO might need to move this to onConnected
 
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         //int defaultValue = getResources().getInteger(R.string.saved_high_score_default);
@@ -353,13 +340,17 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         Log.d("hasCheckedIn", Boolean.toString(hasCheckedIn));
         if (! hasCheckedIn && mLastLocation != null)
         {
-            //Log.d("Closest_library", getClosestLibrary());
-            CheckInDialogFragment newFragment = new CheckInDialogFragment(); // TODO use shared preferences to store if user has already checked in
-            Bundle args = new Bundle();
-            args.putString("library", getClosestLibrary()); // whatever the closest library is
-            newFragment.setArguments(args);
-            newFragment.show(getFragmentManager(), "check-in");
-            // TODO override onDestroy to delete preference
+            Pair<String, Double> libraryAndDistance = getClosestLibrary();
+
+            if (libraryAndDistance.second < 100)
+            {
+                //Log.d("Closest_library", getClosestLibrary());
+                CheckInDialogFragment newFragment = new CheckInDialogFragment();
+                Bundle args = new Bundle();
+                args.putString("library", libraryAndDistance.first); // whatever the closest library is
+                newFragment.setArguments(args);
+                newFragment.show(getFragmentManager(), "check-in");
+            }
         }
 
     }
@@ -415,16 +406,33 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         Log.d("hasCheckedIn", Boolean.toString(hasCheckedIn));
         if (! hasCheckedIn)
         {
-            //Log.d("Closest_library", getClosestLibrary());
-            CheckInDialogFragment newFragment = new CheckInDialogFragment(); // TODO use shared preferences to store if user has already checked in
-            Bundle args = new Bundle();
-            args.putString("library", getClosestLibrary()); // whatever the closest library is
-            newFragment.setArguments(args);
-            newFragment.show(getFragmentManager(), "check-in");
-            // TODO override onDestroy to delete preference
+            Pair<String, Double> libraryAndDistance = getClosestLibrary();
+
+            if (libraryAndDistance.second < 100)
+            {
+                //Log.d("Closest_library", getClosestLibrary());
+                CheckInDialogFragment newFragment = new CheckInDialogFragment();
+                Bundle args = new Bundle();
+                args.putString("library", libraryAndDistance.first); // whatever the closest library is
+                newFragment.setArguments(args);
+                newFragment.show(getFragmentManager(), "check-in");
+            }
+
         }
     }
 
+    /**
+     * This distance algorithm uses the haversine
+     * great circle approximation to determine
+     * the distance between two points in
+     * meters.
+     *
+     * @param lat1 latitude of first point
+     * @param lon1 longitude of first point
+     * @param lat2 latitude of second point
+     * @param lon2 longitude of second pount
+     * @return distance between 2 points in meters
+     */
     private double distance(double lat1, double lon1, double lat2, double lon2) {
         // haversine great circle distance approximation, returns meters
         double theta = lon1 - lon2;
@@ -438,15 +446,36 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         return (dist);
     }
 
+    /**
+     * Used for converting degrees to
+     * radians.
+     *
+     * @param deg degrees
+     * @return conversion from degrees to radians
+     */
     private double deg2rad(double deg) {
         return (deg * Math.PI / 180.0);
     }
 
+    /**
+     * Used for converting radians to
+     * degrees.
+     *
+     * @param rad radians
+     * @return conversion from radians to degrees
+     */
     private double rad2deg(double rad) {
         return (rad * 180.0 / Math.PI);
     }
 
-    private String getClosestLibrary()
+    /**
+     * Determines which of the four
+     * main libraries that the user is
+     * closest to.
+     *
+     * @return String representing the library (for making an api call)
+     */
+    private Pair<String, Double> getClosestLibrary()
     {
         //ArrayList<LatLng> locationList = new ArrayList<LatLng>();
         ArrayMap<String, LatLng> locationList = new ArrayMap<String, LatLng>();
@@ -460,14 +489,19 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         Log.d("user_location", this.userLatLng.toString());
         for (ArrayMap.Entry<String, LatLng> loc : locationList.entrySet())
         {
-            Double distanceToLocation = distance(this.userLatLng.latitude, this.userLatLng.longitude, loc.getValue().latitude, loc.getValue().longitude);
+            Double distanceToLocation = distance(this.userLatLng.latitude,
+                                                 this.userLatLng.longitude,
+                                                 loc.getValue().latitude,
+                                                 loc.getValue().longitude);
+
             if (distanceToLocation < shortestDistance)
             {
                 shortestDistance = distanceToLocation;
                 closestLibraryName = loc.getKey();
             }
         }
+        Pair<String, Double> libraryAndDistance = new Pair<>(closestLibraryName, shortestDistance);
         Log.d("shortest_distance", Double.toString(shortestDistance));
-        return closestLibraryName;
+        return libraryAndDistance;
     }
 }

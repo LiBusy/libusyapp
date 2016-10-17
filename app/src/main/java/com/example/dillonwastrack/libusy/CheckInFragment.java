@@ -43,6 +43,8 @@ public class CheckInFragment extends Fragment{
 
         final Context homeActivity = this.getActivity();
         final String libraryName = this.getArguments().getString("library");
+
+        // set button listeners
         veryBusy.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 RequestQueue queue = Volley.newRequestQueue(homeActivity);
@@ -71,5 +73,65 @@ public class CheckInFragment extends Fragment{
                 queue.add(stringRequest);
             }
         });
+
+        busy.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                RequestQueue queue = Volley.newRequestQueue(homeActivity);
+                String url ="http://libusy.herokuapp.com/busyness/checkin/"+libraryName+"/2";
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                // save that user has checked in
+                                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putBoolean("hasCheckedIn", true);
+                                editor.apply();
+
+                                Toast.makeText(homeActivity, "Thank you for your response!", Toast.LENGTH_LONG).show();
+                                FragmentManager fm = getFragmentManager();
+                                fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("level", "you suck");
+                    }
+                });
+                // Add the request to the RequestQueue.
+                queue.add(stringRequest);
+            }
+        });
+
+
+        notBusy.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                RequestQueue queue = Volley.newRequestQueue(homeActivity);
+                String url ="http://libusy.herokuapp.com/busyness/checkin/"+libraryName+"/1";
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                // save that user has checked in
+                                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putBoolean("hasCheckedIn", true);
+                                editor.apply();
+
+                                Toast.makeText(homeActivity, "Thank you for your response!", Toast.LENGTH_LONG).show();
+                                FragmentManager fm = getFragmentManager();
+                                fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("level", "you suck");
+                    }
+                });
+                // Add the request to the RequestQueue.
+                queue.add(stringRequest);
+            }
+        });
+
     }
 }
