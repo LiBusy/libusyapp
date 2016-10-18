@@ -72,7 +72,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     {
         this.rodgers = new LatLng(33.2134, -87.5427); // Rodgers Library coordinates
         this.mclure = new LatLng(33.2104, -87.5490); // McLure Library coordinates
-        this.gorgas = new LatLng(33.2118, -87.5460); // Bruno Library coordinates
+        this.gorgas = new LatLng(33.2118, -87.5460); // Gorgas Library coordinates
         this.bruno = new LatLng(33.2111, -87.5493); // Bruno Library coordinates
 
         setHasOptionsMenu(true);
@@ -283,14 +283,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         {
             return "Not Busy";
         }
-        else if (level < 2.5)
+
+        if (level < 2.5)
         {
             return "Busy";
         }
-        else
-        {
-            return "Very Busy";
-        }
+
+        return "Very Busy";
     }
 
 
