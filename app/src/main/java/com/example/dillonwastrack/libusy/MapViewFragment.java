@@ -479,7 +479,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
         String closestLibraryName = "";
         Double shortestDistance = Double.MAX_VALUE;
-        Log.d("user_location", this.userLatLng.toString());
         for (ArrayMap.Entry<String, LatLng> loc : locationList.entrySet())
         {
             Double distanceToLocation = distance(this.userLatLng.latitude,
