@@ -8,8 +8,6 @@ import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
@@ -21,15 +19,11 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-//        this.getSupportActionBar().setShowHideAnimationEnabled(false);
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean("hasCheckedIn", false);
         editor.commit();
 
-        //int defaultValue = getResources().getInteger(R.string.saved_high_score_default);
-        //boolean hasCheckedIn = sharedPref.getBoolean("hasCheckedIn", false);
-        //Log.d("hasCheckedIn", Boolean.toString(hasCheckedIn));
         setContentView(R.layout.activity_main);
 
         // set up bottom navigation
@@ -55,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
     protected void onDestroy()
     {
         super.onDestroy();
-        //int defaultValue = getResources().getInteger(R.string.saved_high_score_default);
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean("hasCheckedIn", false);
@@ -66,8 +59,7 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
     public void onDialogPositiveClick(DialogFragment dialog) {
         FragmentManager fm = getFragmentManager();
         String lib = dialog.getArguments().getString("library");
-        Log.v("library_main_activity", lib);
-        CheckInFragment newFragment = new CheckInFragment(); // TODO use shared preferences to store if user has already checked in
+        CheckInFragment newFragment = new CheckInFragment();
         Bundle args = new Bundle();
         args.putString("library", lib);
         newFragment.setArguments(args);
@@ -76,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
-        //Log.d("negative-click", "no");
         // user chose not to check in, stop bothering them
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();

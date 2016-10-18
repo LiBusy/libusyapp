@@ -403,7 +403,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         {
             Pair<String, Double> libraryAndDistance = getClosestLibrary();
 
-            if (libraryAndDistance.second < 100)
+            if (libraryAndDistance.second < 10)
             {
                 CheckInDialogFragment newFragment = new CheckInDialogFragment();
                 Bundle args = new Bundle();
