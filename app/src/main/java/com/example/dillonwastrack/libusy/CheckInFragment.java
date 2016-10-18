@@ -48,7 +48,7 @@ public class CheckInFragment extends Fragment{
         veryBusy.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 RequestQueue queue = Volley.newRequestQueue(homeActivity);
-                String url ="http://libusy.herokuapp.com/busyness/checkin/"+libraryName+"/3";
+                String url ="https://libusy.herokuapp.com/busyness/checkin/"+libraryName+"/3";
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>() {
                             @Override
@@ -77,7 +77,7 @@ public class CheckInFragment extends Fragment{
         busy.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 RequestQueue queue = Volley.newRequestQueue(homeActivity);
-                String url ="http://libusy.herokuapp.com/busyness/checkin/"+libraryName+"/2";
+                String url ="https://libusy.herokuapp.com/busyness/checkin/"+libraryName+"/2";
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>() {
                             @Override
@@ -107,7 +107,7 @@ public class CheckInFragment extends Fragment{
         notBusy.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 RequestQueue queue = Volley.newRequestQueue(homeActivity);
-                String url ="http://libusy.herokuapp.com/busyness/checkin/"+libraryName+"/1";
+                String url ="https://libusy.herokuapp.com/busyness/checkin/"+libraryName+"/1";
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>() {
                             @Override

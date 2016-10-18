@@ -249,7 +249,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
      */
     public void getBusynessLevel(final Marker marker, String libraryName) throws AuthFailureError {
         RequestQueue queue = Volley.newRequestQueue(this.getActivity());
-        String url ="http://libusy.herokuapp.com/busyness/getlevel/"+libraryName;
+        String url ="https://libusy.herokuapp.com/busyness/getlevel/"+libraryName;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
