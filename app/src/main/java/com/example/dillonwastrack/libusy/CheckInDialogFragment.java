@@ -18,20 +18,17 @@ public class CheckInDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        //String library = getArguments().getString("library");
         final CheckInDialogListener mListener = (CheckInDialogListener) this.getActivity();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("You seem to be near "+ getArguments().get("library") + " library, would you like to check in?")
                 .setPositiveButton("check-in", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // TODO go to check in screen
                         mListener.onDialogPositiveClick(CheckInDialogFragment.this);
                     }
                 })
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // TODO cancel operation
                         mListener.onDialogNegativeClick(CheckInDialogFragment.this);
                     }
                 });

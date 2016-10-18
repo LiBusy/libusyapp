@@ -323,6 +323,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
             this.googleMap.animateCamera(CameraUpdateFactory
                     .newCameraPosition(cameraPosition));
         }
+        // request location updates
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(5000); //5 seconds
         //mLocationRequest.setFastestInterval(3000); //3 seconds
@@ -334,16 +335,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         // if library within a mile or so, ask to check in
 
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        //int defaultValue = getResources().getInteger(R.string.saved_high_score_default);
         boolean hasCheckedIn = sharedPref.getBoolean("hasCheckedIn", false);
-        Log.d("hasCheckedIn", Boolean.toString(hasCheckedIn));
         if (! hasCheckedIn && mLastLocation != null)
         {
             Pair<String, Double> libraryAndDistance = getClosestLibrary();
 
             if (libraryAndDistance.second < 10) // user is within 10 meters
             {
-                //Log.d("Closest_library", getClosestLibrary());
                 CheckInDialogFragment newFragment = new CheckInDialogFragment();
                 Bundle args = new Bundle();
                 args.putString("library", libraryAndDistance.first); // whatever the closest library is
@@ -400,16 +398,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 .newCameraPosition(cameraPosition));
 
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        //int defaultValue = getResources().getInteger(R.string.saved_high_score_default);
         boolean hasCheckedIn = sharedPref.getBoolean("hasCheckedIn", false);
-        Log.d("hasCheckedIn", Boolean.toString(hasCheckedIn));
         if (! hasCheckedIn)
         {
             Pair<String, Double> libraryAndDistance = getClosestLibrary();
 
             if (libraryAndDistance.second < 100)
             {
-                //Log.d("Closest_library", getClosestLibrary());
                 CheckInDialogFragment newFragment = new CheckInDialogFragment();
                 Bundle args = new Bundle();
                 args.putString("library", libraryAndDistance.first); // whatever the closest library is
@@ -440,7 +435,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 * Math.cos(deg2rad(theta));
         dist = Math.acos(dist);
         dist = rad2deg(dist);
-        dist = dist * 60; // 60 nautical miles per degree of seperation
+        dist = dist * 60; // 60 nautical miles per degree of separation
         dist = dist * 1852; // 1852 meters per nautical mile
         return (dist);
     }
@@ -476,7 +471,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
      */
     private Pair<String, Double> getClosestLibrary()
     {
-        //ArrayList<LatLng> locationList = new ArrayList<LatLng>();
         ArrayMap<String, LatLng> locationList = new ArrayMap<String, LatLng>();
         locationList.put("rodgers", this.rodgers);
         locationList.put("bruno", this.bruno);
@@ -499,8 +493,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 closestLibraryName = loc.getKey();
             }
         }
-        Pair<String, Double> libraryAndDistance = new Pair<>(closestLibraryName, shortestDistance);
-        Log.d("shortest_distance", Double.toString(shortestDistance));
-        return libraryAndDistance;
+        return new Pair<>(closestLibraryName, shortestDistance);
     }
 }
