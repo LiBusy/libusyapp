@@ -342,7 +342,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         {
             Pair<String, Double> libraryAndDistance = getClosestLibrary();
 
-            if (libraryAndDistance.second < 100)
+            if (libraryAndDistance.second < 10) // user is within 10 meters
             {
                 //Log.d("Closest_library", getClosestLibrary());
                 CheckInDialogFragment newFragment = new CheckInDialogFragment();
