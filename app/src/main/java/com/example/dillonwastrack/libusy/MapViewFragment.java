@@ -145,8 +145,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
                     try {
-                        //actionView.getThumbDrawable().setColorFilter(Color.RED,PorterDuff.Mode.MULTIPLY );
-                        //actionView.getTrackDrawable().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
                         readMarkersFromAPI(new ServerCallback() {
                             @Override
                             public void onSuccess(String response) {
@@ -185,7 +183,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     /**
      *
-     * The menu for selecting locations
+     * The menu for selecting locations,
+     * always uses the overflow seciton.
+     * does not contain the heatmap.
      *
      * @param item: a menu item
      * @return boolean
@@ -213,29 +213,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.gorgas, 17)); // move camera
                 return true;
 
-//            case R.id.heatmap:
-//                try {
-//                    //CheckBox checkBox = (CheckBox) item.getActionView();
-//                    //heatMapActive = ! checkBox.isChecked();
-//                    readMarkersFromAPI(new ServerCallback() {
-//                        @Override
-//                        public void onSuccess(String response) {
-//                            // Create a heat map tile provider, passing it the latlngs of the police stations.
-//                            mProvider = new HeatmapTileProvider.Builder()
-//                                    .data(userMarkerList)
-//                                    .build();
-//                            // Add a tile overlay to the map, using the heat map tile provider.
-//                            googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-//                            //googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-//
-//                        }
-//
-//                    });
-//                } catch (JSONException e) {
-//                    Toast.makeText(this.getActivity(), "Problem reading list of locations.", Toast.LENGTH_LONG).show();
-//                }
-//
-//                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -628,20 +605,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         });
         // Add the request to the RequestQueue.
         queue.add(jsonRequest);
-        //Log.d("coordinates", list.toString());
     }
 
-//    private void registerHeatMapListeners()
-//    {
-//        CheckBox heatMapCheckBox = (CheckBox) getActivity().findViewById(R.id.heatmap);
-//        final Context homeActivity = this.getActivity();
-//        heatMapCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//
-//
-//            }
-//        });
-    //}
 }
