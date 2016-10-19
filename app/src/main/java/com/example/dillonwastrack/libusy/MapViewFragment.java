@@ -147,13 +147,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                                         .build();
                                 // Add a tile overlay to the map, using the heat map tile provider.
                                 mOverlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+                                Toast.makeText(getActivity() ,"Heatmap engaged!", Toast.LENGTH_LONG).show();
                                 //googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
                             }
 
                         });
                     } catch (JSONException e) {
-                        Toast.makeText(homeActivity, "Problem reading list of locations.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(homeActivity, "Problem reading list of locations.", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -161,6 +162,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 else if (!isChecked)
                 {
                     mOverlay.remove();
+                    Toast.makeText(getActivity() ,"Heatmap disengaged!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
