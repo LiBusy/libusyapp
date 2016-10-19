@@ -2,12 +2,9 @@ package com.example.dillonwastrack.libusy;
 
 import android.Manifest;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,9 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -34,7 +29,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
@@ -59,10 +53,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener,
@@ -74,18 +65,17 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     private Marker mMclureMarker;
     private Marker mGorgasMarker;
     private Marker mBrunoMarker;
+    private Marker userLocationMarker;
 
     private LatLng rodgers;
     private LatLng mclure;
     private LatLng gorgas;
     private LatLng bruno;
+    private LatLng userLatLng;
 
     private GoogleApiClient mGoogleApiClient;
+
     private Location mLastLocation;
-
-    private Marker userLocationMarker;
-
-    private LatLng userLatLng;
 
     private HeatmapTileProvider mProvider;
 
@@ -135,11 +125,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.location_menu, menu);
+
+        // register heat map switch listeners
         final MenuItem toggleservice = menu.findItem(R.id.heatmap);
-        final SwitchCompat actionView = (SwitchCompat) toggleservice.getActionView();
+        final SwitchCompat heatMapSwitch = (SwitchCompat) toggleservice.getActionView();
         final Context homeActivity = this.getActivity();
-        actionView.setThumbResource(R.drawable.heatmap);
-        actionView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        heatMapSwitch.setThumbResource(R.drawable.heatmap);
+        heatMapSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -148,7 +140,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                         readMarkersFromAPI(new ServerCallback() {
                             @Override
                             public void onSuccess(String response) {
-                                // Create a heat map tile provider, passing it the latlngs of the police stations.
                                 mProvider = new HeatmapTileProvider.Builder()
                                         .data(userMarkerList)
                                         .build();
@@ -581,7 +572,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // save that user has checked in
                         try {
                             userMarkerList = new ArrayList<LatLng>();
                             Log.d("apiresponse", response);
