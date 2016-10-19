@@ -59,31 +59,31 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    private GoogleMap googleMap;
+    private GoogleMap googleMap; // the main map fragment
 
-    private Marker mRodgersMarker;
-    private Marker mMclureMarker;
-    private Marker mGorgasMarker;
-    private Marker mBrunoMarker;
-    private Marker userLocationMarker;
+    private Marker mRodgersMarker; // the marker for Rodgers
+    private Marker mMclureMarker; // the marker for McLure
+    private Marker mGorgasMarker; // the marker for Gorgas
+    private Marker mBrunoMarker; // the marker for Bruno
+    private Marker userLocationMarker; // the marker for the user's location
 
-    private LatLng rodgers;
-    private LatLng mclure;
-    private LatLng gorgas;
-    private LatLng bruno;
-    private LatLng userLatLng;
+    private LatLng rodgers; // Rodgers coordinates
+    private LatLng mclure; // McLure coordinates
+    private LatLng gorgas; // Gorgas coordinates
+    private LatLng bruno; // Bruno coordinates
+    private LatLng userLatLng; // User coordinates
 
-    private GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient mGoogleApiClient; // google API client for getting user location
 
-    private Location mLastLocation;
+    private Location mLastLocation; // last known location of the user
 
-    private HeatmapTileProvider mProvider;
+    private HeatmapTileProvider mProvider; // provider for heat map tiling
 
-    private ArrayList<LatLng> userMarkerList;
+    private ArrayList<LatLng> userMarkerList; // list of markers used in the heatmap. pulled from the api
 
-    private boolean heatMapActive;
+    private boolean heatMapActive; // boolean for using the heatmap toggle switch
 
-    private TileOverlay mOverlay;
+    private TileOverlay mOverlay; // used for the heatmap
 
 
     @Nullable
@@ -108,7 +108,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         super.onViewCreated(view, savedInstanceState);
 
         // Create an instance of GoogleAPIClient.
-        if (mGoogleApiClient == null) {
+        if (mGoogleApiClient == null)
+        {
             mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
@@ -116,7 +117,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                     .build();
         }
 
-        //registerHeatMapListeners();
         MapFragment fragment = (MapFragment)getChildFragmentManager().findFragmentById(R.id.map);
         fragment.getMapAsync(this);
     }
@@ -134,8 +134,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         heatMapSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if (isChecked)
+                {
                     try {
                         readMarkersFromAPI(new ServerCallback() {
                             @Override
@@ -156,10 +158,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
                 }
 
-                else if (!isChecked) {
-
+                else if (!isChecked)
+                {
                     mOverlay.remove();
-
                 }
             }
         });
@@ -167,7 +168,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
+    public void onPrepareOptionsMenu(Menu menu)
+    {
         MenuItem checkable = menu.findItem(R.id.heatmap);
         checkable.setChecked(heatMapActive);
     }
@@ -249,7 +251,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
      *
      * @throws AuthFailureError
      */
-    private void initializeMarkers() throws AuthFailureError {
+    private void initializeMarkers() throws AuthFailureError
+    {
 
         this.mRodgersMarker = this.googleMap.addMarker(new MarkerOptions()
                 .position(this.rodgers)
@@ -281,7 +284,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     /** Called when the user clicks a marker. */
     @Override
-    public boolean onMarkerClick(final Marker marker) {
+    public boolean onMarkerClick(final Marker marker)
+    {
 
 //        RequestQueue queue = Volley.newRequestQueue(this.getActivity());
 //        String url ="http://libusy.herokuapp.com/busyness/getlevel/rodgers";
@@ -317,7 +321,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
      * @param libraryName the name of the library for the api
      * @throws AuthFailureError
      */
-    public void getBusynessLevel(final Marker marker, String libraryName) throws AuthFailureError {
+    public void getBusynessLevel(final Marker marker, String libraryName) throws AuthFailureError
+    {
         RequestQueue queue = Volley.newRequestQueue(this.getActivity());
         String url ="https://libusy.herokuapp.com/busyness/getlevel/"+libraryName;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -364,7 +369,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
 
     @Override
-    public void onConnected(Bundle connectionHint) {
+    public void onConnected(Bundle connectionHint)
+    {
         if(ContextCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
         {
             ActivityCompat.requestPermissions(
@@ -423,27 +429,32 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
+    public void onConnectionSuspended(int i)
+    {
 
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult)
+    {
 
     }
 
-    public void onStart() {
+    public void onStart()
+    {
         mGoogleApiClient.connect();
         super.onStart();
     }
 
-    public void onStop() {
+    public void onStop()
+    {
         mGoogleApiClient.disconnect();
         super.onStop();
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(Location location)
+    {
         this.mLastLocation = location;
 
 
@@ -497,7 +508,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
      * @param lon2 longitude of second pount
      * @return distance between 2 points in meters
      */
-    private double distance(double lat1, double lon1, double lat2, double lon2) {
+    private double distance(double lat1, double lon1, double lat2, double lon2)
+    {
         // haversine great circle distance approximation, returns meters
         double theta = lon1 - lon2;
         double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2))
@@ -565,7 +577,17 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         return new Pair<>(closestLibraryName, shortestDistance);
     }
 
-    private void readMarkersFromAPI(final ServerCallback callback) throws JSONException {
+    /**
+     * Use the api to get the list of dropped pins,
+     * read into JSONArray, create LatLng
+     * objects from JSONObjects, add
+     * them to the userMarkerList
+     *
+     * @param callback the callback for when the request is complete
+     * @throws JSONException
+     */
+    private void readMarkersFromAPI(final ServerCallback callback) throws JSONException
+    {
         RequestQueue queue = Volley.newRequestQueue(this.getActivity());
         String url = "https://libusy.herokuapp.com/usermarkers";
         StringRequest jsonRequest = new StringRequest(Request.Method.GET, url,
@@ -574,7 +596,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                     public void onResponse(String response) {
                         try {
                             userMarkerList = new ArrayList<LatLng>();
-                            Log.d("apiresponse", response);
                             JSONArray array = new JSONArray(response);
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject object = array.getJSONObject(i);
