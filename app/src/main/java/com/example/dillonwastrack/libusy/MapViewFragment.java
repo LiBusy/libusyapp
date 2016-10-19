@@ -2,9 +2,12 @@ package com.example.dillonwastrack.libusy;
 
 import android.Manifest;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
+import android.support.v7.widget.SwitchCompat;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,11 +24,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.Toast;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
@@ -41,6 +51,18 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlay;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.maps.android.heatmaps.HeatmapTileProvider;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener,
@@ -65,6 +87,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     private LatLng userLatLng;
 
+    private HeatmapTileProvider mProvider;
+
+    private ArrayList<LatLng> userMarkerList;
+
+    private boolean heatMapActive;
+
+    private TileOverlay mOverlay;
+
 
     @Nullable
     @Override
@@ -74,6 +104,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         this.mclure = new LatLng(33.2104, -87.5490); // McLure Library coordinates
         this.gorgas = new LatLng(33.2118, -87.5460); // Gorgas Library coordinates
         this.bruno = new LatLng(33.2111, -87.5493); // Bruno Library coordinates
+
+        heatMapActive = false;
 
         setHasOptionsMenu(true);
 
@@ -94,6 +126,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                     .build();
         }
 
+        //registerHeatMapListeners();
         MapFragment fragment = (MapFragment)getChildFragmentManager().findFragmentById(R.id.map);
         fragment.getMapAsync(this);
     }
@@ -102,7 +135,52 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.location_menu, menu);
+        final MenuItem toggleservice = menu.findItem(R.id.heatmap);
+        final SwitchCompat actionView = (SwitchCompat) toggleservice.getActionView();
+        final Context homeActivity = this.getActivity();
+        actionView.setThumbResource(R.drawable.heatmap);
+        actionView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    try {
+                        //actionView.getThumbDrawable().setColorFilter(Color.RED,PorterDuff.Mode.MULTIPLY );
+                        //actionView.getTrackDrawable().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+                        readMarkersFromAPI(new ServerCallback() {
+                            @Override
+                            public void onSuccess(String response) {
+                                // Create a heat map tile provider, passing it the latlngs of the police stations.
+                                mProvider = new HeatmapTileProvider.Builder()
+                                        .data(userMarkerList)
+                                        .build();
+                                // Add a tile overlay to the map, using the heat map tile provider.
+                                mOverlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+                                //googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
+                            }
+
+                        });
+                    } catch (JSONException e) {
+                        Toast.makeText(homeActivity, "Problem reading list of locations.", Toast.LENGTH_LONG).show();
+                    }
+
+                }
+
+                else if (!isChecked) {
+
+                    mOverlay.remove();
+
+                }
+            }
+        });
         super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem checkable = menu.findItem(R.id.heatmap);
+        checkable.setChecked(heatMapActive);
     }
 
     /**
@@ -134,6 +212,30 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
             case R.id.gorgas_library:
                 this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.gorgas, 17)); // move camera
                 return true;
+
+//            case R.id.heatmap:
+//                try {
+//                    //CheckBox checkBox = (CheckBox) item.getActionView();
+//                    //heatMapActive = ! checkBox.isChecked();
+//                    readMarkersFromAPI(new ServerCallback() {
+//                        @Override
+//                        public void onSuccess(String response) {
+//                            // Create a heat map tile provider, passing it the latlngs of the police stations.
+//                            mProvider = new HeatmapTileProvider.Builder()
+//                                    .data(userMarkerList)
+//                                    .build();
+//                            // Add a tile overlay to the map, using the heat map tile provider.
+//                            googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+//                            //googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+//
+//                        }
+//
+//                    });
+//                } catch (JSONException e) {
+//                    Toast.makeText(this.getActivity(), "Problem reading list of locations.", Toast.LENGTH_LONG).show();
+//                }
+//
+//                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -494,4 +596,52 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         }
         return new Pair<>(closestLibraryName, shortestDistance);
     }
+
+    private void readMarkersFromAPI(final ServerCallback callback) throws JSONException {
+        RequestQueue queue = Volley.newRequestQueue(this.getActivity());
+        String url = "https://libusy.herokuapp.com/usermarkers";
+        StringRequest jsonRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // save that user has checked in
+                        try {
+                            userMarkerList = new ArrayList<LatLng>();
+                            Log.d("apiresponse", response);
+                            JSONArray array = new JSONArray(response);
+                            for (int i = 0; i < array.length(); i++) {
+                                JSONObject object = array.getJSONObject(i);
+                                double lat = object.getDouble("lat");
+                                double lng = object.getDouble("lng");
+                                userMarkerList.add(new LatLng(lat, lng));
+                            }
+                            callback.onSuccess(response);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("level", "you suck");
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(jsonRequest);
+        //Log.d("coordinates", list.toString());
+    }
+
+//    private void registerHeatMapListeners()
+//    {
+//        CheckBox heatMapCheckBox = (CheckBox) getActivity().findViewById(R.id.heatmap);
+//        final Context homeActivity = this.getActivity();
+//        heatMapCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//
+//
+//            }
+//        });
+    //}
 }
