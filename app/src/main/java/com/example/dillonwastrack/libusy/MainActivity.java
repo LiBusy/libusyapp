@@ -19,10 +19,11 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        NetworkManager.getInstance(this.getApplicationContext());
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean("hasCheckedIn", false);
-        editor.commit();
+        editor.apply();
 
         setContentView(R.layout.activity_main);
 
