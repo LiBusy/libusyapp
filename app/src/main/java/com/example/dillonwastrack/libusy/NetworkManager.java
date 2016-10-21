@@ -21,10 +21,7 @@ import java.util.ArrayList;
 
 public class NetworkManager
 {
-    private static final String TAG = "NetworkManager";
     private static NetworkManager instance = null;
-
-    private static final String prefixURL = "https://libusy.herokuapp.com/";
 
     //for Volley API
     public RequestQueue requestQueue;

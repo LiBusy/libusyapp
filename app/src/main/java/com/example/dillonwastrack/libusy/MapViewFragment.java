@@ -25,12 +25,6 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -148,7 +142,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                                 mOverlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
                                 // TODO maybe make markers invisible to see heatmap better
                                 Toast.makeText(getActivity() ,"Heatmap engaged!", Toast.LENGTH_LONG).show();
-                                //googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
                             }
 
@@ -420,13 +413,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         this.userLocationMarker = this.googleMap.addMarker(markerOptions);
 
-
-        //zoom to current position:
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(this.userLatLng).zoom(14).build();
-
-        this.googleMap.animateCamera(CameraUpdateFactory
-                .newCameraPosition(cameraPosition));
 
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         boolean hasCheckedIn = sharedPref.getBoolean("hasCheckedIn", false);
