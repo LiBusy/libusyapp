@@ -28,7 +28,6 @@ public class CheckInFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-//        ((AppCompatActivity) getActivity()).getSupportActionBar().hide(); // hide action bar
         return inflater.inflate(R.layout.fragment_check_in, container,false);
     }
 
@@ -47,89 +46,59 @@ public class CheckInFragment extends Fragment{
         // set button listeners
         veryBusy.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                RequestQueue queue = Volley.newRequestQueue(homeActivity);
-                String url ="https://libusy.herokuapp.com/busyness/checkin/"+libraryName+"/3";
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                // save that user has checked in
-                                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPref.edit();
-                                editor.putBoolean("hasCheckedIn", true);
-                                editor.apply();
-
-                                Toast.makeText(homeActivity, "Thank you for your response!", Toast.LENGTH_LONG).show();
-                                FragmentManager fm = getFragmentManager();
-                                fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
-                            }
-                        }, new Response.ErrorListener() {
+                NetworkManager.getInstance().postLibraryBusynessLevel(homeActivity, libraryName, "3", new ServerCallback() {
                     @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("level", "you suck");
+                    public void onSuccess(String response) {
+                        // save that user has checked in
+                        Toast.makeText(homeActivity, "Thank you for your response!", Toast.LENGTH_LONG).show();
+                        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putBoolean("hasCheckedIn", true);
+                        editor.apply();
+                        FragmentManager fm = getFragmentManager();
+                        fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
                     }
+
                 });
-                // Add the request to the RequestQueue.
-                queue.add(stringRequest);
             }
         });
 
         busy.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                RequestQueue queue = Volley.newRequestQueue(homeActivity);
-                String url ="https://libusy.herokuapp.com/busyness/checkin/"+libraryName+"/2";
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                // save that user has checked in
-                                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPref.edit();
-                                editor.putBoolean("hasCheckedIn", true);
-                                editor.apply();
-
-                                Toast.makeText(homeActivity, "Thank you for your response!", Toast.LENGTH_LONG).show();
-                                FragmentManager fm = getFragmentManager();
-                                fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
-                            }
-                        }, new Response.ErrorListener() {
+                NetworkManager.getInstance().postLibraryBusynessLevel(homeActivity, libraryName, "2", new ServerCallback() {
                     @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("level", "you suck");
+                    public void onSuccess(String response) {
+                        // save that user has checked in
+                        Toast.makeText(homeActivity, "Thank you for your response!", Toast.LENGTH_LONG).show();
+                        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putBoolean("hasCheckedIn", true);
+                        editor.apply();
+                        FragmentManager fm = getFragmentManager();
+                        fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
                     }
+
                 });
-                // Add the request to the RequestQueue.
-                queue.add(stringRequest);
             }
         });
 
 
         notBusy.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                RequestQueue queue = Volley.newRequestQueue(homeActivity);
-                String url ="https://libusy.herokuapp.com/busyness/checkin/"+libraryName+"/1";
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                // save that user has checked in
-                                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPref.edit();
-                                editor.putBoolean("hasCheckedIn", true);
-                                editor.apply();
-
-                                Toast.makeText(homeActivity, "Thank you for your response!", Toast.LENGTH_LONG).show();
-                                FragmentManager fm = getFragmentManager();
-                                fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
-                            }
-                        }, new Response.ErrorListener() {
+                NetworkManager.getInstance().postLibraryBusynessLevel(homeActivity, libraryName, "1", new ServerCallback() {
                     @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("level", "you suck");
+                    public void onSuccess(String response) {
+                        // save that user has checked in
+                        Toast.makeText(homeActivity, "Thank you for your response!", Toast.LENGTH_LONG).show();
+                        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putBoolean("hasCheckedIn", true);
+                        editor.apply();
+                        FragmentManager fm = getFragmentManager();
+                        fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
                     }
+
                 });
-                // Add the request to the RequestQueue.
-                queue.add(stringRequest);
             }
         });
 

@@ -49,9 +49,7 @@ import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -139,14 +137,16 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 if (isChecked)
                 {
                     try {
-                        readMarkersFromAPI(new ServerCallback() {
+                        NetworkManager.getInstance().readMarkersFromAPI(new ArrayList<LatLng>(), new HeatmapCallback() {
                             @Override
-                            public void onSuccess(String response) {
+                            public void onSuccess(ArrayList<LatLng> markerList) {
+                                userMarkerList = markerList;
                                 mProvider = new HeatmapTileProvider.Builder()
                                         .data(userMarkerList)
                                         .build();
                                 // Add a tile overlay to the map, using the heat map tile provider.
                                 mOverlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+                                // TODO maybe make markers invisible to see heatmap better
                                 Toast.makeText(getActivity() ,"Heatmap engaged!", Toast.LENGTH_LONG).show();
                                 //googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
@@ -178,9 +178,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     /**
      *
-     * The menu for selecting locations,
-     * always uses the overflow seciton.
-     * does not contain the heatmap.
+     * The menu for selecting locations, always
+     * goes in the overflow section
+     * of the app bar.
      *
      * @param item: a menu item
      * @return boolean
@@ -260,25 +260,25 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 .position(this.rodgers)
                 .title("Rodgers Library"));
 
-        getBusynessLevel(this.mRodgersMarker, "rodgers"); // get busyness level from api, set marker text
+        NetworkManager.getInstance().getBusynessLevelFromApi(this.mRodgersMarker, "rodgers");
 
         this.mMclureMarker = this.googleMap.addMarker(new MarkerOptions()
                 .position(this.mclure)
                 .title("Mclure Library"));
 
-        getBusynessLevel(this.mMclureMarker, "mclure"); // get busyness level from api, set marker text
+        NetworkManager.getInstance().getBusynessLevelFromApi(this.mMclureMarker, "mclure");
 
         this.mBrunoMarker = this.googleMap.addMarker(new MarkerOptions()
                 .position(this.bruno)
                 .title("Bruno Library"));
 
-        getBusynessLevel(this.mBrunoMarker, "bruno"); // get busyness level from api, set marker text
+        NetworkManager.getInstance().getBusynessLevelFromApi(this.mBrunoMarker, "bruno");
 
         this.mGorgasMarker = this.googleMap.addMarker(new MarkerOptions()
                 .position(this.gorgas)
                 .title("Gorgas Library"));
 
-        getBusynessLevel(this.mGorgasMarker, "gorgas"); // get busyness level from api, set marker text
+        NetworkManager.getInstance().getBusynessLevelFromApi(this.mGorgasMarker, "gorgas");
 
         //this.googleMap.setOnMarkerClickListener(this); // TODO consider not using this
 
@@ -312,61 +312,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         //Float level = Float.parseFloat(stringRequest.getBody().toString());
         //return level;
         return false;
-    }
-
-    /**
-     * Get the busyness level of the library
-     * to place on the marker, performs an
-     * api request
-     *
-     * @param marker a google maps marker
-     * @param libraryName the name of the library for the api
-     * @throws AuthFailureError
-     */
-    public void getBusynessLevel(final Marker marker, String libraryName) throws AuthFailureError
-    {
-        RequestQueue queue = Volley.newRequestQueue(this.getActivity());
-        String url ="https://libusy.herokuapp.com/busyness/getlevel/"+libraryName;
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        marker.setSnippet(createBusynessTextFromResponse(response));
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("level", "you suck");
-            }
-        });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
-
-    }
-
-    /**
-     * The algorithm. Determines how busy
-     * the library is based on its
-     * busyness rating.
-     *
-     * @param response the response from the api
-     * @return String to display in the marker snippet
-     */
-    private String createBusynessTextFromResponse(String response)
-    {
-        Float level = Float.parseFloat(response);
-
-        if (level < 1.5)
-        {
-            return "Not Busy";
-        }
-
-        if (level < 2.5)
-        {
-            return "Busy";
-        }
-
-        return "Very Busy";
     }
 
 
@@ -418,7 +363,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         {
             Pair<String, Double> libraryAndDistance = getClosestLibrary();
 
-            if (libraryAndDistance.second < 10) // user is within 10 meters
+            if (libraryAndDistance.second < 50) // user is within 10 meters
             {
                 CheckInDialogFragment newFragment = new CheckInDialogFragment();
                 Bundle args = new Bundle();
@@ -459,6 +404,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     {
         this.mLastLocation = location;
 
+        //Log.d("user_latitude_changed", Double.toString(mLastLocation.getLatitude()));
+       // SharedPreferences checkIn = getActivity().getPreferences(Context.MODE_PRIVATE);
+        //Log.d("hasCheckedIn", Boolean.toString(checkIn.getBoolean("hasCheckedIn", false)));
 
         if (this.userLocationMarker != null)
         {
@@ -486,7 +434,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         {
             Pair<String, Double> libraryAndDistance = getClosestLibrary();
 
-            if (libraryAndDistance.second < 10)
+            if (libraryAndDistance.second < 50)
             {
                 CheckInDialogFragment newFragment = new CheckInDialogFragment();
                 Bundle args = new Bundle();
@@ -577,47 +525,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
             }
         }
         return new Pair<>(closestLibraryName, shortestDistance);
-    }
-
-    /**
-     * Use the api to get the list of dropped pins,
-     * read into JSONArray, create LatLng
-     * objects from JSONObjects, add
-     * them to the userMarkerList
-     *
-     * @param callback the callback for when the request is complete
-     * @throws JSONException
-     */
-    private void readMarkersFromAPI(final ServerCallback callback) throws JSONException
-    {
-        RequestQueue queue = Volley.newRequestQueue(this.getActivity());
-        String url = "https://libusy.herokuapp.com/usermarkers";
-        StringRequest jsonRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            userMarkerList = new ArrayList<LatLng>();
-                            JSONArray array = new JSONArray(response);
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject object = array.getJSONObject(i);
-                                double lat = object.getDouble("lat");
-                                double lng = object.getDouble("lng");
-                                userMarkerList.add(new LatLng(lat, lng));
-                            }
-                            callback.onSuccess(response);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("level", "you suck");
-            }
-        });
-        // Add the request to the RequestQueue.
-        queue.add(jsonRequest);
     }
 
 }
