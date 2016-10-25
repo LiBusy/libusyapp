@@ -1,7 +1,6 @@
 package com.example.dillonwastrack.libusy;
 
 import android.content.Context;
-import android.util.Base64;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -19,8 +18,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class NetworkManager
 {
