@@ -1,6 +1,7 @@
 package com.example.dillonwastrack.libusy;
 
 import android.content.Context;
+import android.util.Base64;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -18,10 +19,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class NetworkManager
 {
     private static NetworkManager instance = null;
+
+    private static String key = "333C949CDEEBAB5ED3C747AF3EBBE";
 
     //for Volley API
     public RequestQueue requestQueue;
@@ -51,7 +56,7 @@ public class NetworkManager
 
     public void getBusynessLevelFromApi(final Marker marker, String libraryName) throws AuthFailureError
     {
-        String url ="https://libusy.herokuapp.com/busyness/getlevel/"+libraryName;
+        String url ="https://libusy.herokuapp.com/busyness/getlevel/"+libraryName+"?key="+key;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
@@ -69,9 +74,9 @@ public class NetworkManager
 
     }
 
-    public void postLibraryBusynessLevel(final Context homeActivity, String libraryName, String level, final ServerCallback callback)
+    public void postLibraryBusynessLevel(String libraryName, String level, final ServerCallback callback)
     {
-        String url ="https://libusy.herokuapp.com/busyness/checkin/"+libraryName+"/"+level;
+        String url ="https://libusy.herokuapp.com/busyness/checkin/"+libraryName+"/"+level+"?key="+key;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -95,7 +100,7 @@ public class NetworkManager
      */
     public void readMarkersFromAPI(final ArrayList<LatLng> userMarkerList, final HeatmapCallback callback) throws JSONException
     {
-        String url = "https://libusy.herokuapp.com/usermarkers";
+        String url = "https://libusy.herokuapp.com/usermarkers"+"?key="+key;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override

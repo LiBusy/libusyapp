@@ -39,7 +39,7 @@ public class CheckInFragment extends Fragment{
         // set button listeners
         veryBusy.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                NetworkManager.getInstance().postLibraryBusynessLevel(homeActivity, libraryName, "3", new ServerCallback() {
+                NetworkManager.getInstance().postLibraryBusynessLevel(libraryName, "3", new ServerCallback() {
                     @Override
                     public void onSuccess(String response) {
                         // save that user has checked in
@@ -58,7 +58,7 @@ public class CheckInFragment extends Fragment{
 
         busy.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                NetworkManager.getInstance().postLibraryBusynessLevel(homeActivity, libraryName, "2", new ServerCallback() {
+                NetworkManager.getInstance().postLibraryBusynessLevel(libraryName, "2", new ServerCallback() {
                     @Override
                     public void onSuccess(String response) {
                         // save that user has checked in
@@ -78,7 +78,7 @@ public class CheckInFragment extends Fragment{
 
         notBusy.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                NetworkManager.getInstance().postLibraryBusynessLevel(homeActivity, libraryName, "1", new ServerCallback() {
+                NetworkManager.getInstance().postLibraryBusynessLevel(libraryName, "1", new ServerCallback() {
                     @Override
                     public void onSuccess(String response) {
                         // save that user has checked in
