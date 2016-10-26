@@ -350,7 +350,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         //mLocationRequest.setFastestInterval(3000); //3 seconds
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(this.mGoogleApiClient, mLocationRequest, this);
-       // askToCheckIn();
 
     }
 
@@ -411,17 +410,18 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         if (libraryAndDistance.second < 50) // user is within 50 meters
         {
             MainActivity.nearLibrary = true;
+            MainActivity.nearestLibrary = libraryAndDistance.first; // set nearest library
         }
 
-        if (! MainActivity.hasCheckedIn && mLastLocation != null && ! MainActivity.checkInDialogOpen && MainActivity.hasReceivedNotification && MainActivity.nearLibrary)
-        {
-            MainActivity.checkInDialogOpen = true;
-            CheckInDialogFragment newFragment = new CheckInDialogFragment();
-            Bundle args = new Bundle();
-            args.putString("library", libraryAndDistance.first); // whatever the closest library is
-            newFragment.setArguments(args);
-            newFragment.show(getFragmentManager(), "check-in");
-        }
+//        if (! MainActivity.hasCheckedIn && mLastLocation != null  && MainActivity.hasReceivedNotification && MainActivity.nearLibrary)
+//        {
+//            //MainActivity.checkInDialogOpen = true;
+//            //CheckInDialogFragment newFragment = new CheckInDialogFragment();
+//            Bundle args = new Bundle();
+//            args.putString("library", libraryAndDistance.first); // whatever the closest library is
+//            //newFragment.setArguments(args);
+//            //newFragment.show(getFragmentManager(), "check-in");
+//        }
     }
 
     /**

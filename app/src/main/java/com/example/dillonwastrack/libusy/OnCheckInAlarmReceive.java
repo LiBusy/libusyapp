@@ -29,6 +29,7 @@ public class OnCheckInAlarmReceive extends BroadcastReceiver {
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(context, MainActivity.class);
 
+        resultIntent.putExtra("showCheckIn", true);
         // The stack builder object will contain an artificial back stack for the
         // started Activity.
         // This ensures that navigating backward from the Activity leads out of

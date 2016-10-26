@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.roughike.bottombar.BottomBar;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
     public static boolean hasCheckedIn = false;
     public static boolean checkInDialogOpen = false;
     public static boolean hasReceivedNotification = false;
+    public static String nearestLibrary = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -54,6 +56,15 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
                 }
             }
         });
+
+        Boolean showCheckIn = getIntent().getBooleanExtra("showCheckIn", false);
+
+        if (showCheckIn)
+        {
+            FragmentManager fm = getFragmentManager();
+            CheckInFragment newFragment = new CheckInFragment();
+            fm.beginTransaction().replace(R.id.contentContainer, newFragment).commit();
+        }
 
     }
 

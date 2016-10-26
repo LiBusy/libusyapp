@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class CheckInFragment extends Fragment{
@@ -28,12 +29,15 @@ public class CheckInFragment extends Fragment{
     {
         super.onViewCreated(view, savedInstanceState);
 
+        TextView checkInText = (TextView) getActivity().findViewById(R.id.instructionText);
+        checkInText.setText("Please select how busy "+ MainActivity.nearestLibrary + " library is.");
+
         Button veryBusy = (Button) getActivity().findViewById(R.id.btnVeryBusy);
         Button busy = (Button) getActivity().findViewById(R.id.btnBusy);
         Button notBusy = (Button) getActivity().findViewById(R.id.btnNotBusy);
 
         final Context homeActivity = this.getActivity();
-        final String libraryName = this.getArguments().getString("library");
+        final String libraryName = MainActivity.nearestLibrary; //this.getArguments().getString("library");
 
         // set button listeners
         veryBusy.setOnClickListener(new View.OnClickListener() {
