@@ -53,6 +53,6 @@ public class OnCheckInAlarmReceive extends BroadcastReceiver {
 
         // Builds the notification and issues it.
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
-
+        MainActivity.hasReceivedNotification = true;
     }
 }

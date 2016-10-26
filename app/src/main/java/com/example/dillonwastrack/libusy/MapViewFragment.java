@@ -354,22 +354,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
-    private void askToCheckIn()
+    private void setNearLibrary()
     {
         Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance();
 
         if (libraryAndDistance.second < 50) // user is within 10 meters
         {
             MainActivity.nearLibrary = true;
-            MainActivity.checkInDialogOpen = true;
-            CheckInDialogFragment newFragment = new CheckInDialogFragment();
-            Bundle args = new Bundle();
-            args.putString("library", libraryAndDistance.first); // whatever the closest library is
-            newFragment.setArguments(args);
-            newFragment.show(getFragmentManager(), "check-in");
-            //MainActivity.hasCheckedIn = true;
         }
-
     }
 
 
@@ -414,9 +406,21 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         this.userLocationMarker = this.googleMap.addMarker(markerOptions);
 
-        if (! MainActivity.hasCheckedIn && mLastLocation != null && ! MainActivity.checkInDialogOpen)
+        Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance();
+
+        if (libraryAndDistance.second < 50) // user is within 50 meters
         {
-            askToCheckIn();
+            MainActivity.nearLibrary = true;
+        }
+
+        if (! MainActivity.hasCheckedIn && mLastLocation != null && ! MainActivity.checkInDialogOpen && MainActivity.hasReceivedNotification && MainActivity.nearLibrary)
+        {
+            MainActivity.checkInDialogOpen = true;
+            CheckInDialogFragment newFragment = new CheckInDialogFragment();
+            Bundle args = new Bundle();
+            args.putString("library", libraryAndDistance.first); // whatever the closest library is
+            newFragment.setArguments(args);
+            newFragment.show(getFragmentManager(), "check-in");
         }
     }
 

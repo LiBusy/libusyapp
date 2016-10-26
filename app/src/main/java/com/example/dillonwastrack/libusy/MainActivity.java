@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
     public static boolean nearLibrary = false;
     public static boolean hasCheckedIn = false;
     public static boolean checkInDialogOpen = false;
+    public static boolean hasReceivedNotification = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
