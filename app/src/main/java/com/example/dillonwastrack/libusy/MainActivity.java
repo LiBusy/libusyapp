@@ -20,15 +20,13 @@ import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity implements CheckInDialogFragment.CheckInDialogListener{
+public class MainActivity extends AppCompatActivity {
 
     private BottomBar mBottomBar;
 
     public static boolean nearLibrary = false;
     public static boolean hasCheckedIn = false;
-    public static boolean checkInDialogOpen = false;
     public static boolean hasReceivedNotification = false;
-    public static String nearestLibrary = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -74,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
     @Override
     protected void onStop() {
         super.onStop();
-        checkInDialogOpen = false; // TODO in case user closed app with dialog still open, mostly for debugging.
         if (nearLibrary && !hasCheckedIn)
         {
             setCheckInAlarm();
@@ -106,22 +103,6 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
         super.onDestroy();
     }
 
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog) {
-        FragmentManager fm = getFragmentManager();
-        String lib = dialog.getArguments().getString("library");
-        CheckInFragment newFragment = new CheckInFragment();
-        Bundle args = new Bundle();
-        args.putString("library", lib);
-        newFragment.setArguments(args);
-        fm.beginTransaction().replace(R.id.contentContainer, newFragment).commit();
-    }
-
-    @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
-        // user chose not to check in, stop bothering them
-        hasCheckedIn = true;
-    }
 
 
 }

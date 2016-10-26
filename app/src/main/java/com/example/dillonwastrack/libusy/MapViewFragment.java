@@ -410,7 +410,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         if (libraryAndDistance.second < 50) // user is within 50 meters
         {
             MainActivity.nearLibrary = true;
-            MainActivity.nearestLibrary = libraryAndDistance.first; // set nearest library
+            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("nearestLibrary", libraryAndDistance.first);
+            editor.apply();
         }
 
 //        if (! MainActivity.hasCheckedIn && mLastLocation != null  && MainActivity.hasReceivedNotification && MainActivity.nearLibrary)
