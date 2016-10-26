@@ -350,10 +350,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         //mLocationRequest.setFastestInterval(3000); //3 seconds
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(this.mGoogleApiClient, mLocationRequest, this);
-
-        // see if the user wants to check in
-        // find closest library
-        // if library within a mile or so, ask to check in
        // askToCheckIn();
 
     }
@@ -407,10 +403,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     public void onLocationChanged(Location location)
     {
         this.mLastLocation = location;
-
-        //Log.d("user_latitude_changed", Double.toString(mLastLocation.getLatitude()));
-       // SharedPreferences checkIn = getActivity().getPreferences(Context.MODE_PRIVATE);
-        //Log.d("hasCheckedIn", Boolean.toString(checkIn.getBoolean("hasCheckedIn", false)));
 
         if (this.userLocationMarker != null)
         {

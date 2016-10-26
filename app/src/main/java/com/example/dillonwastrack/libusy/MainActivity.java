@@ -31,10 +31,6 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
     {
         super.onCreate(savedInstanceState);
         NetworkManager.getInstance(this.getApplicationContext());
-//        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPref.edit();
-//        editor.putBoolean("hasCheckedIn", false);
-//        editor.apply();
 
         setContentView(R.layout.activity_main);
 
@@ -65,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
     @Override
     protected void onStop() {
         super.onStop();
-        if (nearLibrary)
+        if (nearLibrary && !hasCheckedIn)
         {
             setCheckInAlarm();
         }
@@ -94,10 +90,6 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
     protected void onDestroy()
     {
         super.onDestroy();
-//        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPref.edit();
-//        editor.putBoolean("hasCheckedIn", false);
-//        editor.apply();
     }
 
     @Override
@@ -114,11 +106,7 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
         // user chose not to check in, stop bothering them
-        //hasCheckedIn = true;
-//        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPref.edit();
-//        editor.putBoolean("hasCheckedIn", true);
-//        editor.apply();
+        hasCheckedIn = true;
     }
 
 

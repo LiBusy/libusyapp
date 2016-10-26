@@ -41,11 +41,7 @@ public class CheckInFragment extends Fragment{
                 NetworkManager.getInstance().postLibraryBusynessLevel(libraryName, "3", new ServerCallback() {
                     @Override
                     public void onSuccess(String response) {
-                        // save that user has checked in
-                        Toast.makeText(homeActivity, "Thank you for your response!", Toast.LENGTH_LONG).show();
-                        MainActivity.hasCheckedIn = true;
-                        FragmentManager fm = getFragmentManager();
-                        fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
+                        respond();
                     }
 
                 });
@@ -57,11 +53,7 @@ public class CheckInFragment extends Fragment{
                 NetworkManager.getInstance().postLibraryBusynessLevel(libraryName, "2", new ServerCallback() {
                     @Override
                     public void onSuccess(String response) {
-                        // save that user has checked in
-                        Toast.makeText(homeActivity, "Thank you for your response!", Toast.LENGTH_LONG).show();
-                        MainActivity.hasCheckedIn = true;
-                        FragmentManager fm = getFragmentManager();
-                        fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
+                        respond();
                     }
 
                 });
@@ -74,16 +66,21 @@ public class CheckInFragment extends Fragment{
                 NetworkManager.getInstance().postLibraryBusynessLevel(libraryName, "1", new ServerCallback() {
                     @Override
                     public void onSuccess(String response) {
-                        // save that user has checked in
-                        Toast.makeText(homeActivity, "Thank you for your response!", Toast.LENGTH_LONG).show();
-                        MainActivity.hasCheckedIn = true;
-                        FragmentManager fm = getFragmentManager();
-                        fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
+                        respond();
                     }
 
                 });
             }
         });
 
+    }
+
+    private void respond()
+    {
+        // save that user has checked in
+        Toast.makeText(this.getActivity(), "Thank you for your response!", Toast.LENGTH_LONG).show();
+        MainActivity.hasCheckedIn = true;
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
     }
 }
