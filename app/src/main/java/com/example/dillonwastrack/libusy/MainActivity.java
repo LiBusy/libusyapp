@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
 
     public static boolean nearLibrary = false;
     public static boolean hasCheckedIn = false;
+    public static boolean checkInDialogOpen = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
     @Override
     protected void onStop() {
         super.onStop();
+        checkInDialogOpen = false; // TODO in case user closed app with dialog still open, mostly for debugging.
         if (nearLibrary && !hasCheckedIn)
         {
             setCheckInAlarm();
