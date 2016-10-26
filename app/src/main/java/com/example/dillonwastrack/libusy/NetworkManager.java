@@ -23,7 +23,7 @@ public class NetworkManager
 {
     private static NetworkManager instance = null;
 
-    private static String key = "333C949CDEEBAB5ED3C747AF3EBBE";
+    private static final String key = "333C949CDEEBAB5ED3C747AF3EBBE"; // api key
 
     //for Volley API
     public RequestQueue requestQueue;

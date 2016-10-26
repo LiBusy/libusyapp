@@ -14,7 +14,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.SwitchCompat;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -321,6 +320,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         }
         this.mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
+
+        if (this.userLocationMarker != null)
+        {
+            this.userLocationMarker.remove();
+        }
+
         if (this.mLastLocation != null)
         {
             //place marker at current position
@@ -341,32 +346,38 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         }
         // request location updates
         LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(5000); //5 seconds
+        mLocationRequest.setInterval(5000); //10 minutes
         //mLocationRequest.setFastestInterval(3000); //3 seconds
-        //mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(this.mGoogleApiClient, mLocationRequest, this);
 
         // see if the user wants to check in
         // find closest library
         // if library within a mile or so, ask to check in
+       // askToCheckIn();
 
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        boolean hasCheckedIn = sharedPref.getBoolean("hasCheckedIn", false);
-        if (! hasCheckedIn && mLastLocation != null)
+    }
+
+    private void askToCheckIn()
+    {
+        if (! MainActivity.hasCheckedIn && mLastLocation != null)
         {
-            Pair<String, Double> libraryAndDistance = getClosestLibrary();
+            Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance();
 
             if (libraryAndDistance.second < 50) // user is within 10 meters
             {
+                MainActivity.nearLibrary = true;
+
                 CheckInDialogFragment newFragment = new CheckInDialogFragment();
                 Bundle args = new Bundle();
                 args.putString("library", libraryAndDistance.first); // whatever the closest library is
                 newFragment.setArguments(args);
                 newFragment.show(getFragmentManager(), "check-in");
+                MainActivity.hasCheckedIn = true;
             }
         }
-
     }
+
 
     @Override
     public void onConnectionSuspended(int i)
@@ -414,22 +425,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         this.userLocationMarker = this.googleMap.addMarker(markerOptions);
 
 
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        boolean hasCheckedIn = sharedPref.getBoolean("hasCheckedIn", false);
-        if (! hasCheckedIn)
-        {
-            Pair<String, Double> libraryAndDistance = getClosestLibrary();
-
-            if (libraryAndDistance.second < 50)
-            {
-                CheckInDialogFragment newFragment = new CheckInDialogFragment();
-                Bundle args = new Bundle();
-                args.putString("library", libraryAndDistance.first); // whatever the closest library is
-                newFragment.setArguments(args);
-                newFragment.show(getFragmentManager(), "check-in");
-            }
-
-        }
+        askToCheckIn();
     }
 
     /**
@@ -487,7 +483,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
      *
      * @return String representing the library (for making an api call)
      */
-    private Pair<String, Double> getClosestLibrary()
+    private Pair<String, Double> getClosestLibraryAndDistance()
     {
         ArrayMap<String, LatLng> locationList = new ArrayMap<String, LatLng>();
         locationList.put("rodgers", this.rodgers);

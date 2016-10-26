@@ -43,10 +43,7 @@ public class CheckInFragment extends Fragment{
                     public void onSuccess(String response) {
                         // save that user has checked in
                         Toast.makeText(homeActivity, "Thank you for your response!", Toast.LENGTH_LONG).show();
-                        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putBoolean("hasCheckedIn", true);
-                        editor.apply();
+                        MainActivity.hasCheckedIn = true;
                         FragmentManager fm = getFragmentManager();
                         fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
                     }
@@ -62,10 +59,7 @@ public class CheckInFragment extends Fragment{
                     public void onSuccess(String response) {
                         // save that user has checked in
                         Toast.makeText(homeActivity, "Thank you for your response!", Toast.LENGTH_LONG).show();
-                        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putBoolean("hasCheckedIn", true);
-                        editor.apply();
+                        MainActivity.hasCheckedIn = true;
                         FragmentManager fm = getFragmentManager();
                         fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
                     }
@@ -82,10 +76,7 @@ public class CheckInFragment extends Fragment{
                     public void onSuccess(String response) {
                         // save that user has checked in
                         Toast.makeText(homeActivity, "Thank you for your response!", Toast.LENGTH_LONG).show();
-                        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putBoolean("hasCheckedIn", true);
-                        editor.apply();
+                        MainActivity.hasCheckedIn = true;
                         FragmentManager fm = getFragmentManager();
                         fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
                     }

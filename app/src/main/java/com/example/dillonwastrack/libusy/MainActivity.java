@@ -1,29 +1,40 @@
 package com.example.dillonwastrack.libusy;
 
+import android.app.AlarmManager;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+
+import com.google.android.gms.maps.model.LatLng;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
+
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements CheckInDialogFragment.CheckInDialogListener{
 
     private BottomBar mBottomBar;
+
+    public static boolean nearLibrary = false;
+    public static boolean hasCheckedIn = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         NetworkManager.getInstance(this.getApplicationContext());
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean("hasCheckedIn", false);
-        editor.apply();
+//        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPref.edit();
+//        editor.putBoolean("hasCheckedIn", false);
+//        editor.apply();
 
         setContentView(R.layout.activity_main);
 
@@ -45,15 +56,48 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
                 }
             }
         });
+
+    }
+
+    /**
+     * Called when kill app, press home button, or lock screen
+     */
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (nearLibrary)
+        {
+            setCheckInAlarm();
+        }
+    }
+
+    /**
+     * Set the alarm for asking the
+     * user to check in.
+     *
+     */
+    private void setCheckInAlarm()
+    {
+
+        AlarmManager am = (AlarmManager)(this.getSystemService( Context.ALARM_SERVICE ));
+        Intent intent = new Intent(getBaseContext(), OnCheckInAlarmReceive.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                MainActivity.this, 0, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Calendar calCurrent = Calendar.getInstance();
+        long tenSeconds = 10 * 1000; // change to 10 minutes or whatever
+
+        am.set(AlarmManager.RTC_WAKEUP, calCurrent.getTimeInMillis() + tenSeconds, pendingIntent); // 10 seconds for now
     }
 
     protected void onDestroy()
     {
         super.onDestroy();
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean("hasCheckedIn", false);
-        editor.commit();
+//        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPref.edit();
+//        editor.putBoolean("hasCheckedIn", false);
+//        editor.apply();
     }
 
     @Override
@@ -70,10 +114,11 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
         // user chose not to check in, stop bothering them
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean("hasCheckedIn", true);
-        editor.apply();
+        //hasCheckedIn = true;
+//        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPref.edit();
+//        editor.putBoolean("hasCheckedIn", true);
+//        editor.apply();
     }
 
 
