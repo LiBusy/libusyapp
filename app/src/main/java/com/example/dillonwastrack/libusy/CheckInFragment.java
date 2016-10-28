@@ -2,14 +2,15 @@ package com.example.dillonwastrack.libusy;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class CheckInFragment extends Fragment{
@@ -32,8 +33,12 @@ public class CheckInFragment extends Fragment{
         Button busy = (Button) getActivity().findViewById(R.id.btnBusy);
         Button notBusy = (Button) getActivity().findViewById(R.id.btnNotBusy);
 
-        final Context homeActivity = this.getActivity();
-        final String libraryName = this.getArguments().getString("library");
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        final String libraryName = sharedPref.getString("nearestLibrary", "mclure");
+
+        TextView checkInText = (TextView) getActivity().findViewById(R.id.instructionText);
+        checkInText.setText("Please select how busy "+ libraryName + " library is.");
 
         // set button listeners
         veryBusy.setOnClickListener(new View.OnClickListener() {
@@ -82,5 +87,11 @@ public class CheckInFragment extends Fragment{
         MainActivity.hasCheckedIn = true;
         FragmentManager fm = getFragmentManager();
         fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
+
+        // post user location to heatmap
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Double userLat = Double.longBitsToDouble(sharedPref.getLong("userLat", 0));
+        Double userLng = Double.longBitsToDouble(sharedPref.getLong("userLng", 0));
+        NetworkManager.getInstance().postUserLocation(userLat, userLng);
     }
 }

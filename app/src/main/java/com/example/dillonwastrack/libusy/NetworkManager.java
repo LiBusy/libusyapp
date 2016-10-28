@@ -90,6 +90,25 @@ public class NetworkManager
         requestQueue.add(stringRequest);
     }
 
+    public void postUserLocation(Double lat, Double lng)
+    {
+
+        String url ="https://libusy.herokuapp.com/usermarkers/postmarker/"+lat.toString()+"/"+lng.toString()+"?key="+key;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("level", "you suck");
+            }
+        });
+        // Add the request to the RequestQueue.
+        requestQueue.add(stringRequest);
+    }
+
     /**
      *
      * @param callback the callback for when the request is complete

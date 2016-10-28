@@ -1,31 +1,27 @@
 package com.example.dillonwastrack.libusy;
 
 import android.app.AlarmManager;
-import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity implements CheckInDialogFragment.CheckInDialogListener{
+public class MainActivity extends AppCompatActivity {
 
     private BottomBar mBottomBar;
 
     public static boolean nearLibrary = false;
     public static boolean hasCheckedIn = false;
-    public static boolean checkInDialogOpen = false;
+    public static boolean hasReceivedNotification = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -54,6 +50,15 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
             }
         });
 
+        Boolean showCheckIn = getIntent().getBooleanExtra("showCheckIn", false);
+
+        if (showCheckIn)
+        {
+            FragmentManager fm = getFragmentManager();
+            CheckInFragment newFragment = new CheckInFragment();
+            fm.beginTransaction().replace(R.id.contentContainer, newFragment).commit();
+        }
+
     }
 
     /**
@@ -62,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
     @Override
     protected void onStop() {
         super.onStop();
-        checkInDialogOpen = false; // TODO in case user closed app with dialog still open, mostly for debugging.
         if (nearLibrary && !hasCheckedIn)
         {
             setCheckInAlarm();
@@ -94,22 +98,6 @@ public class MainActivity extends AppCompatActivity implements CheckInDialogFrag
         super.onDestroy();
     }
 
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog) {
-        FragmentManager fm = getFragmentManager();
-        String lib = dialog.getArguments().getString("library");
-        CheckInFragment newFragment = new CheckInFragment();
-        Bundle args = new Bundle();
-        args.putString("library", lib);
-        newFragment.setArguments(args);
-        fm.beginTransaction().replace(R.id.contentContainer, newFragment).commit();
-    }
-
-    @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
-        // user chose not to check in, stop bothering them
-        hasCheckedIn = true;
-    }
 
 
 }

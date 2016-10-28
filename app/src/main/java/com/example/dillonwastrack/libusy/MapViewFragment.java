@@ -2,11 +2,13 @@ package com.example.dillonwastrack.libusy;
 
 import android.Manifest;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -14,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.SwitchCompat;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -200,6 +203,18 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.gorgas, 17)); // move camera
                 return true;
 
+            case R.id.check_in:
+                if(! MainActivity.hasCheckedIn)
+                {
+                    FragmentManager fm = getFragmentManager();
+                    fm.beginTransaction().replace(R.id.contentContainer, new CheckInFragment()).commit();
+                    return true;
+                }
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String nearestLibrary = sharedPref.getString("nearestLibrary", "the");
+                Toast.makeText(getActivity(), "You have already checked into "+ nearestLibrary + " library.", Toast.LENGTH_SHORT).show();
+                return true;
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -350,28 +365,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         //mLocationRequest.setFastestInterval(3000); //3 seconds
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(this.mGoogleApiClient, mLocationRequest, this);
-       // askToCheckIn();
 
     }
-
-    private void askToCheckIn()
-    {
-        Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance();
-
-        if (libraryAndDistance.second < 50) // user is within 10 meters
-        {
-            MainActivity.nearLibrary = true;
-            MainActivity.checkInDialogOpen = true;
-            CheckInDialogFragment newFragment = new CheckInDialogFragment();
-            Bundle args = new Bundle();
-            args.putString("library", libraryAndDistance.first); // whatever the closest library is
-            newFragment.setArguments(args);
-            newFragment.show(getFragmentManager(), "check-in");
-            //MainActivity.hasCheckedIn = true;
-        }
-
-    }
-
 
     @Override
     public void onConnectionSuspended(int i)
@@ -414,10 +409,29 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         this.userLocationMarker = this.googleMap.addMarker(markerOptions);
 
-        if (! MainActivity.hasCheckedIn && mLastLocation != null && ! MainActivity.checkInDialogOpen)
+        Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance();
+
+        if (libraryAndDistance.second < 50) // user is within 50 meters
         {
-            askToCheckIn();
+            MainActivity.nearLibrary = true;
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            //SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("nearestLibrary", libraryAndDistance.first);
+            editor.putLong("userLat", Double.doubleToRawLongBits(this.userLatLng.latitude)); // save current location
+            editor.putLong("userLng", Double.doubleToRawLongBits(this.userLatLng.longitude)); // save current location
+            editor.apply();
         }
+
+//        if (! MainActivity.hasCheckedIn && mLastLocation != null  && MainActivity.hasReceivedNotification && MainActivity.nearLibrary)
+//        {
+//            //MainActivity.checkInDialogOpen = true;
+//            //CheckInDialogFragment newFragment = new CheckInDialogFragment();
+//            Bundle args = new Bundle();
+//            args.putString("library", libraryAndDistance.first); // whatever the closest library is
+//            //newFragment.setArguments(args);
+//            //newFragment.show(getFragmentManager(), "check-in");
+//        }
     }
 
     /**
