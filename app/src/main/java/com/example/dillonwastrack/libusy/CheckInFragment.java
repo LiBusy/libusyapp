@@ -2,6 +2,7 @@ package com.example.dillonwastrack.libusy;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -86,7 +87,7 @@ public class CheckInFragment extends Fragment{
         Toast.makeText(this.getActivity(), "Thank you for your response!", Toast.LENGTH_LONG).show();
         MainActivity.hasCheckedIn = true;
         FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().remove(this).commit();
+        fm.beginTransaction().remove(this).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).commit();
         // post user location to heatmap
         if(!MainActivity.addedToHeatmap)
         {

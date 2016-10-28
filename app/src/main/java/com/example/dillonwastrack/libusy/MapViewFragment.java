@@ -3,6 +3,7 @@ package com.example.dillonwastrack.libusy;
 import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -233,7 +234,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                     return true;
                 }
                 FragmentManager fm = getFragmentManager();
-                fm.beginTransaction().add(R.id.contentContainer, new CheckInFragment()).addToBackStack(null).commit();
+                fm.beginTransaction().add(R.id.contentContainer, new CheckInFragment()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).addToBackStack(null).commit();
                 return true;
 
         }
