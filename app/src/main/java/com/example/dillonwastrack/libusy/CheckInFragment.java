@@ -86,8 +86,7 @@ public class CheckInFragment extends Fragment{
         Toast.makeText(this.getActivity(), "Thank you for your response!", Toast.LENGTH_LONG).show();
         MainActivity.hasCheckedIn = true;
         FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
-
+        fm.beginTransaction().remove(this).commit();
         // post user location to heatmap
         if(!MainActivity.addedToHeatmap)
         {

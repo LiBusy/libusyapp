@@ -17,6 +17,7 @@ import android.support.v4.util.Pair;
 import android.support.v7.widget.SwitchCompat;
 import android.util.ArrayMap;
 import android.util.Log;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -93,7 +94,22 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
         setHasOptionsMenu(true);
 
-        return inflater.inflate(R.layout.fragment_gmaps, container,false);
+
+        return inflater.inflate(R.layout.fragment_gmaps, container, false);
+
+//        if (inflater.inflate(R.layout.fragment_gmaps, container, false) != null) {
+//            ViewGroup parent = (ViewGroup) view.getParent();
+//            if (parent != null)
+//                parent.removeView(view);
+//        }
+//        try {
+//            view = inflater.inflate(R.layout.fragment_gmaps, container, false);
+//        } catch (InflateException e) {
+//            return view;
+//        }
+
+
+        //return view;
     }
 
     @Override
@@ -217,7 +233,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                     return true;
                 }
                 FragmentManager fm = getFragmentManager();
-                fm.beginTransaction().replace(R.id.contentContainer, new CheckInFragment()).commit();
+                fm.beginTransaction().add(R.id.contentContainer, new CheckInFragment()).addToBackStack(null).commit();
                 return true;
 
         }
