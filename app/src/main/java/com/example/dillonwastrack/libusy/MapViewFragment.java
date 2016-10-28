@@ -132,14 +132,16 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         fragment.getMapAsync(this);
     }
 
+
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.location_menu, menu);
 
         // register heat map switch listeners
-        final MenuItem toggleservice = menu.findItem(R.id.heatmap);
-        final SwitchCompat heatMapSwitch = (SwitchCompat) toggleservice.getActionView();
+        final MenuItem toggleService = menu.findItem(R.id.heatmap);
+        final SwitchCompat heatMapSwitch = (SwitchCompat) toggleService.getActionView();
         final Context homeActivity = this.getActivity();
         heatMapSwitch.setThumbResource(R.drawable.heatmap);
         heatMapSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
