@@ -2,11 +2,13 @@ package com.example.dillonwastrack.libusy;
 
 import android.Manifest;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -14,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.SwitchCompat;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -200,6 +203,18 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.gorgas, 17)); // move camera
                 return true;
 
+            case R.id.check_in:
+                if(! MainActivity.hasCheckedIn)
+                {
+                    FragmentManager fm = getFragmentManager();
+                    fm.beginTransaction().replace(R.id.contentContainer, new CheckInFragment()).commit();
+                    return true;
+                }
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String nearestLibrary = sharedPref.getString("nearestLibrary", "the");
+                Toast.makeText(getActivity(), "You have already checked into "+ nearestLibrary + " library.", Toast.LENGTH_SHORT).show();
+                return true;
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -353,17 +368,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
-    private void setNearLibrary()
-    {
-        Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance();
-
-        if (libraryAndDistance.second < 50) // user is within 10 meters
-        {
-            MainActivity.nearLibrary = true;
-        }
-    }
-
-
     @Override
     public void onConnectionSuspended(int i)
     {
@@ -410,9 +414,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         if (libraryAndDistance.second < 50) // user is within 50 meters
         {
             MainActivity.nearLibrary = true;
-            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            //SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("nearestLibrary", libraryAndDistance.first);
+            editor.putLong("userLat", Double.doubleToRawLongBits(this.userLatLng.latitude)); // save current location
+            editor.putLong("userLng", Double.doubleToRawLongBits(this.userLatLng.longitude)); // save current location
             editor.apply();
         }
 

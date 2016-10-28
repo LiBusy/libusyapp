@@ -2,9 +2,9 @@ package com.example.dillonwastrack.libusy;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +33,7 @@ public class CheckInFragment extends Fragment{
         Button busy = (Button) getActivity().findViewById(R.id.btnBusy);
         Button notBusy = (Button) getActivity().findViewById(R.id.btnNotBusy);
 
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         final String libraryName = sharedPref.getString("nearestLibrary", "mclure");
 
@@ -87,5 +87,11 @@ public class CheckInFragment extends Fragment{
         MainActivity.hasCheckedIn = true;
         FragmentManager fm = getFragmentManager();
         fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
+
+        // post user location to heatmap
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Double userLat = Double.longBitsToDouble(sharedPref.getLong("userLat", 0));
+        Double userLng = Double.longBitsToDouble(sharedPref.getLong("userLng", 0));
+        NetworkManager.getInstance().postUserLocation(userLat, userLng);
     }
 }

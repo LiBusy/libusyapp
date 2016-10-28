@@ -1,20 +1,15 @@
 package com.example.dillonwastrack.libusy;
 
 import android.app.AlarmManager;
-import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.TextView;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 

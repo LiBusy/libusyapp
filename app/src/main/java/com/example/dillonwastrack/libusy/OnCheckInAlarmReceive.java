@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -55,5 +57,12 @@ public class OnCheckInAlarmReceive extends BroadcastReceiver {
         // Builds the notification and issues it.
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
         MainActivity.hasReceivedNotification = true;
+
+        // post user location to heatmap
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        Double userLat = Double.longBitsToDouble(sharedPref.getLong("userLat", 0));
+        Double userLng = Double.longBitsToDouble(sharedPref.getLong("userLng", 0));
+        NetworkManager.getInstance().postUserLocation(userLat, userLng);
+
     }
 }
