@@ -204,15 +204,20 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 return true;
 
             case R.id.check_in:
-                if(! MainActivity.hasCheckedIn)
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                if(! MainActivity.nearLibrary)
                 {
-                    FragmentManager fm = getFragmentManager();
-                    fm.beginTransaction().replace(R.id.contentContainer, new CheckInFragment()).commit();
+                    Toast.makeText(getActivity(), "You must be in a library to check in.", Toast.LENGTH_SHORT).show();
                     return true;
                 }
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                String nearestLibrary = sharedPref.getString("nearestLibrary", "the");
-                Toast.makeText(getActivity(), "You have already checked into "+ nearestLibrary + " library.", Toast.LENGTH_SHORT).show();
+                if(MainActivity.hasCheckedIn)
+                {
+                    String nearestLibrary = sharedPref.getString("nearestLibrary", "the");
+                    Toast.makeText(getActivity(), "You have already checked into "+ nearestLibrary + " library.", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                FragmentManager fm = getFragmentManager();
+                fm.beginTransaction().replace(R.id.contentContainer, new CheckInFragment()).commit();
                 return true;
 
         }
