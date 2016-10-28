@@ -89,9 +89,13 @@ public class CheckInFragment extends Fragment{
         fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
 
         // post user location to heatmap
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Double userLat = Double.longBitsToDouble(sharedPref.getLong("userLat", 0));
-        Double userLng = Double.longBitsToDouble(sharedPref.getLong("userLng", 0));
-        NetworkManager.getInstance().postUserLocation(userLat, userLng);
+        if(!MainActivity.addedToHeatmap)
+        {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            Double userLat = Double.longBitsToDouble(sharedPref.getLong("userLat", 0));
+            Double userLng = Double.longBitsToDouble(sharedPref.getLong("userLng", 0));
+            NetworkManager.getInstance().postUserLocation(userLat, userLng);
+        }
+
     }
 }

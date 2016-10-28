@@ -24,9 +24,10 @@ public class OnCheckInAlarmReceive extends BroadcastReceiver {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
-                        .setContentTitle("Check in to help other users!")
+                        .setContentTitle("LiBusy")
                         .setContentText("Click here to check in!")
-                        .setDefaults(Notification.DEFAULT_ALL);
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setAutoCancel(true);;
 
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(context, MainActivity.class);
@@ -63,6 +64,7 @@ public class OnCheckInAlarmReceive extends BroadcastReceiver {
         Double userLat = Double.longBitsToDouble(sharedPref.getLong("userLat", 0));
         Double userLng = Double.longBitsToDouble(sharedPref.getLong("userLng", 0));
         NetworkManager.getInstance().postUserLocation(userLat, userLng);
+        MainActivity.addedToHeatmap = true;
 
     }
 }
