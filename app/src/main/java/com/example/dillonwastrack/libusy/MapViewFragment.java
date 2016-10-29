@@ -312,30 +312,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     {
         NetworkManager.getInstance().readMarkers(getActivity(),this.googleMap);
 
-//        Marker mRodgersMarker = this.googleMap.addMarker(new MarkerOptions()
-//                .position(this.rodgers)
-//                .title("Rodgers Library"));
-//
-//        NetworkManager.getInstance().getBusynessLevelFromApi(mRodgersMarker, "rodgers");
-//
-//        Marker mMclureMarker = this.googleMap.addMarker(new MarkerOptions()
-//                .position(this.mclure)
-//                .title("Mclure Library"));
-//
-//        NetworkManager.getInstance().getBusynessLevelFromApi(mMclureMarker, "mclure");
-//
-//        Marker mBrunoMarker = this.googleMap.addMarker(new MarkerOptions()
-//                .position(this.bruno)
-//                .title("Bruno Library"));
-//
-//        NetworkManager.getInstance().getBusynessLevelFromApi(mBrunoMarker, "bruno");
-//
-//        Marker mGorgasMarker = this.googleMap.addMarker(new MarkerOptions()
-//                .position(this.gorgas)
-//                .title("Gorgas Library"));
-//
-//        NetworkManager.getInstance().getBusynessLevelFromApi(mGorgasMarker, "gorgas");
-
         //this.googleMap.setOnMarkerClickListener(this); // TODO consider not using this
 
     }
