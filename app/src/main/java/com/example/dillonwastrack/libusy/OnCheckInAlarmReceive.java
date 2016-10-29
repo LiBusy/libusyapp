@@ -58,7 +58,7 @@ public class OnCheckInAlarmReceive extends BroadcastReceiver {
         // Builds the notification and issues it.
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
         MainActivity.hasReceivedNotification = true;
-
+        MainActivity.checkedInFromNotification = true;
         // post user location to heatmap
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         Double userLat = Double.longBitsToDouble(sharedPref.getLong("userLat", 0));

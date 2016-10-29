@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     public static boolean hasCheckedIn = false;
     public static boolean hasReceivedNotification = false;
     public static boolean addedToHeatmap = false;
+    public static boolean checkedInFromNotification = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)

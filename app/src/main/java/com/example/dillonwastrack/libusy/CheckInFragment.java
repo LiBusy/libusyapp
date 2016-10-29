@@ -101,7 +101,15 @@ public class CheckInFragment extends Fragment{
         Toast.makeText(this.getActivity(), "Thank you for your response!", Toast.LENGTH_LONG).show();
         MainActivity.hasCheckedIn = true;
         FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().remove(this).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).commit();
+        if(MainActivity.checkedInFromNotification) // map fragment not initialized yet.
+        {
+            fm.beginTransaction().replace(R.id.contentContainer, new MapViewFragment()).commit();
+            MainActivity.checkedInFromNotification = false;
+        }
+        else
+        {
+            fm.beginTransaction().remove(this).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).commit();
+        }
         // post user location to heatmap
         if(!MainActivity.addedToHeatmap)
         {

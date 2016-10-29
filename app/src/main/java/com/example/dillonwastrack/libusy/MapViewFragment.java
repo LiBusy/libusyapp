@@ -301,17 +301,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
-    /**
-     * Initialize markers for the study
-     * areas. Retrieve their busyness
-     * levels from the api, and set
-     * the marker's snippet
-     * accordingly.
-     *
-     * @throws AuthFailureError
-     */
     private void initializeMarkers() throws AuthFailureError
     {
+        // populate the markerList, add markers from db to map
         NetworkManager.getInstance().readMarkers(new ArrayMap<String, LatLng>(),getActivity(),this.googleMap, new MarkerCallback(){
 
             @Override
@@ -419,7 +411,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         this.userLocationMarker = this.googleMap.addMarker(markerOptions);
 
-        Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance();
+        Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance(this.userLatLng);
 
         if (libraryAndDistance.second < 50) // user is within 50 meters
         {
@@ -495,25 +487,30 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
      *
      * @return String representing the library (for making an api call)
      */
-    private Pair<String, Double> getClosestLibraryAndDistance()
+    private Pair<String, Double> getClosestLibraryAndDistance(LatLng userLocation)
     {
 
         String closestLibraryName = "";
         Double shortestDistance = Double.MAX_VALUE;
-        for (ArrayMap.Entry<String, LatLng> loc : markerList.entrySet())
+        if (markerList != null)
         {
-            Double distanceToLocation = distance(this.userLatLng.latitude,
-                                                 this.userLatLng.longitude,
-                                                 loc.getValue().latitude,
-                                                 loc.getValue().longitude);
-
-            if (distanceToLocation < shortestDistance)
+            for (ArrayMap.Entry<String, LatLng> loc : markerList.entrySet())
             {
-                shortestDistance = distanceToLocation;
-                closestLibraryName = loc.getKey();
+                Double distanceToLocation = distance(userLocation.latitude,
+                        userLocation.longitude,
+                        loc.getValue().latitude,
+                        loc.getValue().longitude);
+
+                if (distanceToLocation < shortestDistance)
+                {
+                    shortestDistance = distanceToLocation;
+                    closestLibraryName = loc.getKey();
+                }
             }
+            return new Pair<>(closestLibraryName, shortestDistance);
         }
-        return new Pair<>(closestLibraryName, shortestDistance);
+
+        return new Pair<>("rodgers", 1000.0);
     }
 
 }
