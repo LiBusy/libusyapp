@@ -90,10 +90,10 @@ public class NetworkManager
         requestQueue.add(stringRequest);
     }
 
-    public void postUserLocation(Double lat, Double lng)
+    public void postUserLocation(String lat, String lng)
     {
 
-        String url ="https://libusy.herokuapp.com/usermarkers/postmarker/"+lat.toString()+"/"+lng.toString()+"?key="+key;
+        String url ="https://libusy.herokuapp.com/usermarkers/postmarker/"+lat+"/"+lng+"?key="+key;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

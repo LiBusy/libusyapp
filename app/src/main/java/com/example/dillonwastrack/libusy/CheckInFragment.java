@@ -108,7 +108,7 @@ public class CheckInFragment extends Fragment{
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
             Double userLat = Double.longBitsToDouble(sharedPref.getLong("userLat", 0));
             Double userLng = Double.longBitsToDouble(sharedPref.getLong("userLng", 0));
-            NetworkManager.getInstance().postUserLocation(userLat, userLng);
+            NetworkManager.getInstance().postUserLocation(userLat.toString(), userLng.toString());
         }
 
     }
