@@ -76,6 +76,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     private ArrayList<LatLng> userMarkerList; // list of markers used in the heatmap. pulled from the api
 
+    private ArrayMap<String, LatLng> markerList; // list of monitored locations
+
     private boolean heatMapActive; // boolean for using the heatmap toggle switch
 
     private TileOverlay mOverlay; // used for the heatmap
@@ -310,7 +312,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
      */
     private void initializeMarkers() throws AuthFailureError
     {
-        NetworkManager.getInstance().readMarkers(getActivity(),this.googleMap);
+        NetworkManager.getInstance().readMarkers(new ArrayMap<String, LatLng>(),getActivity(),this.googleMap, new MarkerCallback(){
+
+            @Override
+            public void onSuccess(ArrayMap<String, LatLng> result) {
+                markerList = result;
+            }
+        });
 
         //this.googleMap.setOnMarkerClickListener(this); // TODO consider not using this
 
@@ -489,15 +497,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
      */
     private Pair<String, Double> getClosestLibraryAndDistance()
     {
-        ArrayMap<String, LatLng> locationList = new ArrayMap<String, LatLng>();
-        locationList.put("rodgers", this.rodgers);
-        locationList.put("bruno", this.bruno);
-        locationList.put("gorgas", this.gorgas);
-        locationList.put("mclure", this.mclure);
 
         String closestLibraryName = "";
         Double shortestDistance = Double.MAX_VALUE;
-        for (ArrayMap.Entry<String, LatLng> loc : locationList.entrySet())
+        for (ArrayMap.Entry<String, LatLng> loc : markerList.entrySet())
         {
             Double distanceToLocation = distance(this.userLatLng.latitude,
                                                  this.userLatLng.longitude,

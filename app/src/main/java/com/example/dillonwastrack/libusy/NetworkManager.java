@@ -1,6 +1,7 @@
 package com.example.dillonwastrack.libusy;
 
 import android.content.Context;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -148,7 +149,7 @@ public class NetworkManager
         requestQueue.add(stringRequest);
     }
 
-    public void readMarkers(final Context context, final GoogleMap gMap)
+    public void readMarkers(final ArrayMap<String, LatLng> locations, final Context context, final GoogleMap gMap, final MarkerCallback callback)
     {
         String url = "https://libusy.herokuapp.com/markers"+"?key="+key;
 
@@ -163,11 +164,13 @@ public class NetworkManager
                                 JSONObject object = array.getJSONObject(i);
                                 double lat = object.getDouble("lat");
                                 double lng = object.getDouble("lng");
+                                locations.put(object.getString("library"), new LatLng(lat, lng));
                                 gMap.addMarker(new MarkerOptions()
                                         .position(new LatLng(lat, lng))
                                         .title(object.getString("title"))
                                         .snippet(object.getString("snippet")));
                             }
+                            callback.onSuccess(locations);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
