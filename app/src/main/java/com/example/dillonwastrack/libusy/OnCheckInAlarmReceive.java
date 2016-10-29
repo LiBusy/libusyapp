@@ -63,7 +63,7 @@ public class OnCheckInAlarmReceive extends BroadcastReceiver {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         Double userLat = Double.longBitsToDouble(sharedPref.getLong("userLat", 0));
         Double userLng = Double.longBitsToDouble(sharedPref.getLong("userLng", 0));
-        NetworkManager.getInstance().postUserLocation(userLat, userLng);
+        NetworkManager.getInstance().postUserLocation(userLat.toString(), userLng.toString());
         MainActivity.addedToHeatmap = true;
 
     }
