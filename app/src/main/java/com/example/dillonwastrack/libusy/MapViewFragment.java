@@ -235,6 +235,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                     Toast.makeText(getActivity(), "You have already checked into "+ nearestLibrary + " library.", Toast.LENGTH_SHORT).show();
                     return true;
                 }
+                SwitchCompat hMap = (SwitchCompat) getActivity().findViewById(R.id.heatmap);
+                hMap.setChecked(false);
                 FragmentManager fm = getFragmentManager();
                 fm.beginTransaction().add(R.id.contentContainer, new CheckInFragment()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).addToBackStack(null).commit();
                 return true;
