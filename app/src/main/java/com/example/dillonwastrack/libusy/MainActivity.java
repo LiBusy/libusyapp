@@ -62,16 +62,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Called when kill app, press home button, or lock screen
-     */
     @Override
     protected void onStop() {
-        super.onStop();
         if (nearLibrary && !hasCheckedIn)
         {
             setCheckInAlarm();
         }
+        super.onStop();
     }
 
     /**

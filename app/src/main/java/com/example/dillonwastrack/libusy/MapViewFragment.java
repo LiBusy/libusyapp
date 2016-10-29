@@ -449,6 +449,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
             editor.apply();
         }
 
+        else
+        {
+            MainActivity.nearLibrary = false;
+        }
+
 //        if (! MainActivity.hasCheckedIn && mLastLocation != null  && MainActivity.hasReceivedNotification && MainActivity.nearLibrary)
 //        {
 //            //MainActivity.checkInDialogOpen = true;
