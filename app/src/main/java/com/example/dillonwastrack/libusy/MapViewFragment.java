@@ -98,19 +98,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
         return inflater.inflate(R.layout.fragment_gmaps, container, false);
 
-//        if (inflater.inflate(R.layout.fragment_gmaps, container, false) != null) {
-//            ViewGroup parent = (ViewGroup) view.getParent();
-//            if (parent != null)
-//                parent.removeView(view);
-//        }
-//        try {
-//            view = inflater.inflate(R.layout.fragment_gmaps, container, false);
-//        } catch (InflateException e) {
-//            return view;
-//        }
-
-
-        //return view;
     }
 
     @Override
