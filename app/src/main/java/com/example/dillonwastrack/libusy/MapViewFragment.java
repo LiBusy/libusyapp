@@ -18,7 +18,6 @@ import android.support.v4.util.Pair;
 import android.support.v7.widget.SwitchCompat;
 import android.util.ArrayMap;
 import android.util.Log;
-import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -149,7 +148,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                                 // Add a tile overlay to the map, using the heat map tile provider.
                                 mOverlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
                                 // TODO maybe make markers invisible to see heatmap better
-                                Toast.makeText(getActivity() ,"Heatmap engaged!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity() ,"Heatmap engaged!", Toast.LENGTH_SHORT).show();
 
                             }
 
@@ -194,19 +193,19 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         switch (id)
         {
             case R.id.rodgers_library:
-                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.rodgers, 17)); // move camera
+                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.rodgers, 19)); // move camera
                 return true;
 
             case R.id.mclure_library:
-                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.mclure, 17)); // move camera
+                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.mclure, 19)); // move camera
                 return true;
 
             case R.id.bruno_library:
-                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.bruno, 17)); // move camera
+                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.bruno, 19)); // move camera
                 return true;
 
             case R.id.gorgas_library:
-                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.gorgas, 17)); // move camera
+                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.gorgas, 19)); // move camera
                 return true;
 
             case R.id.check_in:
