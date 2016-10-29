@@ -18,14 +18,14 @@
         android:title="Check In"
         android:thumb="@drawable/ic_map"
         android:icon="@drawable/ic_map"
-        app:showAsAction="ifRoom|withText"/>
+        app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/heatmap"
         android:thumb="@drawable/heatmap"
         android:title="H"
         android:checkable="true"
         app:actionViewClass="android.support.v7.widget.SwitchCompat"
-        app:showAsAction="ifRoom|withText"/>
+        app:showAsAction="ifRoom"/>
     </group>
 
 </menu>

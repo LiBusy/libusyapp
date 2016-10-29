@@ -2,6 +2,7 @@ package com.example.dillonwastrack.libusy;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -10,8 +11,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -90,10 +93,10 @@ public class NetworkManager
         requestQueue.add(stringRequest);
     }
 
-    public void postUserLocation(String lat, String lng)
+    public void postUserLocation(String lat, String lng, String nearestLibrary)
     {
 
-        String url ="https://libusy.herokuapp.com/usermarkers/postmarker/"+lat+"/"+lng+"?key="+key;
+        String url ="https://libusy.herokuapp.com/usermarkers/postmarker/"+lat+"/"+lng+"/"+nearestLibrary+"?key="+key;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -114,7 +117,7 @@ public class NetworkManager
      * @param callback the callback for when the request is complete
      * @throws JSONException
      */
-    public void readMarkersFromAPI(final ArrayList<LatLng> userMarkerList, final HeatmapCallback callback) throws JSONException
+    public void readUserMarkers(final ArrayList<LatLng> userMarkerList, final HeatmapCallback callback) throws JSONException
     {
         String url = "https://libusy.herokuapp.com/usermarkers"+"?key="+key;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -139,6 +142,40 @@ public class NetworkManager
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("level", "you suck");
+            }
+        });
+        // Add the request to the RequestQueue.
+        requestQueue.add(stringRequest);
+    }
+
+    public void readMarkers(final Context context, final GoogleMap gMap)
+    {
+        String url = "https://libusy.herokuapp.com/markers"+"?key="+key;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            //userMarkerList = new ArrayList<LatLng>();
+                            JSONArray array = new JSONArray(response);
+                            for (int i = 0; i < array.length(); i++) {
+                                JSONObject object = array.getJSONObject(i);
+                                double lat = object.getDouble("lat");
+                                double lng = object.getDouble("lng");
+                                gMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(lat, lng))
+                                        .title(object.getString("title"))
+                                        .snippet(object.getString("snippet")));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context, "Error reading list of locations", Toast.LENGTH_SHORT).show();
             }
         });
         // Add the request to the RequestQueue.

@@ -17,7 +17,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.SwitchCompat;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -56,10 +55,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     private GoogleMap googleMap; // the main map fragment
 
-    private Marker mRodgersMarker; // the marker for Rodgers
-    private Marker mMclureMarker; // the marker for McLure
-    private Marker mGorgasMarker; // the marker for Gorgas
-    private Marker mBrunoMarker; // the marker for Bruno
     private Marker userLocationMarker; // the marker for the user's location
 
     private LatLng rodgers; // Rodgers coordinates
@@ -138,7 +133,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 if (isChecked)
                 {
                     try {
-                        NetworkManager.getInstance().readMarkersFromAPI(new ArrayList<LatLng>(), new HeatmapCallback() {
+                        NetworkManager.getInstance().readUserMarkers(new ArrayList<LatLng>(), new HeatmapCallback() {
                             @Override
                             public void onSuccess(ArrayList<LatLng> markerList) {
                                 userMarkerList = markerList;
@@ -209,27 +204,32 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 return true;
 
             case R.id.check_in:
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                if(! MainActivity.nearLibrary)
-                {
-                    Toast.makeText(getActivity(), "You must be in a library to check in.", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                if(MainActivity.hasCheckedIn)
-                {
-                    String nearestLibrary = sharedPref.getString("nearestLibrary", "the");
-                    Toast.makeText(getActivity(), "You have already checked into "+ nearestLibrary + " library.", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                SwitchCompat hMap = (SwitchCompat) getActivity().findViewById(R.id.heatmap);
-                hMap.setChecked(false);
-                FragmentManager fm = getFragmentManager();
-                fm.beginTransaction().add(R.id.contentContainer, new CheckInFragment()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).addToBackStack(null).commit();
+                this.checkIn();
                 return true;
 
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void checkIn()
+    {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if(! MainActivity.nearLibrary)
+        {
+            Toast.makeText(getActivity(), "You must be in a library to check in.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(MainActivity.hasCheckedIn)
+        {
+            String nearestLibrary = sharedPref.getString("nearestLibrary", "the");
+            Toast.makeText(getActivity(), "You have already checked into "+ nearestLibrary + " library.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        SwitchCompat hMap = (SwitchCompat) getActivity().findViewById(R.id.heatmap);
+        hMap.setChecked(false);
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction().add(R.id.contentContainer, new CheckInFragment()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).addToBackStack(null).commit();
     }
 
 
@@ -274,30 +274,31 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
      */
     private void initializeMarkers() throws AuthFailureError
     {
+        NetworkManager.getInstance().readMarkers(getActivity(),this.googleMap);
 
-        this.mRodgersMarker = this.googleMap.addMarker(new MarkerOptions()
-                .position(this.rodgers)
-                .title("Rodgers Library"));
-
-        NetworkManager.getInstance().getBusynessLevelFromApi(this.mRodgersMarker, "rodgers");
-
-        this.mMclureMarker = this.googleMap.addMarker(new MarkerOptions()
-                .position(this.mclure)
-                .title("Mclure Library"));
-
-        NetworkManager.getInstance().getBusynessLevelFromApi(this.mMclureMarker, "mclure");
-
-        this.mBrunoMarker = this.googleMap.addMarker(new MarkerOptions()
-                .position(this.bruno)
-                .title("Bruno Library"));
-
-        NetworkManager.getInstance().getBusynessLevelFromApi(this.mBrunoMarker, "bruno");
-
-        this.mGorgasMarker = this.googleMap.addMarker(new MarkerOptions()
-                .position(this.gorgas)
-                .title("Gorgas Library"));
-
-        NetworkManager.getInstance().getBusynessLevelFromApi(this.mGorgasMarker, "gorgas");
+//        Marker mRodgersMarker = this.googleMap.addMarker(new MarkerOptions()
+//                .position(this.rodgers)
+//                .title("Rodgers Library"));
+//
+//        NetworkManager.getInstance().getBusynessLevelFromApi(mRodgersMarker, "rodgers");
+//
+//        Marker mMclureMarker = this.googleMap.addMarker(new MarkerOptions()
+//                .position(this.mclure)
+//                .title("Mclure Library"));
+//
+//        NetworkManager.getInstance().getBusynessLevelFromApi(mMclureMarker, "mclure");
+//
+//        Marker mBrunoMarker = this.googleMap.addMarker(new MarkerOptions()
+//                .position(this.bruno)
+//                .title("Bruno Library"));
+//
+//        NetworkManager.getInstance().getBusynessLevelFromApi(mBrunoMarker, "bruno");
+//
+//        Marker mGorgasMarker = this.googleMap.addMarker(new MarkerOptions()
+//                .position(this.gorgas)
+//                .title("Gorgas Library"));
+//
+//        NetworkManager.getInstance().getBusynessLevelFromApi(mGorgasMarker, "gorgas");
 
         //this.googleMap.setOnMarkerClickListener(this); // TODO consider not using this
 
@@ -307,29 +308,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public boolean onMarkerClick(final Marker marker)
     {
-
-//        RequestQueue queue = Volley.newRequestQueue(this.getActivity());
-//        String url ="http://libusy.herokuapp.com/busyness/getlevel/rodgers";
-//        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        // Display the first 500 characters of the response string.
-//                        marker.setSnippet(response);
-//                        // mTextView.setText("Response is: "+ response.substring(0,500));
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                //mTextView.setText("That didn't work!");
-//                Log.d("level", "you suck");
-//            }
-//        });
-//        // Add the request to the RequestQueue.
-//        queue.add(stringRequest);
-        // Log.d("request body",stringRequest.getBody().toString());
-        //Float level = Float.parseFloat(stringRequest.getBody().toString());
-        //return level;
         return false;
     }
 
@@ -439,16 +417,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         {
             MainActivity.nearLibrary = false;
         }
-
-//        if (! MainActivity.hasCheckedIn && mLastLocation != null  && MainActivity.hasReceivedNotification && MainActivity.nearLibrary)
-//        {
-//            //MainActivity.checkInDialogOpen = true;
-//            //CheckInDialogFragment newFragment = new CheckInDialogFragment();
-//            Bundle args = new Bundle();
-//            args.putString("library", libraryAndDistance.first); // whatever the closest library is
-//            //newFragment.setArguments(args);
-//            //newFragment.show(getFragmentManager(), "check-in");
-//        }
+        
     }
 
     /**
