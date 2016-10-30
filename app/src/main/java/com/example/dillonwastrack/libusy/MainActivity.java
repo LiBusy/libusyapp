@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         {
             FragmentManager fm = getFragmentManager();
             CheckInFragment newFragment = new CheckInFragment();
-            fm.beginTransaction().replace(R.id.contentContainer, newFragment).commit();
+            fm.beginTransaction().add(R.id.contentContainer, newFragment).commit();
         }
 
     }

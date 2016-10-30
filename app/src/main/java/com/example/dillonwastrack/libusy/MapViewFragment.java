@@ -174,8 +174,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onPrepareOptionsMenu(Menu menu)
     {
-        MenuItem checkable = menu.findItem(R.id.heatmap);
-        checkable.setChecked(heatMapActive);
+//        MenuItem checkable = menu.findItem(R.id.heatmap);
+//        checkable.setChecked(heatMapActive);
     }
 
     /**
@@ -492,7 +492,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
         String closestLibraryName = "";
         Double shortestDistance = Double.MAX_VALUE;
-        if (markerList != null)
+        if (markerList != null) // markerList not initialized yet
         {
             for (ArrayMap.Entry<String, LatLng> loc : markerList.entrySet())
             {
@@ -510,7 +510,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
             return new Pair<>(closestLibraryName, shortestDistance);
         }
 
-        return new Pair<>("rodgers", 1000.0);
-    }
+        return new Pair<>("rodgers", 1000.0); // return dummy pair because markerList not initialized.
+    }                                           // user won't be close enough to check in.
 
 }

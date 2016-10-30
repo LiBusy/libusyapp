@@ -19,8 +19,6 @@ public class OnCheckInAlarmReceive extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.d("Alarm_received", "Alarm received");
-
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
