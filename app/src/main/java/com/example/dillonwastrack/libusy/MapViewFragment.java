@@ -171,13 +171,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         super.onCreateOptionsMenu(menu,inflater);
     }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu)
-    {
-//        MenuItem checkable = menu.findItem(R.id.heatmap);
-//        checkable.setChecked(heatMapActive);
-    }
-
     /**
      *
      * The menu for selecting locations, always
