@@ -404,24 +404,28 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         this.userLocationMarker = this.googleMap.addMarker(markerOptions);
 
-        Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance(this.userLatLng);
-
-        if (libraryAndDistance.second < 50) // user is within 50 meters
+        if(markerList != null)
         {
-            MainActivity.nearLibrary = true;
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            //SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("nearestLibrary", libraryAndDistance.first);
-            editor.putLong("userLat", Double.doubleToRawLongBits(this.userLatLng.latitude)); // save current location
-            editor.putLong("userLng", Double.doubleToRawLongBits(this.userLatLng.longitude)); // save current location
-            editor.apply();
+            Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance(this.userLatLng);
+
+            if (libraryAndDistance.second < 50) // user is within 50 meters
+            {
+                MainActivity.nearLibrary = true;
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                //SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("nearestLibrary", libraryAndDistance.first);
+                editor.putLong("userLat", Double.doubleToRawLongBits(this.userLatLng.latitude)); // save current location
+                editor.putLong("userLng", Double.doubleToRawLongBits(this.userLatLng.longitude)); // save current location
+                editor.apply();
+            }
+
+            else
+            {
+                MainActivity.nearLibrary = false;
+            }
         }
 
-        else
-        {
-            MainActivity.nearLibrary = false;
-        }
         
     }
 
@@ -485,25 +489,22 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
         String closestLibraryName = "";
         Double shortestDistance = Double.MAX_VALUE;
-        if (markerList != null) // markerList not initialized yet
+        for (ArrayMap.Entry<String, LatLng> loc : markerList.entrySet())
         {
-            for (ArrayMap.Entry<String, LatLng> loc : markerList.entrySet())
+            Double distanceToLocation = distance(userLocation.latitude,
+                                                userLocation.longitude,
+                                                loc.getValue().latitude,
+                                                loc.getValue().longitude);
+
+            if (distanceToLocation < shortestDistance)
             {
-                Double distanceToLocation = distance(userLocation.latitude,
-                        userLocation.longitude,
-                        loc.getValue().latitude,
-                        loc.getValue().longitude);
-
-                if (distanceToLocation < shortestDistance)
-                {
-                    shortestDistance = distanceToLocation;
-                    closestLibraryName = loc.getKey();
-                }
+                shortestDistance = distanceToLocation;
+                closestLibraryName = loc.getKey();
             }
-            return new Pair<>(closestLibraryName, shortestDistance);
         }
+        return new Pair<>(closestLibraryName, shortestDistance);
 
-        return new Pair<>("rodgers", 1000.0); // return dummy pair because markerList not initialized.
-    }                                           // user won't be close enough to check in.
+
+    }
 
 }

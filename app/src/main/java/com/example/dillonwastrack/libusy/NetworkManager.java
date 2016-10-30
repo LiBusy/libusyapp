@@ -149,6 +149,18 @@ public class NetworkManager
         requestQueue.add(stringRequest);
     }
 
+    /**
+     * For reading the list of markers from the database,
+     * and adding them to the map. Also adds their
+     * locations to an ArrayList of LatLngs
+     * for use in calculating user
+     * proximity.
+     *
+     * @param locations
+     * @param context
+     * @param gMap
+     * @param callback
+     */
     public void readMarkers(final ArrayMap<String, LatLng> locations, final Context context, final GoogleMap gMap, final MarkerCallback callback)
     {
         String url = "https://libusy.herokuapp.com/markers"+"?key="+key;
