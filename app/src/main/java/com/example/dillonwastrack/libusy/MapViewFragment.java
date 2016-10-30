@@ -78,7 +78,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     private ArrayMap<String, LatLng> markerList; // list of monitored locations
 
-    private boolean heatMapActive; // boolean for using the heatmap toggle switch
 
     private TileOverlay mOverlay; // used for the heatmap
 
@@ -91,8 +90,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         this.mclure = new LatLng(33.2104, -87.5490); // McLure Library coordinates
         this.gorgas = new LatLng(33.2118, -87.5460); // Gorgas Library coordinates
         this.bruno = new LatLng(33.2111, -87.5493); // Bruno Library coordinates
-
-        heatMapActive = false;
 
         setHasOptionsMenu(true);
 

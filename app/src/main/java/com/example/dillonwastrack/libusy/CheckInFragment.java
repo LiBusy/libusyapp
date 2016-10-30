@@ -50,7 +50,7 @@ public class CheckInFragment extends Fragment{
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        final String libraryName = sharedPref.getString("nearestLibrary", "mclure");
+        final String libraryName = sharedPref.getString("nearestLibrary", "");
 
         TextView checkInText = (TextView) getActivity().findViewById(R.id.instructionText);
         checkInText.setText("Please select how busy "+ libraryName + " library is.");
