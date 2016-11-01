@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.google.android.gms.location.places.Place;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
@@ -24,6 +25,16 @@ public class MainActivity extends AppCompatActivity {
     public static boolean hasReceivedNotification = false;
     public static boolean addedToHeatmap = false;
     public static boolean checkedInFromNotification = false;
+
+    private Place selectedPlace;
+
+    public Place getSelectedPlace() {
+        return selectedPlace;
+    }
+
+    public void setSelectedPlace(Place selectedPlace) {
+        this.selectedPlace = selectedPlace;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)

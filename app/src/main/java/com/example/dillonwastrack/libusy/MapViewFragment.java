@@ -41,6 +41,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceDetectionApi;
 import com.google.android.gms.location.places.Places;
@@ -206,6 +207,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 return true;
 
             case R.id.search:
+
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
                 try {
@@ -427,7 +429,16 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(data, this.getActivity());
+                Place place = PlacePicker.getPlace(this.getActivity(), data);
+                ((MainActivity) this.getActivity()).setSelectedPlace(place);
+                FragmentManager fm = getFragmentManager();
+
+                fm.beginTransaction().add(R.id.contentContainer,
+                        new LibraryDetailsFragment())
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .addToBackStack(null)
+                        .commit();
+
                 String toastMsg = String.format("Place: %s", place.getName());
                 Toast.makeText(this.getActivity(), toastMsg, Toast.LENGTH_LONG).show();
             }
