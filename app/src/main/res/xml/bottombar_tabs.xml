@@ -6,11 +6,6 @@
         title="Map"
         barColorWhenSelected="#26C281"/>
     <tab
-        id="@+id/tab_search"
-        icon="@drawable/ic_search"
-        title="Search"
-        barColorWhenSelected="#D91E18" />
-    <tab
         id="@+id/tab_list"
         icon="@drawable/ic_library"
         title="List"

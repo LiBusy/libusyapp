@@ -49,10 +49,6 @@ public class MainActivity extends AppCompatActivity {
                 {
                     fm.beginTransaction().replace(R.id.contentContainer, new ListViewFragment()).commit();
                 }
-                else if (tabId == R.id.tab_search)
-                {
-                    fm.beginTransaction().replace(R.id.contentContainer, new SearchFragment()).commit();
-                }
             }
         });
 

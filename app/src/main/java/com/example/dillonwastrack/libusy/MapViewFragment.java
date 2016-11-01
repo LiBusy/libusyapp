@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -34,12 +35,16 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceDetectionApi;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -56,6 +61,8 @@ import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+
+import static android.app.Activity.RESULT_OK;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener,
@@ -83,6 +90,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
 
     private TileOverlay mOverlay; // used for the heatmap
+
+    int PLACE_PICKER_REQUEST = 1;
 
 
     @Nullable
@@ -194,6 +203,18 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
             case R.id.check_in:
                 this.checkIn();
+                return true;
+
+            case R.id.search:
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+                try {
+                    startActivityForResult(builder.build(this.getActivity()), PLACE_PICKER_REQUEST);
+                } catch (GooglePlayServicesRepairableException e) {
+                    e.printStackTrace();
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
+                }
                 return true;
 
         }
@@ -401,6 +422,16 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         }
 
         
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(data, this.getActivity());
+                String toastMsg = String.format("Place: %s", place.getName());
+                Toast.makeText(this.getActivity(), toastMsg, Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     /**
