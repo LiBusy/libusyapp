@@ -19,6 +19,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.SwitchCompat;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,6 +38,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.PlaceDetectionApi;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -84,8 +87,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.rodgers = new LatLng(33.2134, -87.5427); // Rodgers Library coordinates
         this.mclure = new LatLng(33.2104, -87.5490); // McLure Library coordinates
         this.gorgas = new LatLng(33.2118, -87.5460); // Gorgas Library coordinates
@@ -99,29 +101,26 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState)
-    {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         // Create an instance of GoogleAPIClient.
-        if (mGoogleApiClient == null)
-        {
+        if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
+                    .addApi(Places.PLACE_DETECTION_API)
                     .build();
         }
 
-        MapFragment fragment = (MapFragment)getChildFragmentManager().findFragmentById(R.id.map);
+        MapFragment fragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         fragment.getMapAsync(this);
     }
 
 
-
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.location_menu, menu);
 
         // register heat map switch listeners
@@ -132,10 +131,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         heatMapSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if (isChecked)
-                {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
                     try {
                         NetworkManager.getInstance().readUserMarkers(new ArrayList<LatLng>(), new HeatmapCallback() {
                             @Override
@@ -147,7 +144,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                                 // Add a tile overlay to the map, using the heat map tile provider.
                                 mOverlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
                                 // TODO maybe make markers invisible to see heatmap better
-                                Toast.makeText(getActivity() ,"Heatmap engaged!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "Heatmap engaged!", Toast.LENGTH_SHORT).show();
 
                             }
 
@@ -156,16 +153,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                         Toast.makeText(homeActivity, "Problem reading list of locations.", Toast.LENGTH_SHORT).show();
                     }
 
-                }
-
-                else if (!isChecked)
-                {
+                } else if (!isChecked) {
                     mOverlay.remove();
-                    Toast.makeText(getActivity() ,"Heatmap disengaged!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Heatmap disengaged!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        super.onCreateOptionsMenu(menu,inflater);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     /**
@@ -179,11 +173,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
      *
      */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id)
-        {
+        switch (id) {
             case R.id.rodgers_library:
                 this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.rodgers, 19)); // move camera
                 return true;
@@ -209,18 +201,15 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         return super.onOptionsItemSelected(item);
     }
 
-    private void checkIn()
-    {
+    private void checkIn() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        if(! MainActivity.nearLibrary)
-        {
+        if (!MainActivity.nearLibrary) {
             Toast.makeText(getActivity(), "You must be in a library to check in.", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(MainActivity.hasCheckedIn)
-        {
+        if (MainActivity.hasCheckedIn) {
             String nearestLibrary = sharedPref.getString("nearestLibrary", "the");
-            Toast.makeText(getActivity(), "You have already checked into "+ nearestLibrary + " library.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "You have already checked into " + nearestLibrary + " library.", Toast.LENGTH_SHORT).show();
             return;
         }
         SwitchCompat hMap = (SwitchCompat) getActivity().findViewById(R.id.heatmap);
@@ -236,8 +225,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
      *
      */
     @Override
-    public void onMapReady(GoogleMap googleMap)
-    {
+    public void onMapReady(GoogleMap googleMap) {
 
         this.googleMap = googleMap;
 
@@ -272,8 +260,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         });
 
 
-        if(ContextCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
-        {
+        if (ContextCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                     this.getActivity(),
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -291,10 +278,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
-    private void initializeMarkers() throws AuthFailureError
-    {
+    private void initializeMarkers() throws AuthFailureError {
         // populate the markerList, add markers from db to map
-        NetworkManager.getInstance().readMarkers(new ArrayMap<String, LatLng>(),getActivity(),this.googleMap, new MarkerCallback(){
+        NetworkManager.getInstance().readMarkers(new ArrayMap<String, LatLng>(), getActivity(), this.googleMap, new MarkerCallback() {
 
             @Override
             public void onSuccess(ArrayMap<String, LatLng> result) {
@@ -308,17 +294,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     /** Called when the user clicks a marker. */
     @Override
-    public boolean onMarkerClick(final Marker marker)
-    {
+    public boolean onMarkerClick(final Marker marker) {
         return false;
     }
 
 
     @Override
-    public void onConnected(Bundle connectionHint)
-    {
-        if(ContextCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
-        {
+    public void onConnected(Bundle connectionHint) {
+        if (ContextCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                     this.getActivity(),
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -328,13 +311,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         this.mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
 
-        if (this.userLocationMarker != null)
-        {
+        if (this.userLocationMarker != null) {
             this.userLocationMarker.remove();
         }
 
-        if (this.mLastLocation != null)
-        {
+        if (this.mLastLocation != null) {
             //place marker at current position
             this.userLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
             MarkerOptions markerOptions = new MarkerOptions();
@@ -361,32 +342,28 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     }
 
     @Override
-    public void onConnectionSuspended(int i)
-    {
+    public void onConnectionSuspended(int i) {
 
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult)
-    {
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
 
-    public void onStart()
-    {
+    public void onStart() {
         mGoogleApiClient.connect();
         super.onStart();
     }
 
-    public void onStop()
-    {
+    public void onStop() {
         mGoogleApiClient.disconnect();
         super.onStop();
     }
 
     @Override
-    public void onLocationChanged(Location location)
-    {
+    public void onLocationChanged(Location location) {
+
         this.mLastLocation = location;
 
         if (this.userLocationMarker != null)
