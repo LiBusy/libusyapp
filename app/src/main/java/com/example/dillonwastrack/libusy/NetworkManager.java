@@ -180,7 +180,7 @@ public class NetworkManager
                                 gMap.addMarker(new MarkerOptions()
                                         .position(new LatLng(lat, lng))
                                         .title(object.getString("title"))
-                                        .snippet(object.getString("snippet")));
+                                        .snippet(object.getString("snippet"))); //TODO SET MARKER TAG TO PLACE ID HERE
                             }
                             callback.onSuccess(locations);
                         } catch (JSONException e) {

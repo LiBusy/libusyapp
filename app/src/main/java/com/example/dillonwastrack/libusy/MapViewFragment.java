@@ -28,7 +28,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +43,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -45,7 +51,9 @@ import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceDetectionApi;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -53,6 +61,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlay;
@@ -114,6 +123,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         // Create an instance of GoogleAPIClient.
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
@@ -125,6 +135,40 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         }
 
         MapFragment fragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ESTABLISHMENT)
+                .build();
+
+        //autocompleteFragment.setFilter(typeFilter);
+
+        autocompleteFragment.setBoundsBias(new LatLngBounds(
+                new LatLng(33.196241, -87.549949),
+                new LatLng(33.218789, -87.533384)));
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: create marker if doesn't exist, zoom to it, showInfoWindow()
+                Log.i("bone", "Place: " + place.getName());
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i("ball", "An error occurred: " + status);
+            }
+        });
+
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction()
+                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                .hide(autocompleteFragment)
+                .commit();
+
         fragment.getMapAsync(this);
     }
 
@@ -208,21 +252,38 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
             case R.id.search:
 
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                        getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
-                try {
-                    startActivityForResult(builder.build(this.getActivity()), PLACE_PICKER_REQUEST);
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
+                if (autocompleteFragment.isHidden())
+                {
+
+                    FragmentManager fm = getFragmentManager();
+                    fm.beginTransaction()
+                            .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                            .show(autocompleteFragment)
+                            .commit();
+                    EditText searchInput = (EditText) getActivity().findViewById(R.id.place_autocomplete_search_input);
+                    searchInput.performClick();
+
                 }
+                else
+                {
+                    FragmentManager fm = getFragmentManager();
+                    fm.beginTransaction()
+                            .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                            .hide(autocompleteFragment)
+                            .commit();
+                }
+
                 return true;
 
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     private void checkIn() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -251,6 +312,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
 
         this.googleMap = googleMap;
+
+        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+
+                //TODO pass Place ID (tag) to LibraryDetailsFragment
+            }
+        });
 
         googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
@@ -432,6 +501,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 Place place = PlacePicker.getPlace(this.getActivity(), data);
                 ((MainActivity) this.getActivity()).setSelectedPlace(place);
                 FragmentManager fm = getFragmentManager();
+
+                //PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                 //       getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+                //fm.beginTransaction().remove(autocompleteFragment).commit();
 
                 fm.beginTransaction().add(R.id.contentContainer,
                         new LibraryDetailsFragment())
