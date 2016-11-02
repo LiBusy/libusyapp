@@ -139,12 +139,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
-        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ESTABLISHMENT)
-                .build();
-
-        //autocompleteFragment.setFilter(typeFilter);
-
         autocompleteFragment.setBoundsBias(new LatLngBounds(
                 new LatLng(33.196241, -87.549949),
                 new LatLng(33.218789, -87.533384)));
