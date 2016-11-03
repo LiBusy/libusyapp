@@ -12,6 +12,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.dillonwastrack.libusy.callbacks.HeatmapCallback;
+import com.example.dillonwastrack.libusy.callbacks.LocationCallback;
+import com.example.dillonwastrack.libusy.callbacks.MarkerCallback;
+import com.example.dillonwastrack.libusy.callbacks.ServerCallback;
+import com.example.dillonwastrack.libusy.models.Library;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -180,7 +185,53 @@ public class NetworkManager
                                 gMap.addMarker(new MarkerOptions()
                                         .position(new LatLng(lat, lng))
                                         .title(object.getString("title"))
-                                        .snippet(object.getString("snippet"))); //TODO SET MARKER TAG TO PLACE ID HERE
+                                        .snippet(object.getString("busyness")
+                                                +"\n"
+                                                +object.getString("check_ins")
+                                                +"\n"
+                                                +object.getString("open_now"))); //TODO SET MARKER TAG TO PLACE ID HERE
+                            }
+                            callback.onSuccess(locations);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context, "Error reading list of locations", Toast.LENGTH_SHORT).show();
+            }
+        });
+        // Add the request to the RequestQueue.
+        requestQueue.add(stringRequest);
+    }
+
+    public void readLocationsIntoList(final ArrayList<Library> locations, final Context context, final LocationCallback callback)
+    {
+        String url = "https://libusy.herokuapp.com/markers"+"?key="+key;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            //userMarkerList = new ArrayList<LatLng>();
+                            JSONArray array = new JSONArray(response);
+                            for (int i = 0; i < array.length(); i++) {
+                                Library library = new Library();
+                                JSONObject object = array.getJSONObject(i);
+                                library.lat = object.getDouble("lat");
+                                library.lng = object.getDouble("lng");
+                                library.libraryName = object.getString("title");
+                                library.placeId = object.getString("place_id");
+                                library.address = object.getString("address");
+                                library.phoneNumber = object.getString("phone_number");
+                                library.openNow = object.getString("open_now");
+                                library.busyness = object.getString("busyness");
+                                library.checkIns = object.getString("check_ins");
+                                locations.add(library);
+                                //locations.put(object.getString("library"), new LatLng(lat, lng));
+
                             }
                             callback.onSuccess(locations);
                         } catch (JSONException e) {

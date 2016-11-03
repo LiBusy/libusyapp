@@ -4,7 +4,7 @@
     android:weightSum="4"
     android:gravity="center"
     android:layout_gravity="center"
-    android:background="@color/cast_libraries_material_featurehighlight_outer_highlight_default_color"
+    android:background="@color/cardview_light_background"
     android:fillViewport="true">
     <TextView
         android:id="@+id/instructionText"
@@ -26,7 +26,7 @@
         android:weightSum="4"
         android:gravity="center"
         android:layout_gravity="center"
-        android:background="@color/cast_libraries_material_featurehighlight_outer_highlight_default_color"
+        android:background="@color/cardview_light_background"
         android:fillViewport="true">
 
         <Button android:id="@+id/btnVeryBusy"

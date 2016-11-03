@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.dillonwastrack.libusy.callbacks.ServerCallback;
+
 public class CheckInFragment extends Fragment{
 
 

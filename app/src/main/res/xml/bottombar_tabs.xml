@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tabs>
     <tab
-        id="@+id/tab_map"
-        icon="@drawable/ic_map"
-        title="Map"
-        barColorWhenSelected="#26C281"/>
-    <tab
         id="@+id/tab_list"
         icon="@drawable/ic_library"
         title="List"
         barColorWhenSelected="#22A7F0" />
+    <tab
+        id="@+id/tab_map"
+        icon="@drawable/ic_map"
+        title="Map"
+        barColorWhenSelected="#26C281"/>
 </tabs>
