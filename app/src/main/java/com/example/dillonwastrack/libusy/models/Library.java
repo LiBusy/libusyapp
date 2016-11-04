@@ -16,5 +16,4 @@ public class Library {
     public String busyness;
     public String checkIns;
 
-
 }

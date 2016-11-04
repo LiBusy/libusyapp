@@ -19,7 +19,6 @@ import com.example.dillonwastrack.libusy.callbacks.ServerCallback;
 import com.example.dillonwastrack.libusy.models.Library;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
@@ -58,26 +57,6 @@ public class NetworkManager
                     " is not initialized, call getInstance(...) first");
         }
         return instance;
-    }
-
-    public void getBusynessLevelFromApi(final Marker marker, String libraryName) throws AuthFailureError
-    {
-        String url ="https://libusy.herokuapp.com/busyness/getlevel/"+libraryName+"?key="+key;
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        marker.setSnippet(createBusynessTextFromResponse(response));
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("level", "you suck");
-            }
-        });
-        // Add the request to the RequestQueue.
-        requestQueue.add(stringRequest);
-
     }
 
     public void postLibraryBusynessLevel(String libraryName, String level, final ServerCallback callback)
@@ -206,6 +185,38 @@ public class NetworkManager
         requestQueue.add(stringRequest);
     }
 
+    public void readLocations(final ArrayMap<String, LatLng> locations, final Context context, final MarkerCallback callback)
+    {
+        String url = "https://libusy.herokuapp.com/markers"+"?key="+key;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            //userMarkerList = new ArrayList<LatLng>();
+                            JSONArray array = new JSONArray(response);
+                            for (int i = 0; i < array.length(); i++) {
+                                JSONObject object = array.getJSONObject(i);
+                                double lat = object.getDouble("lat");
+                                double lng = object.getDouble("lng");
+                                locations.put(object.getString("library"), new LatLng(lat, lng));
+                            }
+                            callback.onSuccess(locations);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context, "Error reading list of locations", Toast.LENGTH_SHORT).show();
+            }
+        });
+        // Add the request to the RequestQueue.
+        requestQueue.add(stringRequest);
+    }
+
     public void readLocationsIntoList(final ArrayList<Library> locations, final Context context, final LocationCallback callback)
     {
         String url = "https://libusy.herokuapp.com/markers"+"?key="+key;
@@ -248,29 +259,5 @@ public class NetworkManager
         requestQueue.add(stringRequest);
     }
 
-    /**
-     * The algorithm. Determines how busy
-     * the library is based on its
-     * busyness rating.
-     *
-     * @param response the response from the api
-     * @return String to display in the marker snippet
-     */
-    private String createBusynessTextFromResponse(String response)
-    {
-        Float level = Float.parseFloat(response);
-
-        if (level < 1.5)
-        {
-            return "Not Busy";
-        }
-
-        if (level < 2.5)
-        {
-            return "Busy";
-        }
-
-        return "Very Busy";
-    }
 
 }

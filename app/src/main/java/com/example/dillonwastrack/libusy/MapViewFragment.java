@@ -76,21 +76,20 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     private Marker userLocationMarker; // the marker for the user's location
 
-    private LatLng rodgers; // Rodgers coordinates
-    private LatLng mclure; // McLure coordinates
-    private LatLng gorgas; // Gorgas coordinates
-    private LatLng bruno; // Bruno coordinates
-    private LatLng userLatLng; // User coordinates
+    protected LatLng rodgers; // Rodgers coordinates
+    protected LatLng mclure; // McLure coordinates
+    protected LatLng gorgas; // Gorgas coordinates
+    protected LatLng bruno; // Bruno coordinates
 
     private GoogleApiClient mGoogleApiClient; // google API client for getting user location
 
-    private Location mLastLocation; // last known location of the user
+    //private Location mLastLocation; // last known location of the user
 
     private HeatmapTileProvider mProvider; // provider for heat map tiling
 
     private ArrayList<LatLng> userMarkerList; // list of markers used in the heatmap. pulled from the api
 
-    private ArrayMap<String, LatLng> markerList; // list of monitored locations
+    //private ArrayMap<String, LatLng> markerList; // list of monitored locations
 
 
     private TileOverlay mOverlay; // used for the heatmap
@@ -364,7 +363,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
             @Override
             public void onSuccess(ArrayMap<String, LatLng> result) {
-                markerList = result;
+                //markerList = result;
             }
         });
 
@@ -388,18 +387,17 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                     1);
 
         }
-        this.mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
 
         if (this.userLocationMarker != null) {
             this.userLocationMarker.remove();
         }
 
-        if (this.mLastLocation != null) {
+        MainActivity activity = (MainActivity) getActivity();
+        if (activity.getmLastLocation() != null) {
             //place marker at current position
-            this.userLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            //this.userLatLng = new LatLng(activity.getmLastLocation().getLatitude(), activity.getmLastLocation().getLongitude());
             MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(this.userLatLng);
+            markerOptions.position(activity.getUserLatLng());
             markerOptions.title("Current Position");
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
             this.userLocationMarker = this.googleMap.addMarker(markerOptions);
@@ -407,7 +405,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
             //zoom to current position:
             CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(this.userLatLng).zoom(14).build();
+                    .target(activity.getUserLatLng()).zoom(14).build();
 
             this.googleMap.animateCamera(CameraUpdateFactory
                     .newCameraPosition(cameraPosition));
@@ -444,23 +442,24 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onLocationChanged(Location location) {
 
-        this.mLastLocation = location;
+        //this.mLastLocation = location;
 
         if (this.userLocationMarker != null)
         {
             this.userLocationMarker.remove();
         }
 
-        this.userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        MainActivity activity = (MainActivity) getActivity();
         MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(this.userLatLng);
+        markerOptions.position(activity.getUserLatLng());
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         this.userLocationMarker = this.googleMap.addMarker(markerOptions);
 
-        if(markerList != null)
+
+        if(activity.getLocations() != null)
         {
-            Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance(this.userLatLng);
+            Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance(activity.getUserLatLng());
 
             if (libraryAndDistance.second < 50) // user is within 50 meters
             {
@@ -469,8 +468,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 //SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString("nearestLibrary", libraryAndDistance.first);
-                editor.putLong("userLat", Double.doubleToRawLongBits(this.userLatLng.latitude)); // save current location
-                editor.putLong("userLng", Double.doubleToRawLongBits(this.userLatLng.longitude)); // save current location
+                editor.putLong("userLat", Double.doubleToRawLongBits(activity.getUserLatLng().latitude)); // save current location
+                editor.putLong("userLng", Double.doubleToRawLongBits(activity.getUserLatLng().longitude)); // save current location
                 editor.apply();
             }
 
@@ -566,7 +565,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
         String closestLibraryName = "";
         Double shortestDistance = Double.MAX_VALUE;
-        for (ArrayMap.Entry<String, LatLng> loc : markerList.entrySet())
+        MainActivity activity = (MainActivity) getActivity();
+        for (ArrayMap.Entry<String, LatLng> loc : activity.getLocations().entrySet())
         {
             Double distanceToLocation = distance(userLocation.latitude,
                                                 userLocation.longitude,
