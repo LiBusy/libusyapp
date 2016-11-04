@@ -39,9 +39,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     public static boolean nearLibrary = false;
     public static boolean hasCheckedIn = false;
-    public static boolean hasReceivedNotification = false;
     public static boolean addedToHeatmap = false;
-    public static boolean checkedInFromNotification = false;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -88,15 +86,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
         });
 
-        Boolean showCheckIn = getIntent().getBooleanExtra("showCheckIn", false);
-
-        if (showCheckIn)
-        {
-            FragmentManager fm = getFragmentManager();
-            CheckInFragment newFragment = new CheckInFragment();
-            fm.beginTransaction().add(R.id.contentContainer, newFragment).commit();
-        }
-
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -116,13 +105,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
-    public ArrayMap<String, LatLng> getLocations() {
-        return locations;
-    }
-
-    public Location getmLastLocation() {
-        return mLastLocation;
-    }
 
     public LatLng getUserLatLng() {
         return userLatLng;
@@ -182,6 +164,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         this.mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
+
+        if (this.mLastLocation != null)
+        {
+            this.userLatLng = new LatLng(this.mLastLocation.getLatitude(), this.mLastLocation.getLongitude());
+        }
+
 
         // request location updates
         LocationRequest mLocationRequest = new LocationRequest();

@@ -54,7 +54,6 @@ public class ListViewFragment extends Fragment implements GoogleApiClient.Connec
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //TODO remember to show attributions for showing google info
-        Log.d("here", "here");
         setHasOptionsMenu(true);
         // Create an instance of GoogleAPIClient.
         // Create an instance of GoogleAPIClient.
@@ -76,23 +75,26 @@ public class ListViewFragment extends Fragment implements GoogleApiClient.Connec
                 .hide(autocompleteFragment)
                 .commit();
 
-        return inflater.inflate(R.layout.fragment_list, container, false);
-    }
+        final View contentView = inflater.inflate(R.layout.fragment_list, container, false);
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
         NetworkManager.getInstance().readLocationsIntoList(new ArrayList<Library>(), getActivity(), new LocationCallback() {
             @Override
             public void onSuccess(ArrayList<Library> result) {
                 locations = result;
-                RecyclerView listView = (RecyclerView) getActivity().findViewById(R.id.rv);
-                LibraryListAdapter mAdapter = new LibraryListAdapter(getActivity(), result);
+                RecyclerView listView = (RecyclerView) contentView.findViewById(R.id.rv);
+                LibraryListAdapter mAdapter = new LibraryListAdapter(contentView.getContext(), result);
                 listView.setAdapter(mAdapter);
                 listView.setHasFixedSize(true);
                 listView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
             }
         });
+        return contentView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+
         super.onViewCreated(view, savedInstanceState);
     }
 

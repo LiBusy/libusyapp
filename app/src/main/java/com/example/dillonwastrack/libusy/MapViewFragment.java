@@ -83,14 +83,15 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     private GoogleApiClient mGoogleApiClient; // google API client for getting user location
 
-    //private Location mLastLocation; // last known location of the user
+    private Location mLastLocation; // last known location of the user
 
     private HeatmapTileProvider mProvider; // provider for heat map tiling
 
     private ArrayList<LatLng> userMarkerList; // list of markers used in the heatmap. pulled from the api
 
-    //private ArrayMap<String, LatLng> markerList; // list of monitored locations
+    private ArrayMap<String, LatLng> markerList; // list of monitored locations
 
+    private LatLng userLatLng;
 
     private TileOverlay mOverlay; // used for the heatmap
 
@@ -363,7 +364,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
             @Override
             public void onSuccess(ArrayMap<String, LatLng> result) {
-                //markerList = result;
+                markerList = result;
             }
         });
 
@@ -388,16 +389,18 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
         }
 
+        this.mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+
         if (this.userLocationMarker != null) {
             this.userLocationMarker.remove();
         }
 
-        MainActivity activity = (MainActivity) getActivity();
-        if (activity.getmLastLocation() != null) {
+        if (this.mLastLocation != null) {
             //place marker at current position
-            //this.userLatLng = new LatLng(activity.getmLastLocation().getLatitude(), activity.getmLastLocation().getLongitude());
+            this.userLatLng = new LatLng(this.mLastLocation.getLatitude(), this.mLastLocation.getLongitude());
             MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(activity.getUserLatLng());
+            markerOptions.position(this.userLatLng);
             markerOptions.title("Current Position");
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
             this.userLocationMarker = this.googleMap.addMarker(markerOptions);
@@ -405,7 +408,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
             //zoom to current position:
             CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(activity.getUserLatLng()).zoom(14).build();
+                    .target(this.userLatLng).zoom(14).build();
 
             this.googleMap.animateCamera(CameraUpdateFactory
                     .newCameraPosition(cameraPosition));
@@ -442,24 +445,25 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onLocationChanged(Location location) {
 
-        //this.mLastLocation = location;
+        this.mLastLocation = location;
+
+        this.userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
         if (this.userLocationMarker != null)
         {
             this.userLocationMarker.remove();
         }
 
-        MainActivity activity = (MainActivity) getActivity();
         MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(activity.getUserLatLng());
+        markerOptions.position(this.userLatLng);
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         this.userLocationMarker = this.googleMap.addMarker(markerOptions);
 
 
-        if(activity.getLocations() != null)
+        if(markerList != null)
         {
-            Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance(activity.getUserLatLng());
+            Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance(this.userLatLng);
 
             if (libraryAndDistance.second < 50) // user is within 50 meters
             {
@@ -468,8 +472,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 //SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString("nearestLibrary", libraryAndDistance.first);
-                editor.putLong("userLat", Double.doubleToRawLongBits(activity.getUserLatLng().latitude)); // save current location
-                editor.putLong("userLng", Double.doubleToRawLongBits(activity.getUserLatLng().longitude)); // save current location
+                editor.putLong("userLat", Double.doubleToRawLongBits(this.userLatLng.latitude)); // save current location
+                editor.putLong("userLng", Double.doubleToRawLongBits(this.userLatLng.longitude)); // save current location
                 editor.apply();
             }
 
@@ -480,29 +484,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         }
 
         
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PLACE_PICKER_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(this.getActivity(), data);
-                ((MainActivity) this.getActivity()).setSelectedPlace(place);
-                FragmentManager fm = getFragmentManager();
-
-                //PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                 //       getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-                //fm.beginTransaction().remove(autocompleteFragment).commit();
-
-                fm.beginTransaction().add(R.id.contentContainer,
-                        new LibraryDetailsFragment())
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .addToBackStack(null)
-                        .commit();
-
-                String toastMsg = String.format("Place: %s", place.getName());
-                Toast.makeText(this.getActivity(), toastMsg, Toast.LENGTH_LONG).show();
-            }
-        }
     }
 
     /**
@@ -565,8 +546,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
         String closestLibraryName = "";
         Double shortestDistance = Double.MAX_VALUE;
-        MainActivity activity = (MainActivity) getActivity();
-        for (ArrayMap.Entry<String, LatLng> loc : activity.getLocations().entrySet())
+        for (ArrayMap.Entry<String, LatLng> loc : markerList.entrySet())
         {
             Double distanceToLocation = distance(userLocation.latitude,
                                                 userLocation.longitude,

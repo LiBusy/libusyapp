@@ -51,11 +51,20 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         myHolder.busyness.setText(current.busyness);
         myHolder.checkIns.setText(current.checkIns);
         MainActivity m = (MainActivity) this.context;
-        double distanceInMeters = distance(m.getUserLatLng().latitude,
-                            m.getUserLatLng().longitude,
-                            current.lat,
-                            current.lng);
-        myHolder.distanceAway.setText(String.format(Locale.US,"%.2f meters away", distanceInMeters));
+
+        if (m.getUserLatLng() != null)
+        {
+            double distanceInMeters = distance(m.getUserLatLng().latitude,
+                    m.getUserLatLng().longitude,
+                    current.lat,
+                    current.lng);
+            myHolder.distanceAway.setText(String.format(Locale.US,"%.2f meters away", distanceInMeters));
+        }
+
+        else
+        {
+            myHolder.distanceAway.setText("Your location cannot be determined.");
+        }
         //myHolder.textType.setText("Category: " + current.catName);
         //myHolder.textPrice.setText("Rs. " + current.price + "\\Kg");
         //myHolder.textPrice.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
