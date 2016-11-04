@@ -91,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
-                    .addApi(Places.PLACE_DETECTION_API)
                     .build();
         }
 

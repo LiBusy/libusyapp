@@ -124,7 +124,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
-                    .addApi(Places.PLACE_DETECTION_API)
                     .build();
         }
 

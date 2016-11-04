@@ -56,13 +56,11 @@ public class ListViewFragment extends Fragment implements GoogleApiClient.Connec
         //TODO remember to show attributions for showing google info
         setHasOptionsMenu(true);
         // Create an instance of GoogleAPIClient.
-        // Create an instance of GoogleAPIClient.
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
-                    .addApi(Places.PLACE_DETECTION_API)
                     .build();
         }
 
