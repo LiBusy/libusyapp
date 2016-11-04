@@ -43,6 +43,12 @@
                 android:id="@+id/library_check_ins"
                 android:layout_below="@id/library_busyness"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/library_distance"
+                android:layout_below="@id/library_check_ins"/>
+
 
         </RelativeLayout>
 
