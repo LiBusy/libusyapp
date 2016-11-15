@@ -295,6 +295,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
         this.googleMap.setMyLocationEnabled(true);
 
+        this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.gorgas, 16)); // move camera
+
+
         try {
             initializeMarkers();
         } catch (AuthFailureError authFailureError) {
