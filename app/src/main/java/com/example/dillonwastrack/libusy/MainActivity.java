@@ -47,8 +47,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     protected ArrayMap<String, LatLng> locations;
 
-    private Place selectedPlace;
-
     private Location mLastLocation;
 
     private LatLng userLatLng;
@@ -166,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             this.userLatLng = new LatLng(this.mLastLocation.getLatitude(), this.mLastLocation.getLongitude());
         }
 
-
+        checkDistance();
         // request location updates
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(5000); //10 minutes
