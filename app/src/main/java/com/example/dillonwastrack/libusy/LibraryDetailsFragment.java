@@ -25,12 +25,12 @@ public class LibraryDetailsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        if(((MainActivity) this.getActivity()).getSelectedPlace() != null)
-        {
-            Place place = ((MainActivity) this.getActivity()).getSelectedPlace();
-            TextView tView = (TextView) getActivity().findViewById(R.id.library_markup);
-            tView.setText(place.getName());
-        }
+//        if(((MainActivity) this.getActivity()).getSelectedPlace() != null)
+//        {
+//            Place place = ((MainActivity) this.getActivity()).getSelectedPlace();
+//            TextView tView = (TextView) getActivity().findViewById(R.id.library_markup);
+//            tView.setText(place.getName());
+//        }
         super.onViewCreated(view, savedInstanceState);
     }
 }

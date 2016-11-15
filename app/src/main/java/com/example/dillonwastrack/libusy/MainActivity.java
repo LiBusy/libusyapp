@@ -53,14 +53,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private LatLng userLatLng;
 
-    public Place getSelectedPlace() {
-        return selectedPlace;
-    }
-
-    public void setSelectedPlace(Place selectedPlace) {
-        this.selectedPlace = selectedPlace;
-    }
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
@@ -101,23 +93,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             public void onSuccess(ArrayMap<String, LatLng> result) {
                 locations = result;
 
-                Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance(userLatLng);
+                checkDistance();
 
-                if (libraryAndDistance.second < 50) // user is within 50 meters
-                {
-                    nearLibrary = true;
-                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putString("nearestLibrary", libraryAndDistance.first);
-                    editor.putLong("userLat", Double.doubleToRawLongBits(userLatLng.latitude)); // save current location
-                    editor.putLong("userLng", Double.doubleToRawLongBits(userLatLng.longitude)); // save current location
-                    editor.apply();
-                }
-
-                else
-                {
-                    nearLibrary = false;
-                }
             }
         });
 
@@ -213,26 +190,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onLocationChanged(Location location) {
         this.userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-        if(locations != null)
-        {
-            Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance(userLatLng);
-
-            if (libraryAndDistance.second < 50) // user is within 50 meters
-            {
-                nearLibrary = true;
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString("nearestLibrary", libraryAndDistance.first);
-                editor.putLong("userLat", Double.doubleToRawLongBits(userLatLng.latitude)); // save current location
-                editor.putLong("userLng", Double.doubleToRawLongBits(userLatLng.longitude)); // save current location
-                editor.apply();
-            }
-
-            else
-            {
-                nearLibrary = false;
-            }
-        }
+        this.checkDistance();
 
 
     }
@@ -327,6 +285,30 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
         FragmentManager fm = getFragmentManager();
         fm.beginTransaction().add(R.id.contentContainer, new CheckInFragment()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).addToBackStack(null).commit();
+    }
+
+    private void checkDistance()
+    {
+        if(locations != null && userLatLng != null)
+        {
+            Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance(userLatLng);
+
+            if (libraryAndDistance.second < 50) // user is within 50 meters
+            {
+                nearLibrary = true;
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("nearestLibrary", libraryAndDistance.first);
+                editor.putLong("userLat", Double.doubleToRawLongBits(userLatLng.latitude)); // save current location
+                editor.putLong("userLng", Double.doubleToRawLongBits(userLatLng.longitude)); // save current location
+                editor.apply();
+            }
+
+            else
+            {
+                nearLibrary = false;
+            }
+        }
     }
 
 

@@ -3,21 +3,14 @@ package com.example.dillonwastrack.libusy;
 import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.location.Location;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.SwitchCompat;
 import android.util.ArrayMap;
 import android.util.Log;
@@ -37,27 +30,17 @@ import android.widget.Toast;
 import com.android.volley.AuthFailureError;
 import com.example.dillonwastrack.libusy.callbacks.HeatmapCallback;
 import com.example.dillonwastrack.libusy.callbacks.MarkerCallback;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
@@ -66,7 +49,6 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 
-import static android.app.Activity.RESULT_OK;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener
@@ -74,28 +56,20 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     private GoogleMap googleMap; // the main map fragment
 
-    private Marker userLocationMarker; // the marker for the user's location
 
     protected LatLng rodgers; // Rodgers coordinates
     protected LatLng mclure; // McLure coordinates
     protected LatLng gorgas; // Gorgas coordinates
     protected LatLng bruno; // Bruno coordinates
 
-    private GoogleApiClient mGoogleApiClient; // google API client for getting user location
-
-    private Location mLastLocation; // last known location of the user
-
     private HeatmapTileProvider mProvider; // provider for heat map tiling
 
     private ArrayList<LatLng> userMarkerList; // list of markers used in the heatmap. pulled from the api
 
-    private ArrayMap<String, LatLng> markerList; // list of monitored locations
-
-    private LatLng userLatLng;
-
     private TileOverlay mOverlay; // used for the heatmap
 
-    int PLACE_PICKER_REQUEST = 1;
+    private ArrayMap<String, LatLng> markerList;
+
 
 
     @Nullable
@@ -116,16 +90,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
-        // Create an instance of GoogleAPIClient.
-//        if (mGoogleApiClient == null) {
-//            mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
-//                    .addConnectionCallbacks(this)
-//                    .addOnConnectionFailedListener(this)
-//                    .addApi(LocationServices.API)
-//                    .build();
-//        }
 
         MapFragment fragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 

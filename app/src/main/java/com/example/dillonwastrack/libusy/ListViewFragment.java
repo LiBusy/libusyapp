@@ -42,28 +42,16 @@ import java.util.ArrayList;
  * Created by dillonwastrack on 10/11/16.
  */
 
-public class ListViewFragment extends Fragment {//implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class ListViewFragment extends Fragment {
 
-    private GoogleApiClient mGoogleApiClient;
 
     private ArrayList<Library> locations;
 
-    private Location mLastLocation;
-    private LatLng userLatLng;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //TODO remember to show attributions for showing google info
         setHasOptionsMenu(true);
-        // Create an instance of GoogleAPIClient.
-//        if (mGoogleApiClient == null) {
-//            mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
-//                    .addConnectionCallbacks(this)
-//                    .addOnConnectionFailedListener(this)
-//                    .addApi(LocationServices.API)
-//                    .build();
-//        }
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
@@ -120,60 +108,6 @@ public class ListViewFragment extends Fragment {//implements GoogleApiClient.Con
         return super.onOptionsItemSelected(item);
     }
 
-//    @Override
-//    public void onConnected(@Nullable Bundle bundle) {
-//        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return;
-//        }
-//        this.mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-//                mGoogleApiClient);
-//
-//        if (this.mLastLocation != null) {
-//            this.userLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-//        }
-//
-//        // request location updates
-//        LocationRequest mLocationRequest = new LocationRequest();
-//        mLocationRequest.setInterval(5000); //10 minutes
-//        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-//        LocationServices.FusedLocationApi.requestLocationUpdates(this.mGoogleApiClient, mLocationRequest, this);
-//
-//    }
-//
-//    public void onStart() {
-//        mGoogleApiClient.connect();
-//        super.onStart();
-//    }
-//
-//    public void onStop() {
-//        mGoogleApiClient.disconnect();
-//        super.onStop();
-//    }
-//
-//    @Override
-//    public void onConnectionSuspended(int i) {
-//
-//    }
-//
-//    @Override
-//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-//
-//    }
-//
-//    @Override
-//    public void onLocationChanged(Location location) {
-//
-//        this.mLastLocation = location;
-//        this.userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-//
-//    }
 
 
 }
