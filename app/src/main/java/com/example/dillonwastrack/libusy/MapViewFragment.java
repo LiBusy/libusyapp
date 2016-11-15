@@ -69,8 +69,8 @@ import java.util.ArrayList;
 import static android.app.Activity.RESULT_OK;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback,
-        ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener
+        {
 
     private GoogleMap googleMap; // the main map fragment
 
@@ -119,13 +119,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
 
         // Create an instance of GoogleAPIClient.
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
+//        if (mGoogleApiClient == null) {
+//            mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
+//                    .addConnectionCallbacks(this)
+//                    .addOnConnectionFailedListener(this)
+//                    .addApi(LocationServices.API)
+//                    .build();
+//        }
 
         MapFragment fragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
@@ -234,7 +234,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 return true;
 
             case R.id.check_in:
-                this.checkIn();
+                MainActivity activity = (MainActivity) getActivity();
+                activity.checkIn();
                 return true;
 
             case R.id.search:
@@ -268,25 +269,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-
-    private void checkIn() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        if (!MainActivity.nearLibrary) {
-            Toast.makeText(getActivity(), "You must be in a library to check in.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (MainActivity.hasCheckedIn) {
-            String nearestLibrary = sharedPref.getString("nearestLibrary", "the");
-            Toast.makeText(getActivity(), "You have already checked into " + nearestLibrary + " library.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        SwitchCompat hMap = (SwitchCompat) getActivity().findViewById(R.id.heatmap);
-        hMap.setChecked(false);
-        FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().add(R.id.contentContainer, new CheckInFragment()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).addToBackStack(null).commit();
     }
 
 
@@ -378,189 +360,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     }
 
 
-    @Override
-    public void onConnected(Bundle connectionHint) {
-        if (ContextCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    this.getActivity(),
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    1);
-
-        }
-
-        this.mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-
-        if (this.userLocationMarker != null) {
-            this.userLocationMarker.remove();
-        }
-
-        if (this.mLastLocation != null) {
-            //place marker at current position
-            this.userLatLng = new LatLng(this.mLastLocation.getLatitude(), this.mLastLocation.getLongitude());
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(this.userLatLng);
-            markerOptions.title("Current Position");
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-            this.userLocationMarker = this.googleMap.addMarker(markerOptions);
-
-
-            //zoom to current position:
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(this.userLatLng).zoom(14).build();
-
-            this.googleMap.animateCamera(CameraUpdateFactory
-                    .newCameraPosition(cameraPosition));
-        }
-        // request location updates
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(5000); //10 minutes
-        //mLocationRequest.setFastestInterval(3000); //3 seconds
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        LocationServices.FusedLocationApi.requestLocationUpdates(this.mGoogleApiClient, mLocationRequest, this);
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
     public void onStart() {
-        mGoogleApiClient.connect();
         super.onStart();
     }
 
     public void onStop() {
-        mGoogleApiClient.disconnect();
         super.onStop();
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-
-        this.mLastLocation = location;
-
-        this.userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-
-        if (this.userLocationMarker != null)
-        {
-            this.userLocationMarker.remove();
-        }
-
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(this.userLatLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        this.userLocationMarker = this.googleMap.addMarker(markerOptions);
-
-
-        if(markerList != null)
-        {
-            Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance(this.userLatLng);
-
-            if (libraryAndDistance.second < 50) // user is within 50 meters
-            {
-                MainActivity.nearLibrary = true;
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                //SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString("nearestLibrary", libraryAndDistance.first);
-                editor.putLong("userLat", Double.doubleToRawLongBits(this.userLatLng.latitude)); // save current location
-                editor.putLong("userLng", Double.doubleToRawLongBits(this.userLatLng.longitude)); // save current location
-                editor.apply();
-            }
-
-            else
-            {
-                MainActivity.nearLibrary = false;
-            }
-        }
-
-        
-    }
-
-    /**
-     * This distance algorithm uses the haversine
-     * great circle approximation to determine
-     * the distance between two points in
-     * meters.
-     *
-     * @param lat1 latitude of first point
-     * @param lon1 longitude of first point
-     * @param lat2 latitude of second point
-     * @param lon2 longitude of second pount
-     * @return distance between 2 points in meters
-     */
-    private double distance(double lat1, double lon1, double lat2, double lon2)
-    {
-        // haversine great circle distance approximation, returns meters
-        double theta = lon1 - lon2;
-        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2))
-                + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2))
-                * Math.cos(deg2rad(theta));
-        dist = Math.acos(dist);
-        dist = rad2deg(dist);
-        dist = dist * 60; // 60 nautical miles per degree of separation
-        dist = dist * 1852; // 1852 meters per nautical mile
-        return (dist);
-    }
-
-    /**
-     * Used for converting degrees to
-     * radians.
-     *
-     * @param deg degrees
-     * @return conversion from degrees to radians
-     */
-    private double deg2rad(double deg) {
-        return (deg * Math.PI / 180.0);
-    }
-
-    /**
-     * Used for converting radians to
-     * degrees.
-     *
-     * @param rad radians
-     * @return conversion from radians to degrees
-     */
-    private double rad2deg(double rad) {
-        return (rad * 180.0 / Math.PI);
-    }
-
-    /**
-     * Determines which of the four
-     * main libraries that the user is
-     * closest to.
-     *
-     * @return String representing the library (for making an api call)
-     */
-    private Pair<String, Double> getClosestLibraryAndDistance(LatLng userLocation)
-    {
-
-        String closestLibraryName = "";
-        Double shortestDistance = Double.MAX_VALUE;
-        for (ArrayMap.Entry<String, LatLng> loc : markerList.entrySet())
-        {
-            Double distanceToLocation = distance(userLocation.latitude,
-                                                userLocation.longitude,
-                                                loc.getValue().latitude,
-                                                loc.getValue().longitude);
-
-            if (distanceToLocation < shortestDistance)
-            {
-                shortestDistance = distanceToLocation;
-                closestLibraryName = loc.getKey();
-            }
-        }
-        return new Pair<>(closestLibraryName, shortestDistance);
-
-
-    }
 
 }

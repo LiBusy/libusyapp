@@ -2,6 +2,7 @@ package com.example.dillonwastrack.libusy;
 
 import android.app.AlarmManager;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.ArrayMap;
+import android.widget.Toast;
 
 import com.example.dillonwastrack.libusy.callbacks.MarkerCallback;
 import com.google.android.gms.common.ConnectionResult;
@@ -98,6 +100,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             @Override
             public void onSuccess(ArrayMap<String, LatLng> result) {
                 locations = result;
+
+                Pair<String, Double> libraryAndDistance = getClosestLibraryAndDistance(userLatLng);
+
+                if (libraryAndDistance.second < 50) // user is within 50 meters
+                {
+                    nearLibrary = true;
+                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putString("nearestLibrary", libraryAndDistance.first);
+                    editor.putLong("userLat", Double.doubleToRawLongBits(userLatLng.latitude)); // save current location
+                    editor.putLong("userLng", Double.doubleToRawLongBits(userLatLng.longitude)); // save current location
+                    editor.apply();
+                }
+
+                else
+                {
+                    nearLibrary = false;
+                }
             }
         });
 
@@ -129,20 +149,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
      * user to check in.
      *
      */
-    private void setCheckInAlarm()
-    {
-
-        AlarmManager am = (AlarmManager)(this.getSystemService( Context.ALARM_SERVICE ));
-        Intent intent = new Intent(getBaseContext(), OnCheckInAlarmReceive.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                MainActivity.this, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Calendar calCurrent = Calendar.getInstance();
-        long tenSeconds = 10 * 1000; // change to 10 minutes or whatever
-
-        am.set(AlarmManager.RTC_WAKEUP, calCurrent.getTimeInMillis() + tenSeconds, pendingIntent); // 10 seconds for now
-    }
+//    private void setCheckInAlarm()
+//    {
+//
+//        AlarmManager am = (AlarmManager)(this.getSystemService( Context.ALARM_SERVICE ));
+//        Intent intent = new Intent(getBaseContext(), OnCheckInAlarmReceive.class);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+//                MainActivity.this, 0, intent,
+//                PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//        Calendar calCurrent = Calendar.getInstance();
+//        long tenSeconds = 10 * 1000; // change to 10 minutes or whatever
+//
+//        am.set(AlarmManager.RTC_WAKEUP, calCurrent.getTimeInMillis() + tenSeconds, pendingIntent); // 10 seconds for now
+//    }
 
     protected void onDestroy()
     {
@@ -199,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
             if (libraryAndDistance.second < 50) // user is within 50 meters
             {
-                MainActivity.nearLibrary = true;
+                nearLibrary = true;
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString("nearestLibrary", libraryAndDistance.first);
@@ -210,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
             else
             {
-                MainActivity.nearLibrary = false;
+                nearLibrary = false;
             }
         }
 
@@ -292,6 +312,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
         return new Pair<>(closestLibraryName, shortestDistance);
 
+    }
+
+    public void checkIn() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!nearLibrary) {
+            Toast.makeText(this, "You must be in a library to check in.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (hasCheckedIn) {
+            String nearestLibrary = sharedPref.getString("nearestLibrary", "the");
+            Toast.makeText(this, "You have already checked into " + nearestLibrary + " library.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction().add(R.id.contentContainer, new CheckInFragment()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).addToBackStack(null).commit();
     }
 
 

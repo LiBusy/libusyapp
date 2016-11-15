@@ -42,7 +42,7 @@ import java.util.ArrayList;
  * Created by dillonwastrack on 10/11/16.
  */
 
-public class ListViewFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class ListViewFragment extends Fragment {//implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -57,13 +57,13 @@ public class ListViewFragment extends Fragment implements GoogleApiClient.Connec
         //TODO remember to show attributions for showing google info
         setHasOptionsMenu(true);
         // Create an instance of GoogleAPIClient.
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
+//        if (mGoogleApiClient == null) {
+//            mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
+//                    .addConnectionCallbacks(this)
+//                    .addOnConnectionFailedListener(this)
+//                    .addApi(LocationServices.API)
+//                    .build();
+//        }
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
@@ -113,81 +113,67 @@ public class ListViewFragment extends Fragment implements GoogleApiClient.Connec
         switch (id) {
 
             case R.id.check_in:
-                this.checkIn();
+                MainActivity activity = (MainActivity) getActivity();
+                activity.checkIn();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        this.mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-
-        if (this.mLastLocation != null) {
-            this.userLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-        }
-
-        // request location updates
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(5000); //10 minutes
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        LocationServices.FusedLocationApi.requestLocationUpdates(this.mGoogleApiClient, mLocationRequest, this);
-
-    }
-
-    public void onStart() {
-        mGoogleApiClient.connect();
-        super.onStart();
-    }
-
-    public void onStop() {
-        mGoogleApiClient.disconnect();
-        super.onStop();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-
-        this.mLastLocation = location;
-        this.userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-
-    }
-
-    private void checkIn() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        if (!MainActivity.nearLibrary) {
-            Toast.makeText(getActivity(), "You must be in a library to check in.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (MainActivity.hasCheckedIn) {
-            String nearestLibrary = sharedPref.getString("nearestLibrary", "the");
-            Toast.makeText(getActivity(), "You have already checked into " + nearestLibrary + " library.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().add(R.id.contentContainer, new CheckInFragment()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).addToBackStack(null).commit();
-    }
+//    @Override
+//    public void onConnected(@Nullable Bundle bundle) {
+//        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            return;
+//        }
+//        this.mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+//                mGoogleApiClient);
+//
+//        if (this.mLastLocation != null) {
+//            this.userLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+//        }
+//
+//        // request location updates
+//        LocationRequest mLocationRequest = new LocationRequest();
+//        mLocationRequest.setInterval(5000); //10 minutes
+//        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+//        LocationServices.FusedLocationApi.requestLocationUpdates(this.mGoogleApiClient, mLocationRequest, this);
+//
+//    }
+//
+//    public void onStart() {
+//        mGoogleApiClient.connect();
+//        super.onStart();
+//    }
+//
+//    public void onStop() {
+//        mGoogleApiClient.disconnect();
+//        super.onStop();
+//    }
+//
+//    @Override
+//    public void onConnectionSuspended(int i) {
+//
+//    }
+//
+//    @Override
+//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+//
+//    }
+//
+//    @Override
+//    public void onLocationChanged(Location location) {
+//
+//        this.mLastLocation = location;
+//        this.userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+//
+//    }
 
 
 }
