@@ -117,10 +117,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onStop() {
         mGoogleApiClient.disconnect();
-        if (nearLibrary && !hasCheckedIn)
-        {
-            setCheckInAlarm();
-        }
+//        if (nearLibrary && !hasCheckedIn)
+//        {
+//            setCheckInAlarm();
+//        }
         super.onStop();
     }
 
