@@ -50,6 +50,7 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         myHolder.openNow.setText(current.openNow);
         myHolder.busyness.setText(current.busyness);
         myHolder.checkIns.setText(current.checkIns);
+        myHolder.hours.setText("Open Today: "+current.hours);
         MainActivity m = (MainActivity) this.context;
 
         if (m.getUserLatLng() != null)
@@ -92,6 +93,7 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         TextView busyness;
         TextView checkIns;
         TextView distanceAway;
+        TextView hours;
         //TextView textPrice;
 
         // create constructor to get widget reference
@@ -103,6 +105,7 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             busyness = (TextView) itemView.findViewById(R.id.library_busyness);
             checkIns = (TextView) itemView.findViewById(R.id.library_check_ins);
             distanceAway = (TextView) itemView.findViewById(R.id.library_distance);
+            hours = (TextView) itemView.findViewById(R.id.library_hours);
             //textType = (TextView) itemView.findViewById(R.id.textType);
             //textPrice = (TextView) itemView.findViewById(R.id.textPrice);
         }

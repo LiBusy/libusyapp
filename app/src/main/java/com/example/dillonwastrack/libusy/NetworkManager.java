@@ -235,11 +235,12 @@ public class NetworkManager
                                 library.lng = object.getDouble("lng");
                                 library.libraryName = object.getString("title");
                                 library.placeId = object.getString("place_id");
-                                library.address = object.getString("address");
-                                library.phoneNumber = object.getString("phone_number");
+                                //library.address = object.getString("address");
+                                //library.phoneNumber = object.getString("phone_number");
                                 library.openNow = object.getString("open_now");
                                 library.busyness = object.getString("busyness");
                                 library.checkIns = object.getString("check_ins");
+                                library.hours = object.getString("hours");
                                 locations.add(library);
                                 //locations.put(object.getString("library"), new LatLng(lat, lng));
 

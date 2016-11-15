@@ -20,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.dillonwastrack.libusy.adapters.LibraryListAdapter;
@@ -81,6 +82,10 @@ public class ListViewFragment extends Fragment implements GoogleApiClient.Connec
                 locations = result;
                 RecyclerView listView = (RecyclerView) contentView.findViewById(R.id.rv);
                 LibraryListAdapter mAdapter = new LibraryListAdapter(contentView.getContext(), result);
+                mAdapter.notifyDataSetChanged();
+                listView.setVisibility(View.VISIBLE);
+                ProgressBar mProgressBar = (ProgressBar) getActivity().findViewById(R.id.progress_bar);
+                mProgressBar.setVisibility(View.GONE);
                 listView.setAdapter(mAdapter);
                 listView.setHasFixedSize(true);
                 listView.setLayoutManager(new LinearLayoutManager(getActivity()));
