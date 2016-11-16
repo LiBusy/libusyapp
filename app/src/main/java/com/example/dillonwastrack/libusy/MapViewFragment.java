@@ -49,6 +49,9 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 
+/**
+ * Created by dillonwastrack on 10/11/16.
+ */
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener
