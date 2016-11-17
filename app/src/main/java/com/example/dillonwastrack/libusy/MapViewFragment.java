@@ -25,7 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.SearchView;
+import android.support.v7.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -121,6 +121,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.location_menu, menu);
 
+        super.onCreateOptionsMenu(menu, inflater);
         // register heat map switch listeners
         final MenuItem toggleService = menu.findItem(R.id.heatmap);
         final SwitchCompat heatMapSwitch = (SwitchCompat) toggleService.getActionView();
@@ -166,7 +167,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(mainActivity.getComponentName()));
 
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     /**
