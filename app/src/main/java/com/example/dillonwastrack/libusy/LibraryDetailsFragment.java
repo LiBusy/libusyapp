@@ -53,6 +53,12 @@ public class LibraryDetailsFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mainActivity = activity;
+    }
+
     public int getResourceId(String pVariableName, String pResourcename, String pPackageName)
     {
         try {

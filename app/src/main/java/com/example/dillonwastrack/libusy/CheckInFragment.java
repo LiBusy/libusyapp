@@ -1,8 +1,10 @@
 package com.example.dillonwastrack.libusy;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -21,6 +23,7 @@ import com.example.dillonwastrack.libusy.callbacks.ServerCallback;
 public class CheckInFragment extends Fragment{
 
 
+    private Activity mainActivity;
 
     @Nullable
     @Override
@@ -46,15 +49,15 @@ public class CheckInFragment extends Fragment{
     {
         super.onViewCreated(view, savedInstanceState);
 
-        Button veryBusy = (Button) getActivity().findViewById(R.id.btnVeryBusy);
-        Button busy = (Button) getActivity().findViewById(R.id.btnBusy);
-        Button notBusy = (Button) getActivity().findViewById(R.id.btnNotBusy);
+        Button veryBusy = (Button) mainActivity.findViewById(R.id.btnVeryBusy);
+        Button busy = (Button) mainActivity.findViewById(R.id.btnBusy);
+        Button notBusy = (Button) mainActivity.findViewById(R.id.btnNotBusy);
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mainActivity);
 
         final String libraryName = sharedPref.getString("nearestLibrary", "");
 
-        TextView checkInText = (TextView) getActivity().findViewById(R.id.instructionText);
+        TextView checkInText = (TextView) mainActivity.findViewById(R.id.instructionText);
         checkInText.setText("Please select how busy "+ libraryName + " library is.");
 
         // set button listeners
@@ -97,10 +100,25 @@ public class CheckInFragment extends Fragment{
 
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof Activity){
+            mainActivity =(Activity) context;
+        }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mainActivity = activity;
+    }
+
     private void respond()
     {
         // save that user has checked in
-        Toast.makeText(this.getActivity(), "Thank you for your response!", Toast.LENGTH_LONG).show();
+        Toast.makeText(mainActivity, "Thank you for your response!", Toast.LENGTH_LONG).show();
         MainActivity.hasCheckedIn = true;
         FragmentManager fm = getFragmentManager();
         fm.beginTransaction().remove(this).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).commit();
@@ -108,7 +126,7 @@ public class CheckInFragment extends Fragment{
         // post user location to heatmap
         if(!MainActivity.addedToHeatmap)
         {
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mainActivity);
             Double userLat = Double.longBitsToDouble(sharedPref.getLong("userLat", 0));
             Double userLng = Double.longBitsToDouble(sharedPref.getLong("userLng", 0));
             String nearestLibrary = sharedPref.getString("nearestLibrary", "");

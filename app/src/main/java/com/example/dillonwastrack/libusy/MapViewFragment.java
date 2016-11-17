@@ -101,6 +101,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mainActivity = activity;
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -108,6 +114,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
         fragment.getMapAsync(this);
     }
+
 
 
     @Override

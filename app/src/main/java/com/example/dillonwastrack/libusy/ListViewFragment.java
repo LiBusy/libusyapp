@@ -94,11 +94,16 @@ public class ListViewFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        Activity a;
-
+        Log.d("activity", "activity");
         if (context instanceof Activity){
-            mainActivity =(Activity) context;
+            mainActivity = (Activity) context;
         }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mainActivity = activity;
     }
 
     public Library getLibrary(ArrayList<Library> libraries, String key)
@@ -132,6 +137,7 @@ public class ListViewFragment extends Fragment {
                 (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(mainActivity.getComponentName()));
+
     }
 
     @Override
