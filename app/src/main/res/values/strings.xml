@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Libusy</string>
     <string name="title_activity_interactive_map">Map</string>
+    <string name="search_hint">Find A Library</string>
 </resources>

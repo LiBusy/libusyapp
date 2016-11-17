@@ -3,16 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:id="@+id/library_details_fragment">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/common_google_signin_btn_icon_light_focused"
-        android:id="@+id/imageView" />
+        android:src="@drawable/rodgers"
+        android:id="@+id/library_image" />
 
     <TextView
-        android:text="TextView"
+        android:text="Library Text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/library_markup" />

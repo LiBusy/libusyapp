@@ -1,6 +1,7 @@
 package com.example.dillonwastrack.libusy;
 
 import android.content.Context;
+import android.os.Parcel;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.widget.Toast;
@@ -241,6 +242,7 @@ public class NetworkManager
                                 library.busyness = object.getString("busyness");
                                 library.checkIns = object.getString("check_ins");
                                 library.hours = object.getString("hours");
+                                library.libraryId = object.getString("library");
                                 locations.add(library);
                                 //locations.put(object.getString("library"), new LatLng(lat, lng));
 

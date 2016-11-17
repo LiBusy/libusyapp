@@ -1,8 +1,10 @@
 package com.example.dillonwastrack.libusy;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -22,24 +24,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.example.dillonwastrack.libusy.callbacks.HeatmapCallback;
 import com.example.dillonwastrack.libusy.callbacks.MarkerCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
@@ -73,6 +70,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     private ArrayMap<String, LatLng> markerList;
 
+    private Activity mainActivity;
+
 
 
     @Nullable
@@ -91,37 +90,21 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        Activity a;
+
+        if (context instanceof Activity){
+            mainActivity =(Activity) context;
+        }
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         MapFragment fragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-
-        autocompleteFragment.setBoundsBias(new LatLngBounds(
-                new LatLng(33.196241, -87.549949),
-                new LatLng(33.218789, -87.533384))); // university of alabama bounding box
-
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                // TODO: create marker if doesn't exist, zoom to it, showInfoWindow()
-                Log.i("bone", "Place: " + place.getName());
-            }
-
-            @Override
-            public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i("ball", "An error occurred: " + status);
-            }
-        });
-
-        FragmentManager fm = getFragmentManager();
-        fm.beginTransaction()
-                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                .hide(autocompleteFragment)
-                .commit();
 
         fragment.getMapAsync(this);
     }
@@ -134,7 +117,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         // register heat map switch listeners
         final MenuItem toggleService = menu.findItem(R.id.heatmap);
         final SwitchCompat heatMapSwitch = (SwitchCompat) toggleService.getActionView();
-        final Context homeActivity = this.getActivity();
+        final Context homeActivity = mainActivity;
         heatMapSwitch.setThumbResource(R.drawable.heatmap);
         heatMapSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -152,7 +135,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                                 // Add a tile overlay to the map, using the heat map tile provider.
                                 mOverlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
                                 // TODO maybe make markers invisible to see heatmap better
-                                Toast.makeText(getActivity(), "Heatmap engaged!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mainActivity, "Heatmap engaged!", Toast.LENGTH_SHORT).show();
 
                             }
 
@@ -163,10 +146,19 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
                 } else if (!isChecked) {
                     mOverlay.remove();
-                    Toast.makeText(getActivity(), "Heatmap disengaged!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mainActivity, "Heatmap disengaged!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) mainActivity.getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(mainActivity.getComponentName()));
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -201,35 +193,35 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 return true;
 
             case R.id.check_in:
-                MainActivity activity = (MainActivity) getActivity();
+                MainActivity activity = (MainActivity) mainActivity;
                 activity.checkIn();
                 return true;
 
             case R.id.search:
 
-                PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                        getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-
-                if (autocompleteFragment.isHidden())
-                {
-
-                    FragmentManager fm = getFragmentManager();
-                    fm.beginTransaction()
-                            .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                            .show(autocompleteFragment)
-                            .commit();
-                    EditText searchInput = (EditText) getActivity().findViewById(R.id.place_autocomplete_search_input);
-                    searchInput.performClick();
-
-                }
-                else
-                {
-                    FragmentManager fm = getFragmentManager();
-                    fm.beginTransaction()
-                            .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                            .hide(autocompleteFragment)
-                            .commit();
-                }
+//                PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+//                        getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+//
+//                if (autocompleteFragment.isHidden())
+//                {
+//
+//                    FragmentManager fm = getFragmentManager();
+//                    fm.beginTransaction()
+//                            .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+//                            .show(autocompleteFragment)
+//                            .commit();
+//                    EditText searchInput = (EditText) mainActivity.findViewById(R.id.place_autocomplete_search_input);
+//                    searchInput.performClick();
+//
+//                }
+//                else
+//                {
+//                    FragmentManager fm = getFragmentManager();
+//                    fm.beginTransaction()
+//                            .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+//                            .hide(autocompleteFragment)
+//                            .commit();
+//                }
 
                 return true;
 
@@ -267,16 +259,16 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public View getInfoContents(Marker marker) {
 
-                LinearLayout info = new LinearLayout(getActivity());
+                LinearLayout info = new LinearLayout(mainActivity);
                 info.setOrientation(LinearLayout.VERTICAL);
 
-                TextView title = new TextView(getActivity());
+                TextView title = new TextView(mainActivity);
                 title.setTextColor(Color.BLACK);
                 title.setGravity(Gravity.CENTER);
                 title.setTypeface(null, Typeface.BOLD);
                 title.setText(marker.getTitle());
 
-                TextView snippet = new TextView(getActivity());
+                TextView snippet = new TextView(mainActivity);
                 snippet.setTextColor(Color.GRAY);
                 snippet.setText(marker.getSnippet());
 
@@ -288,9 +280,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         });
 
 
-        if (ContextCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
-                    this.getActivity(),
+                    mainActivity,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     1);
 
@@ -311,7 +303,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     private void initializeMarkers() throws AuthFailureError {
         // populate the markerList, add markers from db to map
-        NetworkManager.getInstance().readMarkers(new ArrayMap<String, LatLng>(), getActivity(), this.googleMap, new MarkerCallback() {
+        NetworkManager.getInstance().readMarkers(new ArrayMap<String, LatLng>(), mainActivity, this.googleMap, new MarkerCallback() {
 
             @Override
             public void onSuccess(ArrayMap<String, LatLng> result) {

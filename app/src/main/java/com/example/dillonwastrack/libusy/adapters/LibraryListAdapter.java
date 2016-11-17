@@ -1,6 +1,7 @@
 package com.example.dillonwastrack.libusy.adapters;
 
 import android.content.Context;
+import android.database.Observable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,22 +25,20 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     Library current;
     int currentPos=0;
 
-    // create constructor to innitilize context and data sent from MainActivity
+    OnItemClickListener mItemClickListener;
+
     public LibraryListAdapter(Context context, List<Library> data){
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.data = data;
     }
 
-    // Inflate the layout when viewholder created
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view=inflater.inflate(R.layout.list_card, parent,false);
-        MyHolder holder=new MyHolder(view);
-        return holder;
+        View view = inflater.inflate(R.layout.list_card, parent,false);
+        return new MyHolder(view);
     }
 
-    // Bind data
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
@@ -78,6 +77,15 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     }
 
+    public interface OnItemClickListener {
+        public void onItemClick(View view, int position, String id);
+    }
+
+    public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
+        this.mItemClickListener = mItemClickListener;
+    }
+
+
     // return total item from List
     @Override
     public int getItemCount() {
@@ -85,7 +93,7 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
 
-    class MyHolder extends RecyclerView.ViewHolder{
+    class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView libraryName;
         //ImageView ivFish;
@@ -95,6 +103,14 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         TextView distanceAway;
         TextView hours;
         //TextView textPrice;
+
+        @Override
+        public void onClick(View v) {
+           // System.out.println("onClick");
+            TextView tv = (TextView) v.findViewById(R.id.library_name);
+            String id = tv.getText().toString();
+            mItemClickListener.onItemClick(v, getAdapterPosition(), id); //OnItemClickListener mItemClickListener;
+        }
 
         // create constructor to get widget reference
         public MyHolder(View itemView) {
@@ -106,6 +122,8 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             checkIns = (TextView) itemView.findViewById(R.id.library_check_ins);
             distanceAway = (TextView) itemView.findViewById(R.id.library_distance);
             hours = (TextView) itemView.findViewById(R.id.library_hours);
+
+            itemView.setOnClickListener(this);
             //textType = (TextView) itemView.findViewById(R.id.textType);
             //textPrice = (TextView) itemView.findViewById(R.id.textPrice);
         }

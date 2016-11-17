@@ -2,6 +2,8 @@ package com.example.dillonwastrack.libusy;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.SearchManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -15,6 +17,8 @@ import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.ArrayMap;
+import android.util.Log;
+import android.view.Menu;
 import android.widget.Toast;
 
 import com.example.dillonwastrack.libusy.callbacks.MarkerCallback;
@@ -52,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        handleIntent(getIntent());
         NetworkManager.getInstance(this.getApplicationContext());
 
         setContentView(R.layout.activity_main);
@@ -96,6 +101,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            Log.d("query", query);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        return super.onCreateOptionsMenu(menu);
+    }
 
     public LatLng getUserLatLng() {
         return userLatLng;
