@@ -204,34 +204,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 activity.checkIn();
                 return true;
 
-            case R.id.search:
-
-//                PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-//                        getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-//
-//                if (autocompleteFragment.isHidden())
-//                {
-//
-//                    FragmentManager fm = getFragmentManager();
-//                    fm.beginTransaction()
-//                            .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-//                            .show(autocompleteFragment)
-//                            .commit();
-//                    EditText searchInput = (EditText) mainActivity.findViewById(R.id.place_autocomplete_search_input);
-//                    searchInput.performClick();
-//
-//                }
-//                else
-//                {
-//                    FragmentManager fm = getFragmentManager();
-//                    fm.beginTransaction()
-//                            .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-//                            .hide(autocompleteFragment)
-//                            .commit();
-//                }
-
-                return true;
-
         }
 
         return super.onOptionsItemSelected(item);
