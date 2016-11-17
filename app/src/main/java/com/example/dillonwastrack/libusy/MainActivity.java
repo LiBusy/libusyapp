@@ -302,7 +302,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             return;
         }
         FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().add(R.id.contentContainer, new CheckInFragment()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).addToBackStack(null).commit();
+        fm.beginTransaction().add(R.id.contentContainer, new CheckInFragment())
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void checkDistance()
