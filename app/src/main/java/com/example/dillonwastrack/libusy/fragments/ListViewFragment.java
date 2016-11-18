@@ -51,11 +51,6 @@ public class ListViewFragment extends Fragment {
 
         final View contentView = inflater.inflate(R.layout.fragment_list, container, false);
 
-        ActionBar ab = ((AppCompatActivity) mainActivity).getSupportActionBar();
-        // ab.setDisplayHomeAsUpEnabled();
-        ab.setDisplayHomeAsUpEnabled(false);
-        ab.setDisplayShowHomeEnabled(false);
-
         NetworkManager.getInstance().readLocationsIntoList(new ArrayList<Library>(), mainActivity, new LocationCallback() {
             @Override
             public void onSuccess(ArrayList<Library> result) {

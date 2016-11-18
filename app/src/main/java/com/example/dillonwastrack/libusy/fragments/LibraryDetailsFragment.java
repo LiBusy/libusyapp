@@ -66,6 +66,15 @@ public class LibraryDetailsFragment extends Fragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        ActionBar ab = ((AppCompatActivity) mainActivity).getSupportActionBar();
+        // ab.setDisplayHomeAsUpEnabled();
+        ab.setDisplayHomeAsUpEnabled(false);
+        ab.setDisplayShowHomeEnabled(false);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
