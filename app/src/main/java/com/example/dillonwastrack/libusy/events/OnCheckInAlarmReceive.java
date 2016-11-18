@@ -1,4 +1,4 @@
-package com.example.dillonwastrack.libusy;
+package com.example.dillonwastrack.libusy.events;
 
 import android.app.Notification;
 import android.app.NotificationManager;

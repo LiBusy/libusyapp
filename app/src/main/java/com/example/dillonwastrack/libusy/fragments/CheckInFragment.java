@@ -1,4 +1,4 @@
-package com.example.dillonwastrack.libusy;
+package com.example.dillonwastrack.libusy.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -21,6 +21,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.dillonwastrack.libusy.activities.MainActivity;
+import com.example.dillonwastrack.libusy.singletons.NetworkManager;
+import com.example.dillonwastrack.libusy.R;
 import com.example.dillonwastrack.libusy.callbacks.ServerCallback;
 
 public class CheckInFragment extends Fragment{

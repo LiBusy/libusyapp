@@ -1,12 +1,10 @@
-package com.example.dillonwastrack.libusy;
+package com.example.dillonwastrack.libusy.singletons;
 
 import android.content.Context;
-import android.os.Parcel;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;

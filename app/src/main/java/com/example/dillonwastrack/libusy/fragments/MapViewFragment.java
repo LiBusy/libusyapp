@@ -1,9 +1,8 @@
-package com.example.dillonwastrack.libusy;
+package com.example.dillonwastrack.libusy.fragments;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -15,7 +14,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,6 +28,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.example.dillonwastrack.libusy.activities.MainActivity;
+import com.example.dillonwastrack.libusy.singletons.NetworkManager;
+import com.example.dillonwastrack.libusy.R;
 import com.example.dillonwastrack.libusy.callbacks.HeatmapCallback;
 import com.example.dillonwastrack.libusy.callbacks.MarkerCallback;
 import com.google.android.gms.maps.CameraUpdateFactory;

@@ -1,4 +1,4 @@
-package com.example.dillonwastrack.libusy;
+package com.example.dillonwastrack.libusy.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.dillonwastrack.libusy.R;
 import com.example.dillonwastrack.libusy.models.Library;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.vision.text.Text;

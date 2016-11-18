@@ -1,4 +1,4 @@
-package com.example.dillonwastrack.libusy;
+package com.example.dillonwastrack.libusy.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -21,10 +21,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.support.v7.widget.SearchView;
+
+import com.example.dillonwastrack.libusy.activities.MainActivity;
+import com.example.dillonwastrack.libusy.singletons.NetworkManager;
+import com.example.dillonwastrack.libusy.R;
 import com.example.dillonwastrack.libusy.adapters.LibraryListAdapter;
 import com.example.dillonwastrack.libusy.callbacks.LocationCallback;
 import com.example.dillonwastrack.libusy.models.Library;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 
 import java.util.ArrayList;
 

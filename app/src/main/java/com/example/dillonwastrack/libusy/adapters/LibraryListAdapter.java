@@ -1,7 +1,6 @@
 package com.example.dillonwastrack.libusy.adapters;
 
 import android.content.Context;
-import android.database.Observable;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,10 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.dillonwastrack.libusy.MainActivity;
+import com.example.dillonwastrack.libusy.activities.MainActivity;
 import com.example.dillonwastrack.libusy.R;
 import com.example.dillonwastrack.libusy.models.Library;
-import com.google.android.gms.vision.text.Text;
 
 import java.util.Collections;
 import java.util.List;
