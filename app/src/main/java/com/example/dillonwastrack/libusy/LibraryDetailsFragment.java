@@ -3,6 +3,7 @@ package com.example.dillonwastrack.libusy;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.dillonwastrack.libusy.models.Library;
 import com.google.android.gms.location.places.Place;
+import com.google.android.gms.vision.text.Text;
 
 /**
  * Created by dillonwastrack on 10/31/16.
@@ -30,7 +32,7 @@ public class LibraryDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         this.library = getArguments().getParcelable("library");
-        Log.d("LibraryDetails", library.libraryName);
+        //Log.d("LibraryDetails", library.libraryName);
         //Log.d("instance", savedInstanceState.toString());
         return inflater.inflate(R.layout.library_details, container,false);
     }
@@ -39,9 +41,17 @@ public class LibraryDetailsFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // set image
         ImageView libraryImage = (ImageView) mainActivity.findViewById(R.id.library_image);
         int libraryImageResource = getResourceId(this.library.libraryId, "drawable", mainActivity.getPackageName());
+        libraryImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
         libraryImage.setImageResource(libraryImageResource);
+        libraryImage.setColorFilter(Color.rgb(123, 123, 123), android.graphics.PorterDuff.Mode.MULTIPLY);
+
+        TextView titleText = (TextView) mainActivity.findViewById(R.id.library_title);
+        titleText.setText(this.library.libraryName);
+
+
     }
 
     @Override

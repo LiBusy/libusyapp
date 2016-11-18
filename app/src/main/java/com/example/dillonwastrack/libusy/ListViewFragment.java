@@ -70,7 +70,7 @@ public class ListViewFragment extends Fragment {
 
                         // add the fragment
                         FragmentManager fm = getFragmentManager();
-                        fm.beginTransaction().add(R.id.contentContainer, detailsFragment)
+                        fm.beginTransaction().replace(R.id.contentContainer, detailsFragment)
                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                 .addToBackStack(null)
                                 .commit();
