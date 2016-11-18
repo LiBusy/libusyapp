@@ -46,7 +46,7 @@ public class LibraryDetailsFragment extends Fragment {
         int libraryImageResource = getResourceId(this.library.libraryId, "drawable", mainActivity.getPackageName());
         libraryImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
         libraryImage.setImageResource(libraryImageResource);
-        libraryImage.setColorFilter(Color.rgb(123, 123, 123), android.graphics.PorterDuff.Mode.MULTIPLY);
+        libraryImage.setColorFilter(Color.rgb(80, 80, 80), android.graphics.PorterDuff.Mode.MULTIPLY);
 
         TextView titleText = (TextView) mainActivity.findViewById(R.id.library_title);
         titleText.setText(this.library.libraryName);

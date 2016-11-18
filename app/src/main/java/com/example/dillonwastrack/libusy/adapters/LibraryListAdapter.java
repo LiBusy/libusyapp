@@ -2,10 +2,12 @@ package com.example.dillonwastrack.libusy.adapters;
 
 import android.content.Context;
 import android.database.Observable;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dillonwastrack.libusy.MainActivity;
@@ -45,6 +47,13 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         // Get current position of item in recyclerview to bind data and assign values from list
         MyHolder myHolder= (MyHolder) holder;
         Library current=data.get(position);
+
+        ImageView libraryImage = myHolder.libraryImage;
+        int libraryImageResource = getResourceId(current.libraryId, "drawable", this.context.getPackageName());
+        libraryImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        libraryImage.setImageResource(libraryImageResource);
+        libraryImage.setColorFilter(Color.rgb(80, 80, 80), android.graphics.PorterDuff.Mode.MULTIPLY);
+
         myHolder.libraryName.setText(current.libraryName);
         myHolder.openNow.setText(current.openNow);
         myHolder.busyness.setText(current.busyness);
@@ -102,6 +111,7 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         TextView checkIns;
         TextView distanceAway;
         TextView hours;
+        ImageView libraryImage;
         //TextView textPrice;
 
         @Override
@@ -122,12 +132,22 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             checkIns = (TextView) itemView.findViewById(R.id.library_check_ins);
             distanceAway = (TextView) itemView.findViewById(R.id.library_distance);
             hours = (TextView) itemView.findViewById(R.id.library_hours);
-
+            libraryImage = (ImageView) itemView.findViewById(R.id.library_image);
             itemView.setOnClickListener(this);
             //textType = (TextView) itemView.findViewById(R.id.textType);
             //textPrice = (TextView) itemView.findViewById(R.id.textPrice);
         }
 
+    }
+
+    public int getResourceId(String pVariableName, String pResourcename, String pPackageName)
+    {
+        try {
+            return this.context.getResources().getIdentifier(pVariableName, pResourcename, pPackageName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
     /**

@@ -18,44 +18,75 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
             >
 
-            <TextView
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/library_name"
-                android:textSize="25sp"/>
+                android:id="@+id/library_image_holder"
+                >
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/library_open_now"
-                android:layout_below="@id/library_name"/>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:src="@drawable/rodgers"
+                    android:id="@+id/library_image"
+                    android:scaleType="fitXY"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/library_image_description" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/library_busyness"
-                android:layout_below="@id/library_open_now"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/library_name"
+                    android:textSize="25sp"
+                    android:padding="25dp"
+                    android:textColor="#FFFFFF"
+                    android:layout_centerHorizontal="true" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/library_hours"
-                android:layout_below="@id/library_busyness"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/library_open_now"
+                    android:paddingLeft="25dp"
+                    android:textColor="#FFFFFF"
+                    android:layout_alignBottom="@id/library_name"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/library_check_ins"
-                android:layout_below="@id/library_hours"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/library_busyness"
+                    android:paddingLeft="25dp"
+                    android:layout_below="@id/library_open_now"
+                    android:textColor="#FFFFFF" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/library_distance"
-                android:layout_below="@id/library_check_ins"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/library_hours"
+                    android:paddingLeft="25dp"
+                    android:layout_below="@id/library_busyness"
+                    android:textColor="#FFFFFF" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/library_check_ins"
+                    android:paddingLeft="25dp"
+                    android:layout_below="@id/library_hours"
+                    android:textColor="#FFFFFF" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/library_distance"
+                    android:paddingLeft="25dp"
+                    android:layout_below="@id/library_check_ins"
+                    android:textColor="#FFFFFF" />
+
+
+
+            </RelativeLayout>
 
 
         </RelativeLayout>
