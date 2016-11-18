@@ -50,6 +50,15 @@ public class CheckInFragment extends Fragment{
     }
 
     @Override
+    public void onStop() {
+        super.onDestroy();
+        ActionBar ab = ((AppCompatActivity) mainActivity).getSupportActionBar();
+        // ab.setDisplayHomeAsUpEnabled();
+        ab.setDisplayHomeAsUpEnabled(false);
+        ab.setDisplayShowHomeEnabled(false);
+    }
+
+    @Override
     public void onPrepareOptionsMenu(Menu menu) {
         menu.clear();
     }

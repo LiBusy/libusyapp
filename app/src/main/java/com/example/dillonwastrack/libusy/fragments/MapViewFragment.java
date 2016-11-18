@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.util.ArrayMap;
 import android.view.Gravity;
@@ -84,7 +86,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         this.bruno = new LatLng(33.2111, -87.5493); // Bruno Library coordinates
 
         setHasOptionsMenu(true);
-
 
         return inflater.inflate(R.layout.fragment_gmaps, container, false);
 
@@ -211,7 +212,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     }
 
 
-    /**
+            /**
      * Method called when the map is created.
      * @param googleMap the map
      *

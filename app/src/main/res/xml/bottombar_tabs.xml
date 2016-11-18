@@ -4,7 +4,7 @@
         id="@+id/tab_list"
         icon="@drawable/ic_library"
         title="List"
-        barColorWhenSelected="#19B5FE" />
+        barColorWhenSelected="#ABB7B7" />
     <tab
         id="@+id/tab_map"
         icon="@drawable/ic_map"
