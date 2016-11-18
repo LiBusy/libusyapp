@@ -8,6 +8,8 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -45,6 +47,11 @@ public class ListViewFragment extends Fragment {
         setHasOptionsMenu(true);
 
         final View contentView = inflater.inflate(R.layout.fragment_list, container, false);
+
+        ActionBar ab = ((AppCompatActivity) mainActivity).getSupportActionBar();
+        // ab.setDisplayHomeAsUpEnabled();
+        ab.setDisplayHomeAsUpEnabled(false);
+        ab.setDisplayShowHomeEnabled(false);
 
         NetworkManager.getInstance().readLocationsIntoList(new ArrayList<Library>(), mainActivity, new LocationCallback() {
             @Override

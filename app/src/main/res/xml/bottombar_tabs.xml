@@ -4,10 +4,10 @@
         id="@+id/tab_list"
         icon="@drawable/ic_library"
         title="List"
-        barColorWhenSelected="#22A7F0" />
+        barColorWhenSelected="#19B5FE" />
     <tab
         id="@+id/tab_map"
         icon="@drawable/ic_map"
         title="Map"
-        barColorWhenSelected="#26C281"/>
+        barColorWhenSelected="#3FC380"/>
 </tabs>

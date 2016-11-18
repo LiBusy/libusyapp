@@ -9,9 +9,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -30,6 +33,10 @@ public class CheckInFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         setHasOptionsMenu(true);
+        ActionBar ab = ((AppCompatActivity) mainActivity).getSupportActionBar();
+        // ab.setDisplayHomeAsUpEnabled();
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setDisplayShowHomeEnabled(true);
         return inflater.inflate(R.layout.fragment_check_in, container,false);
     }
 
@@ -98,6 +105,18 @@ public class CheckInFragment extends Fragment{
             }
         });
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                FragmentManager fm = getFragmentManager();
+                fm.popBackStack();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
