@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
+            // TODO do something with the search
             Log.d("query", query);
         }
     }

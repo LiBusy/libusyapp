@@ -56,7 +56,7 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         myHolder.openNow.setText(current.openNow);
         myHolder.busyness.setText(current.busyness);
         myHolder.checkIns.setText(current.checkIns);
-        myHolder.hours.setText("Open Today: "+current.hours);
+        myHolder.hours.setText(context.getString(R.string.open_today, current.hours));
         MainActivity m = (MainActivity) this.context;
 
         if (m.getUserLatLng() != null)
@@ -70,7 +70,7 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         else
         {
-            myHolder.distanceAway.setText("Your location cannot be determined.");
+            myHolder.distanceAway.setText(R.string.location_cannot_be_determined);
         }
         //myHolder.textType.setText("Category: " + current.catName);
         //myHolder.textPrice.setText("Rs. " + current.price + "\\Kg");
