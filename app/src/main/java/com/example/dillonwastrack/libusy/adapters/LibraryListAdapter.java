@@ -72,15 +72,6 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         {
             myHolder.distanceAway.setText(R.string.location_cannot_be_determined);
         }
-        //myHolder.textType.setText("Category: " + current.catName);
-        //myHolder.textPrice.setText("Rs. " + current.price + "\\Kg");
-        //myHolder.textPrice.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
-
-        // load image into imageview using glide
-//        Glide.with(context).load("http://192.168.1.7/test/images/" + current.fishImage)
-//                .placeholder(R.drawable.ic_img_error)
-//                .error(R.drawable.ic_img_error)
-//                .into(myHolder.ivFish);
 
     }
 
@@ -103,18 +94,15 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView libraryName;
-        //ImageView ivFish;
         TextView openNow;
         TextView busyness;
         TextView checkIns;
         TextView distanceAway;
         TextView hours;
         ImageView libraryImage;
-        //TextView textPrice;
 
         @Override
         public void onClick(View v) {
-           // System.out.println("onClick");
             TextView tv = (TextView) v.findViewById(R.id.library_name);
             String id = tv.getText().toString();
             mItemClickListener.onItemClick(v, getAdapterPosition(), id); //OnItemClickListener mItemClickListener;
@@ -124,7 +112,6 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         public MyHolder(View itemView) {
             super(itemView);
             libraryName = (TextView) itemView.findViewById(R.id.library_name);
-            //ivFish= (ImageView) itemView.findViewById(R.id.ivFish);
             openNow = (TextView) itemView.findViewById(R.id.library_open_now);
             busyness = (TextView) itemView.findViewById(R.id.library_busyness);
             checkIns = (TextView) itemView.findViewById(R.id.library_check_ins);
@@ -132,8 +119,6 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             hours = (TextView) itemView.findViewById(R.id.library_hours);
             libraryImage = (ImageView) itemView.findViewById(R.id.library_image);
             itemView.setOnClickListener(this);
-            //textType = (TextView) itemView.findViewById(R.id.textType);
-            //textPrice = (TextView) itemView.findViewById(R.id.textPrice);
         }
 
     }
