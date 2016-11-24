@@ -10,12 +10,18 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.dillonwastrack.libusy.R;
@@ -43,24 +49,51 @@ public class LibraryDetailsFragment extends Fragment {
         // ab.setDisplayHomeAsUpEnabled();
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayShowHomeEnabled(true);
+
+
         //Log.d("LibraryDetails", library.libraryName);
         //Log.d("instance", savedInstanceState.toString());
-        return inflater.inflate(R.layout.library_details, container,false);
+        return inflater.inflate(R.layout.library_details, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mainActivity.setTitle(this.library.libraryName);
         // set image
-        ImageView libraryImage = (ImageView) mainActivity.findViewById(R.id.library_image);
-        int libraryImageResource = getResourceId(this.library.libraryId, "drawable", mainActivity.getPackageName());
-        libraryImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        libraryImage.setImageResource(libraryImageResource);
-        libraryImage.setColorFilter(Color.rgb(80, 80, 80), android.graphics.PorterDuff.Mode.MULTIPLY);
+//        ImageView libraryImage = (ImageView) mainActivity.findViewById(R.id.library_image);
+//        int libraryImageResource = getResourceId(this.library.libraryId, "drawable", mainActivity.getPackageName());
+//        libraryImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//        libraryImage.setImageResource(libraryImageResource);
+//        libraryImage.setColorFilter(Color.rgb(80, 80, 80), android.graphics.PorterDuff.Mode.MULTIPLY);
+//
+//        TextView titleText = (TextView) mainActivity.findViewById(R.id.library_title);
+//        titleText.setText(this.library.libraryName);
+        final WebView myWebView = (WebView) mainActivity.findViewById(R.id.library_web_page);
+        WebSettings webSettings = myWebView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
 
-        TextView titleText = (TextView) mainActivity.findViewById(R.id.library_title);
-        titleText.setText(this.library.libraryName);
+        final ProgressBar Pbar;
+        //final TextView txtview = (TextView) mainActivity.findViewById(R.id.tV1);
+        Pbar = (ProgressBar) mainActivity.findViewById(R.id.pB1);
+
+        //myWebView.setWebViewClient(new WebViewClient());
+        myWebView.setWebChromeClient(new WebChromeClient() {
+            public void onProgressChanged(WebView view, int progress) {
+                if(progress < 100 && Pbar.getVisibility() == ProgressBar.GONE){
+                    Pbar.setVisibility(ProgressBar.VISIBLE);
+                    //txtview.setVisibility(View.VISIBLE);
+                }
+
+                Pbar.setProgress(progress);
+                if(progress == 100) {
+                    Pbar.setVisibility(ProgressBar.GONE);
+                    //txtview.setVisibility(View.GONE);
+                }
+            }
+        });
+        myWebView.loadUrl("https://www.lib.ua.edu/libraries/"+this.library.libraryId+"/");
 
 
     }
@@ -68,10 +101,6 @@ public class LibraryDetailsFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        ActionBar ab = ((AppCompatActivity) mainActivity).getSupportActionBar();
-        // ab.setDisplayHomeAsUpEnabled();
-        ab.setDisplayHomeAsUpEnabled(false);
-        ab.setDisplayShowHomeEnabled(false);
     }
 
     @Override

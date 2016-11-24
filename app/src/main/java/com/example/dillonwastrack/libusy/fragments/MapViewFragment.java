@@ -311,5 +311,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         super.onStop();
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        mainActivity.setTitle(R.string.app_name);
+        ActionBar ab = ((AppCompatActivity) mainActivity).getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(false);
+        ab.setDisplayShowHomeEnabled(false);
+    }
 }

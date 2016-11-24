@@ -84,8 +84,6 @@ public class ListViewFragment extends Fragment {
                 });
 
                 listView.setVisibility(View.VISIBLE);
-                ProgressBar mProgressBar = (ProgressBar) mainActivity.findViewById(R.id.progress_bar);
-                mProgressBar.setVisibility(View.GONE);
                 listView.setAdapter(mAdapter);
                 listView.setHasFixedSize(true);
                 listView.setLayoutManager(new LinearLayoutManager(mainActivity));
@@ -99,7 +97,7 @@ public class ListViewFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        Log.d("activity", "activity");
+        //Log.d("activity", "activity");
         if (context instanceof Activity){
             mainActivity = (Activity) context;
         }
@@ -128,6 +126,8 @@ public class ListViewFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
         super.onViewCreated(view, savedInstanceState);
+        ProgressBar mProgressBar = (ProgressBar) mainActivity.findViewById(R.id.progress_bar);
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -158,6 +158,12 @@ public class ListViewFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        mainActivity.setTitle(R.string.app_name);
+        ActionBar ab = ((AppCompatActivity) mainActivity).getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(false);
+        ab.setDisplayShowHomeEnabled(false);
+    }
 }

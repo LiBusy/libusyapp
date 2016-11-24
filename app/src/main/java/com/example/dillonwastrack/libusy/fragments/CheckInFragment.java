@@ -136,7 +136,7 @@ public class CheckInFragment extends Fragment{
         super.onAttach(context);
 
         if (context instanceof Activity){
-            mainActivity =(Activity) context;
+            mainActivity = (Activity) context;
         }
     }
 
@@ -149,7 +149,7 @@ public class CheckInFragment extends Fragment{
     private void respond()
     {
         // save that user has checked in
-        Toast.makeText(mainActivity, "Thank you for your response!", Toast.LENGTH_LONG).show();
+        Toast.makeText(mainActivity, "Thank you for your response!", Toast.LENGTH_SHORT).show();
         MainActivity.hasCheckedIn = true;
         FragmentManager fm = getFragmentManager();
         fm.beginTransaction().remove(this).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).commit();
