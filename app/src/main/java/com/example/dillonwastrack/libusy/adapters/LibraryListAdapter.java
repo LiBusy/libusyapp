@@ -2,6 +2,7 @@ package com.example.dillonwastrack.libusy.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -109,7 +110,7 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         // create constructor to get widget reference
-        public MyHolder(View itemView) {
+        public MyHolder(final View itemView) {
             super(itemView);
             libraryName = (TextView) itemView.findViewById(R.id.library_name);
             openNow = (TextView) itemView.findViewById(R.id.library_open_now);
@@ -118,6 +119,16 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             distanceAway = (TextView) itemView.findViewById(R.id.library_distance);
             hours = (TextView) itemView.findViewById(R.id.library_hours);
             libraryImage = (ImageView) itemView.findViewById(R.id.library_image);
+            final CardView cv = (CardView)itemView.findViewById(R.id.learn_more);
+            cv.setTag(R.id.library_name, libraryName);
+            cv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TextView text = (TextView) cv.getTag(R.id.library_name);
+                    String id = text.getText().toString();
+                    mItemClickListener.onItemClick(v, getAdapterPosition(), id);
+                }
+            });
             itemView.setOnClickListener(this);
         }
 
