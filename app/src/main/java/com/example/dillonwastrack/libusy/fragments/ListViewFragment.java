@@ -8,6 +8,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -87,11 +88,60 @@ public class ListViewFragment extends Fragment {
                 listView.setAdapter(mAdapter);
                 listView.setHasFixedSize(true);
                 listView.setLayoutManager(new LinearLayoutManager(mainActivity));
+            }
+        });
+
+        SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) contentView.findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                NetworkManager.getInstance().readLocationsIntoList(new ArrayList<Library>(), mainActivity, new LocationCallback() {
+                    @Override
+                    public void onSuccess(ArrayList<Library> result) {
+                        locations = result;
+                        RecyclerView listView = (RecyclerView) contentView.findViewById(R.id.rv);
+                        LibraryListAdapter mAdapter = new LibraryListAdapter(contentView.getContext(), result);
+
+                        mAdapter.notifyDataSetChanged();
+
+                        mAdapter.SetOnItemClickListener(new LibraryListAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View v, int position, String library) {
+
+                                // get Library object based on item clicked
+                                Library selectedLibrary = getLibrary(locations, library);
+
+                                // set Library object as argument to LibraryDetailsFragment
+                                LibraryDetailsFragment detailsFragment = new LibraryDetailsFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable("library", selectedLibrary);
+                                detailsFragment.setArguments(bundle);
+
+                                // add the fragment
+                                FragmentManager fm = getFragmentManager();
+                                fm.beginTransaction().replace(R.id.contentContainer, detailsFragment)
+                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                        .addToBackStack(null)
+                                        .commit();
+
+                            }
+                        });
+
+                        listView.setVisibility(View.VISIBLE);
+                        listView.setAdapter(mAdapter);
+                        listView.setHasFixedSize(true);
+                        listView.setLayoutManager(new LinearLayoutManager(mainActivity));
+                        SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) contentView.findViewById(R.id.swipeRefreshLayout);
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                });
 
             }
         });
+
         return contentView;
     }
+
 
     @Override
     public void onAttach(Context context) {
