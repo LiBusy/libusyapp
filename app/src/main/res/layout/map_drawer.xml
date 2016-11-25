@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--<group android:id="@+id/menu_group">-->
+
+        <!--<item android:id="@+id/search"-->
+            <!--android:title="Search"-->
+            <!--android:icon="@drawable/ic_search"-->
+            <!--app:showAsAction="collapseActionView|ifRoom"-->
+            <!--app:actionViewClass="android.support.v7.widget.SearchView"/>-->
+
+        <!--<item android:id="@+id/check_in"-->
+            <!--android:title="Check In"-->
+            <!--android:thumb="@drawable/ic_map"-->
+            <!--android:icon="@drawable/ic_map"-->
+            <!--app:showAsAction="ifRoom|withText"/>-->
+
+    <!--</group>-->
+
+</LinearLayout>

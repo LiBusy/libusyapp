@@ -8,12 +8,16 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,6 +47,12 @@ public class ListViewFragment extends Fragment {
     private ArrayList<Library> locations;
 
     private Activity mainActivity;
+
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
+    private String mActivityTitle;
+
+    private FragmentManager.OnBackStackChangedListener mOnBackStackChangedListener;
 
 
     @Nullable
@@ -143,6 +153,8 @@ public class ListViewFragment extends Fragment {
     }
 
 
+
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -178,6 +190,45 @@ public class ListViewFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ProgressBar mProgressBar = (ProgressBar) mainActivity.findViewById(R.id.progress_bar);
         mProgressBar.setVisibility(View.GONE);
+
+        mDrawerLayout = (DrawerLayout) mainActivity.findViewById(R.id.drawer_layout);
+        mActivityTitle = mainActivity.getTitle().toString();
+
+        mDrawerToggle = new ActionBarDrawerToggle(mainActivity,
+                mDrawerLayout,
+                // R.drawable.ic_drawer,
+                R.string.drawer_open,
+                R.string.drawer_close);
+
+        mOnBackStackChangedListener = new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                syncActionBarArrowState();
+            }
+        };
+
+        setupDrawer();
+
+        NavigationView nav = (NavigationView)mainActivity.findViewById(R.id.navigation_view);
+        nav.getMenu().clear();
+        nav.inflateMenu(R.menu.list_view_navigation_menu);
+
+        nav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                int id = item.getItemId();
+                switch (id) {
+
+                    case R.id.check_in:
+                        MainActivity activity = (MainActivity) mainActivity;
+                        activity.checkIn();
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        return true;
+
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -203,7 +254,19 @@ public class ListViewFragment extends Fragment {
             case R.id.check_in:
                 MainActivity activity = (MainActivity) mainActivity;
                 activity.checkIn();
+
                 return true;
+        }
+
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        if (mDrawerToggle.isDrawerIndicatorEnabled() &&
+                mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        } else if (item.getItemId() == android.R.id.home &&
+                getFragmentManager().popBackStackImmediate()) {
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -211,9 +274,52 @@ public class ListViewFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
         mainActivity.setTitle(R.string.app_name);
         ActionBar ab = ((AppCompatActivity) mainActivity).getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(false);
-        ab.setDisplayShowHomeEnabled(false);
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setDisplayShowHomeEnabled(true);
+    }
+
+    private void setupDrawer() {
+        mDrawerToggle = new ActionBarDrawerToggle(mainActivity,
+                mDrawerLayout,
+                // R.drawable.ic_drawer,
+                R.string.drawer_open,
+                R.string.drawer_close) {
+
+            /**
+             * Called when a drawer has settled in a completely open state.
+             */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                mDrawerToggle.setDrawerIndicatorEnabled(true);
+            }
+
+            /**
+             * Called when a drawer has settled in a completely closed state.
+             */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                syncActionBarArrowState();
+            }
+        };
+
+        mDrawerToggle.setDrawerArrowDrawable(new DrawerArrowDrawable(mainActivity));
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        getFragmentManager().addOnBackStackChangedListener(mOnBackStackChangedListener);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
+        syncActionBarArrowState();
+    }
+
+    private void syncActionBarArrowState() {
+        try {
+            int backStackEntryCount =
+                    getFragmentManager().getBackStackEntryCount();
+            mDrawerToggle.setDrawerIndicatorEnabled(backStackEntryCount == 0);
+        }catch (NullPointerException e){
+        }
+
+
     }
 }

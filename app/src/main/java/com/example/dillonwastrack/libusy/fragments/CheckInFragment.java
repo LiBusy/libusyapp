@@ -3,7 +3,6 @@ package com.example.dillonwastrack.libusy.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.dillonwastrack.libusy.activities.MainActivity;
 import com.example.dillonwastrack.libusy.singletons.NetworkManager;
@@ -37,7 +35,6 @@ public class CheckInFragment extends Fragment{
     {
         setHasOptionsMenu(true);
         ActionBar ab = ((AppCompatActivity) mainActivity).getSupportActionBar();
-        // ab.setDisplayHomeAsUpEnabled();
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayShowHomeEnabled(true);
         return inflater.inflate(R.layout.fragment_check_in, container,false);
@@ -47,15 +44,6 @@ public class CheckInFragment extends Fragment{
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.check_in_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public void onStop() {
-        super.onDestroy();
-        ActionBar ab = ((AppCompatActivity) mainActivity).getSupportActionBar();
-        // ab.setDisplayHomeAsUpEnabled();
-        ab.setDisplayHomeAsUpEnabled(false);
-        ab.setDisplayShowHomeEnabled(false);
     }
 
     @Override
@@ -148,21 +136,7 @@ public class CheckInFragment extends Fragment{
 
     private void respond()
     {
-        // save that user has checked in
-        Toast.makeText(mainActivity, "Thank you for your response!", Toast.LENGTH_SHORT).show();
-        MainActivity.hasCheckedIn = true;
-        FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().remove(this).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).commit();
-
-        // post user location to heatmap
-        if(!MainActivity.addedToHeatmap)
-        {
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mainActivity);
-            Double userLat = Double.longBitsToDouble(sharedPref.getLong("userLat", 0));
-            Double userLng = Double.longBitsToDouble(sharedPref.getLong("userLng", 0));
-            String nearestLibrary = sharedPref.getString("nearestLibrary", "");
-            NetworkManager.getInstance().postUserLocation(userLat.toString(), userLng.toString(), nearestLibrary);
-        }
-
+        ((MainActivity) mainActivity).respondToCheckIn();
     }
+
 }

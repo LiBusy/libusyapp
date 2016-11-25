@@ -3,6 +3,7 @@ package com.example.dillonwastrack.libusy.fragments;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -10,12 +11,18 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SwitchCompat;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -75,6 +82,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     private Activity mainActivity;
 
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
+    private String mActivityTitle;
+
+    private DrawerArrowDrawable backArrow;
+
+    private FragmentManager.OnBackStackChangedListener mOnBackStackChangedListener;
 
 
     @Nullable
@@ -87,15 +101,31 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
         setHasOptionsMenu(true);
 
+        mOnBackStackChangedListener = new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                syncActionBarArrowState();
+            }
+        };
+
         return inflater.inflate(R.layout.fragment_gmaps, container, false);
 
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        getFragmentManager().removeOnBackStackChangedListener(mOnBackStackChangedListener);
+        MapFragment fragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        if(fragment != null)
+        {
+            getChildFragmentManager().beginTransaction().remove(fragment).commit();
+        }
+    }
+
+            @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
-        Activity a;
 
         if (context instanceof Activity){
             mainActivity =(Activity) context;
@@ -115,30 +145,33 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         MapFragment fragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
         fragment.getMapAsync(this);
-    }
 
+        mDrawerLayout = (DrawerLayout) mainActivity.findViewById(R.id.drawer_layout);
+        mActivityTitle = mainActivity.getTitle().toString();
 
+        setupDrawer();
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.location_menu, menu);
+        NavigationView nav = (NavigationView)mainActivity.findViewById(R.id.navigation_view);
+        nav.getMenu().clear();
+        nav.inflateMenu(R.menu.map_navigation_menu);
 
-        super.onCreateOptionsMenu(menu, inflater);
-        // register heat map switch listeners
-        final MenuItem toggleService = menu.findItem(R.id.heatmap);
-        final SwitchCompat heatMapSwitch = (SwitchCompat) toggleService.getActionView();
-        final Context homeActivity = mainActivity;
-        heatMapSwitch.setThumbResource(R.drawable.heatmap);
-        heatMapSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
+        MenuItem switchItem = nav.getMenu().findItem(R.id.heatmap);
+        CompoundButton switchView = (CompoundButton) MenuItemCompat.getActionView(switchItem);
+        switchView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     try {
                         NetworkManager.getInstance().readUserMarkers(new ArrayList<LatLng>(), new HeatmapCallback() {
                             @Override
                             public void onSuccess(ArrayList<LatLng> markerList) {
                                 userMarkerList = markerList;
+                                if(markerList.isEmpty())
+                                {
+                                    Toast.makeText(mainActivity, "No check-ins in the past hour.", Toast.LENGTH_SHORT).show();
+                                    buttonView.setChecked(false);
+                                    return;
+                                }
                                 mProvider = new HeatmapTileProvider.Builder()
                                         .data(userMarkerList)
                                         .build();
@@ -151,16 +184,65 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
                         });
                     } catch (JSONException e) {
-                        Toast.makeText(homeActivity, "Problem reading list of locations.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mainActivity, "Problem reading list of locations.", Toast.LENGTH_SHORT).show();
                     }
 
                 } else if (!isChecked) {
-                    mOverlay.remove();
-                    Toast.makeText(mainActivity, "Heatmap disengaged!", Toast.LENGTH_SHORT).show();
+                    if(mOverlay != null)
+                    {
+                        mOverlay.remove();
+                        Toast.makeText(mainActivity, "Heatmap disengaged!", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
             }
         });
 
+        nav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                int id = item.getItemId();
+                switch (id) {
+                    case R.id.rodgers_library:
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(rodgers, 19)); // move camera
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        return true;
+
+                    case R.id.mclure_library:
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mclure, 19)); // move camera
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        return true;
+
+                    case R.id.bruno_library:
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bruno, 19)); // move camera
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        return true;
+
+                    case R.id.gorgas_library:
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gorgas, 19)); // move camera
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        return true;
+
+                    case R.id.check_in:
+                        MainActivity activity = (MainActivity) mainActivity;
+                        activity.checkIn();
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+    }
+
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.location_menu, menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
         // Associate searchable configuration with the SearchView
         SearchManager searchManager =
                 (SearchManager) mainActivity.getSystemService(Context.SEARCH_SERVICE);
@@ -183,29 +265,26 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         int id = item.getItemId();
         switch (id) {
-            case R.id.rodgers_library:
-                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.rodgers, 19)); // move camera
-                return true;
-
-            case R.id.mclure_library:
-                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.mclure, 19)); // move camera
-                return true;
-
-            case R.id.bruno_library:
-                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.bruno, 19)); // move camera
-                return true;
-
-            case R.id.gorgas_library:
-                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.gorgas, 19)); // move camera
-                return true;
 
             case R.id.check_in:
                 MainActivity activity = (MainActivity) mainActivity;
                 activity.checkIn();
                 return true;
 
+        }
+
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        if (mDrawerToggle.isDrawerIndicatorEnabled() &&
+                mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        } else if (item.getItemId() == android.R.id.home &&
+                getFragmentManager().popBackStackImmediate()) {
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -282,6 +361,33 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
+    private void setupDrawer() {
+        mDrawerToggle = new ActionBarDrawerToggle(mainActivity,
+                mDrawerLayout,
+                R.string.drawer_open,
+                R.string.drawer_close) {
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                mDrawerToggle.setDrawerIndicatorEnabled(true);
+            }
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                syncActionBarArrowState();
+            }
+        };
+
+
+        mDrawerToggle.setDrawerArrowDrawable(new DrawerArrowDrawable(mainActivity));
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        getFragmentManager().addOnBackStackChangedListener(mOnBackStackChangedListener);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
+        syncActionBarArrowState();
+    }
+
     private void initializeMarkers() throws AuthFailureError {
         // populate the markerList, add markers from db to map
         NetworkManager.getInstance().readMarkers(new ArrayMap<String, LatLng>(), mainActivity, this.googleMap, new MarkerCallback() {
@@ -292,8 +398,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
-        //this.googleMap.setOnMarkerClickListener(this); // TODO consider not using this
-
     }
 
     /** Called when the user clicks a marker. */
@@ -302,21 +406,29 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         return false;
     }
 
-
-    public void onStart() {
-        super.onStart();
-    }
-
-    public void onStop() {
-        super.onStop();
-    }
-
     @Override
     public void onResume() {
         super.onResume();
+        getFragmentManager().addOnBackStackChangedListener(mOnBackStackChangedListener);
         mainActivity.setTitle(R.string.app_name);
         ActionBar ab = ((AppCompatActivity) mainActivity).getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(false);
-        ab.setDisplayShowHomeEnabled(false);
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setDisplayShowHomeEnabled(true);
+    }
+
+    private void syncActionBarArrowState() {
+        try {
+            int backStackEntryCount =
+                    getFragmentManager().getBackStackEntryCount();
+            mDrawerToggle.setDrawerIndicatorEnabled(backStackEntryCount == 0);
+        }catch (NullPointerException e){
+        }
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getFragmentManager().removeOnBackStackChangedListener(mOnBackStackChangedListener);
     }
 }

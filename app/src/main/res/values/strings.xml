@@ -1,8 +1,10 @@
 <resources>
-    <string name="app_name">Libusy</string>
+    <string name="app_name">Stacks</string>
     <string name="title_activity_interactive_map">Map</string>
     <string name="search_hint">Find A Library</string>
     <string name="library_image_description">Library Image</string>
     <string name="open_today">"Open Today: %s"</string>
     <string name="location_cannot_be_determined">Your location cannot be determined.</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 </resources>
