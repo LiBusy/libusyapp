@@ -2,8 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item android:title="Interact">
+        <menu>
+            <item android:id="@+id/check_in"
+                android:title="Check In"
+                android:thumb="@drawable/ic_map"
+                android:icon="@drawable/ic_map"
+                app:showAsAction="ifRoom"/>
+        </menu>
+
+    </item>
+
     <item
-        android:title="Widgets"
+        android:title="Map Quick View"
         >
         <menu>
             <!--<item-->
@@ -17,21 +28,19 @@
 
             <item android:id="@+id/rodgers_library"
                 android:title="Rodgers Library"
+                android:icon="@drawable/ic_library"
                 />
             <item android:id="@+id/mclure_library"
                 android:title="McLure Library"
+                android:icon="@drawable/ic_library"
                 />
             <item android:id="@+id/bruno_library"
                 android:title="Bruno Library"
+                android:icon="@drawable/ic_library"
                 />
             <item android:id="@+id/gorgas_library"
                 android:title="Gorgas Library"
-                />
-
-            <item android:id="@+id/heatmap"
-                android:title="Heatmap"
-                android:checkable="true"
-                app:actionViewClass="android.support.v7.widget.SwitchCompat"
+                android:icon="@drawable/ic_library"
                 />
             <!--<item-->
                 <!--android:title="EditText"-->
@@ -45,6 +54,19 @@
             <!--<item-->
                 <!--android:title="Custom LinearLayout number"-->
                 <!--app:actionLayout="@layout/widget_custom" />-->
+        </menu>
+    </item>
+
+    <item
+        android:title="Map Options">
+
+        <menu>
+            <item android:id="@+id/heatmap"
+                android:title="Heatmap"
+                android:checkable="true"
+                android:icon="@drawable/heatmap"
+                app:actionViewClass="android.support.v7.widget.SwitchCompat"
+                />
         </menu>
     </item>
 </menu>

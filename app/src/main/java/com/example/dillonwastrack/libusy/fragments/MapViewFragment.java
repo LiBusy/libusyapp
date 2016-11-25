@@ -152,6 +152,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         setupDrawer();
 
         NavigationView nav = (NavigationView)mainActivity.findViewById(R.id.navigation_view);
+        nav.getMenu().clear();
+        nav.inflateMenu(R.menu.map_navigation_menu);
+
         MenuItem switchItem = nav.getMenu().findItem(R.id.heatmap);
         CompoundButton switchView = (CompoundButton) MenuItemCompat.getActionView(switchItem);
         switchView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -223,6 +226,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                     case R.id.check_in:
                         MainActivity activity = (MainActivity) mainActivity;
                         activity.checkIn();
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
                         return true;
 
                 }
@@ -368,9 +372,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 mDrawerToggle.setDrawerIndicatorEnabled(true);
-                //ActionBar ab = getSupportActionBar();
-                // ab.setTitle("Navigation!");
-                // ab.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             /** Called when a drawer has settled in a completely closed state. */
@@ -434,17 +435,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         mainActivity.setTitle(R.string.app_name);
         ActionBar ab = ((AppCompatActivity) mainActivity).getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
-//
-//        //ab.setHomeAsUpIndicator(R.drawable.ic_drawer);
         ab.setDisplayShowHomeEnabled(true);
-        //mDrawerToggle.setDrawerArrowDrawable(new DrawerArrowDrawable(mainActivity));
     }
 
     private void syncActionBarArrowState() {
         try {
             int backStackEntryCount =
                     getFragmentManager().getBackStackEntryCount();
-            Log.d("backstack", Integer.toString(backStackEntryCount));
             mDrawerToggle.setDrawerIndicatorEnabled(backStackEntryCount == 0);
         }catch (NullPointerException e){
         }
