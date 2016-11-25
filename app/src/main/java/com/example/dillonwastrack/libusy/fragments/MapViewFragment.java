@@ -176,9 +176,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                                 mProvider = new HeatmapTileProvider.Builder()
                                         .data(userMarkerList)
                                         .build();
+                                mDrawerLayout.closeDrawer(GravityCompat.START);
                                 // Add a tile overlay to the map, using the heat map tile provider.
                                 mOverlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-                                mDrawerLayout.closeDrawer(GravityCompat.START);
                                 // TODO maybe make markers invisible to see heatmap better
                                 Toast.makeText(mainActivity, "Heatmap on", Toast.LENGTH_SHORT).show();
 
