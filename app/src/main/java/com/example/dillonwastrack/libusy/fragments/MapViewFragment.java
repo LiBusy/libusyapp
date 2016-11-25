@@ -180,7 +180,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                                 mOverlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
                                 mDrawerLayout.closeDrawer(GravityCompat.START);
                                 // TODO maybe make markers invisible to see heatmap better
-                                Toast.makeText(mainActivity, "Heatmap engaged!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mainActivity, "Heatmap on", Toast.LENGTH_SHORT).show();
 
                             }
 
@@ -195,7 +195,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                     {
                         mOverlay.remove();
                         mDrawerLayout.closeDrawer(GravityCompat.START);
-                        Toast.makeText(mainActivity, "Heatmap disengaged!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mainActivity, "Heatmap off", Toast.LENGTH_SHORT).show();
                     }
 
                 }
