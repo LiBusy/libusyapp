@@ -364,7 +364,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     private void setupDrawer() {
         mDrawerToggle = new ActionBarDrawerToggle(mainActivity,
                 mDrawerLayout,
-                // R.drawable.ic_drawer,
                 R.string.drawer_open,
                 R.string.drawer_close) {
 
@@ -378,9 +377,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 syncActionBarArrowState();
-                // ActionBar ab = getSupportActionBar();
-                // ab.setTitle(mActivityTitle);
-                //  ab.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
 
@@ -389,9 +385,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         getFragmentManager().addOnBackStackChangedListener(mOnBackStackChangedListener);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
-        //mDrawerToggle.setDrawerIndicatorEnabled(true);
         syncActionBarArrowState();
-        //mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_drawer);
     }
 
     private void initializeMarkers() throws AuthFailureError {
@@ -404,28 +398,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
-        //this.googleMap.setOnMarkerClickListener(this); // TODO consider not using this
-
     }
 
     /** Called when the user clicks a marker. */
     @Override
     public boolean onMarkerClick(final Marker marker) {
         return false;
-    }
-
-
-    public void onStart() {
-        super.onStart();
-    }
-
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
     }
 
     @Override
@@ -446,9 +424,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         }catch (NullPointerException e){
         }
 
-
     }
-
 
     @Override
     public void onDestroy() {

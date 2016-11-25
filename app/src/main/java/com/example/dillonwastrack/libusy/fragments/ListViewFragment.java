@@ -18,7 +18,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,7 +33,6 @@ import com.example.dillonwastrack.libusy.R;
 import com.example.dillonwastrack.libusy.adapters.LibraryListAdapter;
 import com.example.dillonwastrack.libusy.callbacks.LocationCallback;
 import com.example.dillonwastrack.libusy.models.Library;
-import com.google.android.gms.maps.CameraUpdateFactory;
 
 import java.util.ArrayList;
 
@@ -283,14 +281,6 @@ public class ListViewFragment extends Fragment {
         ab.setDisplayShowHomeEnabled(true);
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        ActionBar ab = ((AppCompatActivity) mainActivity).getSupportActionBar();
-//        ab.setDisplayHomeAsUpEnabled(false);
-//        ab.setDisplayShowHomeEnabled(false);
-//    }
-
     private void setupDrawer() {
         mDrawerToggle = new ActionBarDrawerToggle(mainActivity,
                 mDrawerLayout,
@@ -312,9 +302,6 @@ public class ListViewFragment extends Fragment {
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 syncActionBarArrowState();
-                // ActionBar ab = getSupportActionBar();
-                // ab.setTitle(mActivityTitle);
-                //  ab.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
 
@@ -322,9 +309,7 @@ public class ListViewFragment extends Fragment {
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         getFragmentManager().addOnBackStackChangedListener(mOnBackStackChangedListener);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
-        //mDrawerToggle.setDrawerIndicatorEnabled(true);
         syncActionBarArrowState();
-        //mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_drawer);
     }
 
     private void syncActionBarArrowState() {
