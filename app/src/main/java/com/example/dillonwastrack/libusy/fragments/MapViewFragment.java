@@ -168,6 +168,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                                 userMarkerList = markerList;
                                 if(markerList.isEmpty())
                                 {
+                                    mDrawerLayout.closeDrawer(GravityCompat.START);
                                     Toast.makeText(mainActivity, "No check-ins in the past hour.", Toast.LENGTH_SHORT).show();
                                     buttonView.setChecked(false);
                                     return;
@@ -177,6 +178,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                                         .build();
                                 // Add a tile overlay to the map, using the heat map tile provider.
                                 mOverlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+                                mDrawerLayout.closeDrawer(GravityCompat.START);
                                 // TODO maybe make markers invisible to see heatmap better
                                 Toast.makeText(mainActivity, "Heatmap engaged!", Toast.LENGTH_SHORT).show();
 
@@ -184,6 +186,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
                         });
                     } catch (JSONException e) {
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
                         Toast.makeText(mainActivity, "Problem reading list of locations.", Toast.LENGTH_SHORT).show();
                     }
 
@@ -191,6 +194,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                     if(mOverlay != null)
                     {
                         mOverlay.remove();
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
                         Toast.makeText(mainActivity, "Heatmap disengaged!", Toast.LENGTH_SHORT).show();
                     }
 
