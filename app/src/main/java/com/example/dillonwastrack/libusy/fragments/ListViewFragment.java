@@ -8,12 +8,13 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,6 +44,10 @@ public class ListViewFragment extends Fragment {
     private ArrayList<Library> locations;
 
     private Activity mainActivity;
+
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
+    private String mActivityTitle;
 
 
     @Nullable
@@ -139,8 +144,19 @@ public class ListViewFragment extends Fragment {
             }
         });
 
+        mDrawerLayout = (DrawerLayout) mainActivity.findViewById(R.id.drawer_layout);
+        mActivityTitle = mainActivity.getTitle().toString();
+
+        mDrawerToggle = new ActionBarDrawerToggle(mainActivity,
+                mDrawerLayout,
+                // R.drawable.ic_drawer,
+                R.string.drawer_open,
+                R.string.drawer_close);
+
         return contentView;
     }
+
+
 
 
     @Override
@@ -203,6 +219,7 @@ public class ListViewFragment extends Fragment {
             case R.id.check_in:
                 MainActivity activity = (MainActivity) mainActivity;
                 activity.checkIn();
+
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -211,9 +228,18 @@ public class ListViewFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        mDrawerToggle.setDrawerIndicatorEnabled(false);
         mainActivity.setTitle(R.string.app_name);
         ActionBar ab = ((AppCompatActivity) mainActivity).getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(false);
         ab.setDisplayShowHomeEnabled(false);
     }
+
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        ActionBar ab = ((AppCompatActivity) mainActivity).getSupportActionBar();
+//        ab.setDisplayHomeAsUpEnabled(false);
+//        ab.setDisplayShowHomeEnabled(false);
+//    }
 }

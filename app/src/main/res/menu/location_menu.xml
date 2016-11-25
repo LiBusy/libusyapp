@@ -1,18 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" >
 
 <group android:id="@+id/menu_group">
-    <item android:id="@+id/rodgers_library"
-        android:title="Rodgers Library"
-        app:showAsAction="never"/>
-    <item android:id="@+id/mclure_library"
-        android:title="McLure Library"
-        app:showAsAction="never"/>
-    <item android:id="@+id/bruno_library"
-        android:title="Bruno Library"
-        app:showAsAction="never"/>
-    <item android:id="@+id/gorgas_library"
-        android:title="Gorgas Library"
-        app:showAsAction="never"/>
 
     <!--<item android:id="@+id/search"-->
         <!--android:title="Search"-->
@@ -32,12 +20,12 @@
         android:icon="@drawable/ic_map"
         app:showAsAction="ifRoom"/>
 
-    <item android:id="@+id/heatmap"
-        android:thumb="@drawable/heatmap"
-        android:title="Heatmap"
-        android:checkable="true"
-        app:actionViewClass="android.support.v7.widget.SwitchCompat"
-        app:showAsAction="ifRoom"/>
+    <!--<item android:id="@+id/heatmap"-->
+        <!--android:thumb="@drawable/heatmap"-->
+        <!--android:title="Heatmap"-->
+        <!--android:checkable="true"-->
+        <!--app:actionViewClass="android.support.v7.widget.SwitchCompat"-->
+        <!--app:showAsAction="ifRoom"/>-->
     </group>
 
 </menu>

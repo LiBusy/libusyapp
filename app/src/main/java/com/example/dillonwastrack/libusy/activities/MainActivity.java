@@ -14,11 +14,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.dillonwastrack.libusy.R;
@@ -56,6 +62,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private Location mLastLocation;
 
     private LatLng userLatLng;
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -102,6 +115,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
             }
         });
+
+//        ActionBar ab = getSupportActionBar();
+//        ab.setDisplayHomeAsUpEnabled();
+//        ab.setDisplayShowHomeEnabled(true);
 
 
     }
@@ -308,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             return;
         }
         FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().add(R.id.contentContainer, new CheckInFragment())
+        fm.beginTransaction().replace(R.id.contentContainer, new CheckInFragment())
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commit();
@@ -337,6 +354,28 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
         }
     }
+
+    public void respondToCheckIn()
+    {
+        // save that user has checked in
+        Toast.makeText(this, "Thank you for your response!", Toast.LENGTH_SHORT).show();
+        hasCheckedIn = true;
+        FragmentManager fm = getFragmentManager();
+        fm.popBackStack();
+        //fm.beginTransaction().remove(this).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).commit();
+
+        // post user location to heatmap
+        if(!addedToHeatmap)
+        {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            Double userLat = Double.longBitsToDouble(sharedPref.getLong("userLat", 0));
+            Double userLng = Double.longBitsToDouble(sharedPref.getLong("userLng", 0));
+            String nearestLibrary = sharedPref.getString("nearestLibrary", "");
+            NetworkManager.getInstance().postUserLocation(userLat.toString(), userLng.toString(), nearestLibrary);
+        }
+    }
+
+
 
 
 }
