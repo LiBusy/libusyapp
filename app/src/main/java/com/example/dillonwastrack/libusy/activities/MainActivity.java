@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        handleIntent(getIntent());
+        //handleIntent(getIntent());
         NetworkManager.getInstance(this.getApplicationContext());
 
         setContentView(R.layout.activity_main);
@@ -122,19 +122,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        handleIntent(intent);
-    }
+//    @Override
+//    protected void onNewIntent(Intent intent) {
+//        handleIntent(intent);
+//    }
 
-    private void handleIntent(Intent intent) {
-
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            // TODO do something with the search
-            Log.d("query", query);
-        }
-    }
+//    private void handleIntent(Intent intent) {
+//
+//        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+//            String query = intent.getStringExtra(SearchManager.QUERY);
+//            // TODO do something with the search
+//        }
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

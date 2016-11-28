@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.example.dillonwastrack.libusy.activities.MainActivity;
 import com.example.dillonwastrack.libusy.R;
 import com.example.dillonwastrack.libusy.models.Library;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -25,6 +27,7 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     List<Library> data = Collections.emptyList();
     Library current;
     int currentPos=0;
+    ArrayList<Library> dataCopy;
 
     OnItemClickListener mItemClickListener;
 
@@ -32,6 +35,8 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.data = data;
+        this.dataCopy = new ArrayList<Library>();
+        dataCopy.addAll(this.data);
     }
 
     @Override
@@ -74,6 +79,21 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             myHolder.distanceAway.setText(R.string.location_cannot_be_determined);
         }
 
+    }
+
+    public void filter(String text) {
+        data.clear();
+        if(text.isEmpty()){
+            data.addAll(dataCopy);
+        } else{
+            text = text.toLowerCase();
+            for(Library item: dataCopy){
+                if(item.libraryName.toLowerCase().contains(text) || item.busyness.toLowerCase().contains(text)){
+                    data.add(item);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
     public interface OnItemClickListener {

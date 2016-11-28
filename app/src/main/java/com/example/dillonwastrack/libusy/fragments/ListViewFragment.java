@@ -3,7 +3,6 @@ package com.example.dillonwastrack.libusy.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -56,6 +55,7 @@ public class ListViewFragment extends Fragment {
 
     private FragmentManager.OnBackStackChangedListener mOnBackStackChangedListener;
 
+    private LibraryListAdapter mAdapter;
 
     @Nullable
     @Override
@@ -69,9 +69,11 @@ public class ListViewFragment extends Fragment {
             public void onSuccess(ArrayList<Library> result) {
                 locations = result;
                 RecyclerView listView = (RecyclerView) contentView.findViewById(R.id.rv);
-                LibraryListAdapter mAdapter = new LibraryListAdapter(contentView.getContext(), result);
-
+                mAdapter = new LibraryListAdapter(contentView.getContext(), result);
                 mAdapter.notifyDataSetChanged();
+
+                ProgressBar mProgressBar = (ProgressBar) mainActivity.findViewById(R.id.progress_bar);
+                mProgressBar.setVisibility(View.GONE);
 
                 mAdapter.SetOnItemClickListener(new LibraryListAdapter.OnItemClickListener() {
                     @Override
@@ -81,19 +83,6 @@ public class ListViewFragment extends Fragment {
                         Library selectedLibrary = getLibrary(locations, library);
                         final Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://www.lib.ua.edu/libraries/"+selectedLibrary.libraryId+"/"));
                         mainActivity.startActivity(intent);
-
-                        // set Library object as argument to LibraryDetailsFragment
-//                        LibraryDetailsFragment detailsFragment = new LibraryDetailsFragment();
-//                        Bundle bundle = new Bundle();
-//                        bundle.putParcelable("library", selectedLibrary);
-//                        detailsFragment.setArguments(bundle);
-//
-//                        // add the fragment
-//                        FragmentManager fm = getFragmentManager();
-//                        fm.beginTransaction().replace(R.id.contentContainer, detailsFragment)
-//                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-//                                .addToBackStack(null)
-//                                .commit();
 
                     }
                 });
@@ -114,7 +103,7 @@ public class ListViewFragment extends Fragment {
                     public void onSuccess(ArrayList<Library> result) {
                         locations = result;
                         RecyclerView listView = (RecyclerView) contentView.findViewById(R.id.rv);
-                        LibraryListAdapter mAdapter = new LibraryListAdapter(contentView.getContext(), result);
+                        mAdapter = new LibraryListAdapter(contentView.getContext(), result);
 
                         mAdapter.notifyDataSetChanged();
 
@@ -127,19 +116,6 @@ public class ListViewFragment extends Fragment {
                                 final Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://www.lib.ua.edu/libraries/"+selectedLibrary.libraryId+"/"));
                                 mainActivity.startActivity(intent);
 
-                                // set Library object as argument to LibraryDetailsFragment
-//                                LibraryDetailsFragment detailsFragment = new LibraryDetailsFragment();
-//                                Bundle bundle = new Bundle();
-//                                bundle.putParcelable("library", selectedLibrary);
-//                                detailsFragment.setArguments(bundle);
-//
-//                                // add the fragment
-//                                FragmentManager fm = getFragmentManager();
-//                                fm.beginTransaction().replace(R.id.contentContainer, detailsFragment)
-//                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-//                                        .addToBackStack(null)
-//                                        .commit();
-
                             }
                         });
 
@@ -149,6 +125,7 @@ public class ListViewFragment extends Fragment {
                         listView.setLayoutManager(new LinearLayoutManager(mainActivity));
                         SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) contentView.findViewById(R.id.swipeRefreshLayout);
                         mSwipeRefreshLayout.setRefreshing(false);
+
                     }
                 });
 
@@ -165,7 +142,6 @@ public class ListViewFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        //Log.d("activity", "activity");
         if (context instanceof Activity){
             mainActivity = (Activity) context;
         }
@@ -194,8 +170,6 @@ public class ListViewFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
         super.onViewCreated(view, savedInstanceState);
-        ProgressBar mProgressBar = (ProgressBar) mainActivity.findViewById(R.id.progress_bar);
-        mProgressBar.setVisibility(View.GONE);
 
         mDrawerLayout = (DrawerLayout) mainActivity.findViewById(R.id.drawer_layout);
         mActivityTitle = mainActivity.getTitle().toString();
@@ -277,6 +251,7 @@ public class ListViewFragment extends Fragment {
                 return false;
             }
         });
+
     }
 
     @Override
@@ -284,13 +259,36 @@ public class ListViewFragment extends Fragment {
         inflater.inflate(R.menu.list_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
 
+
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
         // Associate searchable configuration with the SearchView
-        SearchManager searchManager =
+        final SearchManager searchManager =
                 (SearchManager) mainActivity.getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
+        final SearchView searchView =
                 (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(mainActivity.getComponentName()));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
+                mAdapter.filter(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mAdapter.filter(newText);
+                return true;
+            }
+        });
+
 
     }
 
@@ -302,7 +300,6 @@ public class ListViewFragment extends Fragment {
             case R.id.check_in:
                 MainActivity activity = (MainActivity) mainActivity;
                 activity.checkIn();
-
                 return true;
         }
 

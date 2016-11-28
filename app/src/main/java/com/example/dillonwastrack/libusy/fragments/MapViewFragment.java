@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,7 +23,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,7 +32,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.support.v7.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -171,7 +168,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                                 if(markerList.isEmpty())
                                 {
                                     mDrawerLayout.closeDrawer(GravityCompat.START);
-                                    Toast.makeText(mainActivity, "No check-ins in the past hour.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mainActivity, "No check-ins to display on heatmap.", Toast.LENGTH_SHORT).show();
                                     buttonView.setChecked(false);
                                     return;
                                 }
@@ -181,7 +178,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                                 mDrawerLayout.closeDrawer(GravityCompat.START);
                                 // Add a tile overlay to the map, using the heat map tile provider.
                                 mOverlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-                                // TODO maybe make markers invisible to see heatmap better
                                 Toast.makeText(mainActivity, "Heatmap on", Toast.LENGTH_SHORT).show();
 
                             }
@@ -290,13 +286,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         inflater.inflate(R.menu.location_menu, menu);
 
         super.onCreateOptionsMenu(menu, inflater);
-        // Associate searchable configuration with the SearchView
-        SearchManager searchManager =
-                (SearchManager) mainActivity.getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(mainActivity.getComponentName()));
 
     }
 
