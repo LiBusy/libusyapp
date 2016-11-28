@@ -12,4 +12,30 @@
         </menu>
 
     </item>
+
+    <item android:title = "Helpful Links">
+        <menu>
+            <item android:id="@+id/available_computers"
+                android:title="Available Computers"
+                android:icon="@drawable/ic_desktop"/>
+
+            <item android:id="@+id/library_software"
+                android:title="Library Software"
+                android:icon="@drawable/ic_book"/>
+
+            <item android:id="@+id/find_a_place_to_study"
+                android:title="Find a Place to Study"
+                android:icon="@drawable/ic_search"/>
+
+            <item android:id="@+id/book_a_team_room"
+                android:title="Book a Team Room"
+                android:icon="@drawable/ic_check"/>
+
+            <item android:id="@+id/library_databases"
+                android:title="Library Databases"
+                android:icon="@drawable/ic_database"/>
+
+        </menu>
+
+    </item>
 </menu>

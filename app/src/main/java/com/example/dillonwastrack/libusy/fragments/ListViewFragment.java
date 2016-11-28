@@ -6,6 +6,8 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -77,19 +79,21 @@ public class ListViewFragment extends Fragment {
 
                         // get Library object based on item clicked
                         Library selectedLibrary = getLibrary(locations, library);
+                        final Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://www.lib.ua.edu/libraries/"+selectedLibrary.libraryId+"/"));
+                        mainActivity.startActivity(intent);
 
                         // set Library object as argument to LibraryDetailsFragment
-                        LibraryDetailsFragment detailsFragment = new LibraryDetailsFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable("library", selectedLibrary);
-                        detailsFragment.setArguments(bundle);
-
-                        // add the fragment
-                        FragmentManager fm = getFragmentManager();
-                        fm.beginTransaction().replace(R.id.contentContainer, detailsFragment)
-                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                .addToBackStack(null)
-                                .commit();
+//                        LibraryDetailsFragment detailsFragment = new LibraryDetailsFragment();
+//                        Bundle bundle = new Bundle();
+//                        bundle.putParcelable("library", selectedLibrary);
+//                        detailsFragment.setArguments(bundle);
+//
+//                        // add the fragment
+//                        FragmentManager fm = getFragmentManager();
+//                        fm.beginTransaction().replace(R.id.contentContainer, detailsFragment)
+//                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+//                                .addToBackStack(null)
+//                                .commit();
 
                     }
                 });
@@ -120,19 +124,21 @@ public class ListViewFragment extends Fragment {
 
                                 // get Library object based on item clicked
                                 Library selectedLibrary = getLibrary(locations, library);
+                                final Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://www.lib.ua.edu/libraries/"+selectedLibrary.libraryId+"/"));
+                                mainActivity.startActivity(intent);
 
                                 // set Library object as argument to LibraryDetailsFragment
-                                LibraryDetailsFragment detailsFragment = new LibraryDetailsFragment();
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable("library", selectedLibrary);
-                                detailsFragment.setArguments(bundle);
-
-                                // add the fragment
-                                FragmentManager fm = getFragmentManager();
-                                fm.beginTransaction().replace(R.id.contentContainer, detailsFragment)
-                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                        .addToBackStack(null)
-                                        .commit();
+//                                LibraryDetailsFragment detailsFragment = new LibraryDetailsFragment();
+//                                Bundle bundle = new Bundle();
+//                                bundle.putParcelable("library", selectedLibrary);
+//                                detailsFragment.setArguments(bundle);
+//
+//                                // add the fragment
+//                                FragmentManager fm = getFragmentManager();
+//                                fm.beginTransaction().replace(R.id.contentContainer, detailsFragment)
+//                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+//                                        .addToBackStack(null)
+//                                        .commit();
 
                             }
                         });
@@ -224,6 +230,48 @@ public class ListViewFragment extends Fragment {
                         activity.checkIn();
                         mDrawerLayout.closeDrawer(GravityCompat.START);
                         return true;
+
+                    case R.id.available_computers:
+                    {
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        final Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://www.lib.ua.edu/computers/"));
+                        mainActivity.startActivity(intent);
+                        return true;
+                    }
+
+
+                    case R.id.library_software:
+                    {
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        final Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("http://guides.lib.ua.edu/software"));
+                        mainActivity.startActivity(intent);
+                        return true;
+                    }
+
+                    case R.id.find_a_place_to_study:
+                    {
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        final Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://www.lib.ua.edu/using-the-library/find-a-place-to-study/"));
+                        mainActivity.startActivity(intent);
+                        return true;
+                    }
+
+                    case R.id.book_a_team_room:
+                    {
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        final Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://ua.libcal.com/booking/groupstudy"));
+                        mainActivity.startActivity(intent);
+                        return true;
+                    }
+
+                    case R.id.library_databases:
+                    {
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        final Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("http://guides.lib.ua.edu/az.php"));
+                        mainActivity.startActivity(intent);
+                        return true;
+                    }
+
 
                 }
                 return false;
@@ -319,7 +367,6 @@ public class ListViewFragment extends Fragment {
             mDrawerToggle.setDrawerIndicatorEnabled(backStackEntryCount == 0);
         }catch (NullPointerException e){
         }
-
 
     }
 }

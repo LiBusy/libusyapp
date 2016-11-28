@@ -2,12 +2,6 @@
 
 <group android:id="@+id/menu_group">
 
-    <!--<item android:id="@+id/search"-->
-        <!--android:title="Search"-->
-        <!--android:thumb="@drawable/ic_search"-->
-        <!--android:icon="@drawable/ic_search"-->
-        <!--app:showAsAction="always"/>-->
-
     <item android:id="@+id/search"
         android:title="Search"
         android:icon="@drawable/ic_search"
@@ -18,14 +12,7 @@
         android:title="Check In"
         android:thumb="@drawable/ic_map"
         android:icon="@drawable/ic_map"
-        app:showAsAction="ifRoom"/>
-
-    <!--<item android:id="@+id/heatmap"-->
-        <!--android:thumb="@drawable/heatmap"-->
-        <!--android:title="Heatmap"-->
-        <!--android:checkable="true"-->
-        <!--app:actionViewClass="android.support.v7.widget.SwitchCompat"-->
-        <!--app:showAsAction="ifRoom"/>-->
+        app:showAsAction="ifRoom|withText"/>
     </group>
 
 </menu>

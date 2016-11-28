@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     public static boolean nearLibrary = false;
     public static boolean hasCheckedIn = false;
-    public static boolean addedToHeatmap = false;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -365,14 +364,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         //fm.beginTransaction().remove(this).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).commit();
 
         // post user location to heatmap
-        if(!addedToHeatmap)
-        {
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-            Double userLat = Double.longBitsToDouble(sharedPref.getLong("userLat", 0));
-            Double userLng = Double.longBitsToDouble(sharedPref.getLong("userLng", 0));
-            String nearestLibrary = sharedPref.getString("nearestLibrary", "");
-            NetworkManager.getInstance().postUserLocation(userLat.toString(), userLng.toString(), nearestLibrary);
-        }
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        Double userLat = Double.longBitsToDouble(sharedPref.getLong("userLat", 0));
+        Double userLng = Double.longBitsToDouble(sharedPref.getLong("userLng", 0));
+        String nearestLibrary = sharedPref.getString("nearestLibrary", "");
+        NetworkManager.getInstance().postUserLocation(userLat.toString(), userLng.toString(), nearestLibrary);
+
     }
 
 

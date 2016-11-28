@@ -34,7 +34,13 @@ public class LibraryDetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        this.library = getArguments().getParcelable("library");
+        Bundle arguments = getArguments();
+        if(arguments.containsKey("library"))
+        {
+            this.library = getArguments().getParcelable("library");
+            mainActivity.setTitle(this.library.libraryName);
+        }
+
         setHasOptionsMenu(true);
         ActionBar ab = ((AppCompatActivity) mainActivity).getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
@@ -47,10 +53,14 @@ public class LibraryDetailsFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mainActivity.setTitle(this.library.libraryName);
         final WebView myWebView = (WebView) mainActivity.findViewById(R.id.library_web_page);
-        WebSettings webSettings = myWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
+        myWebView.getSettings().setUseWideViewPort(true);
+        myWebView.getSettings().setSupportZoom(true);
+        myWebView.getSettings().setBuiltInZoomControls(true);
+        myWebView.getSettings().setDisplayZoomControls(false);
+        myWebView.getSettings().setLoadWithOverviewMode(true);
+        myWebView.setInitialScale((int) (myWebView.getScaleX()));
+        myWebView.getSettings().setJavaScriptEnabled(true);
 
         final ProgressBar Pbar;
         Pbar = (ProgressBar) mainActivity.findViewById(R.id.pB1);
@@ -67,7 +77,18 @@ public class LibraryDetailsFragment extends Fragment {
                 }
             }
         });
-        myWebView.loadUrl("https://www.lib.ua.edu/libraries/"+this.library.libraryId+"/");
+
+        Bundle arguments = getArguments();
+        String libraryUrl;
+        if(arguments.containsKey("library_url"))
+        {
+             libraryUrl = arguments.getString("library_url");
+        }
+        else
+        {
+             libraryUrl = "https://www.lib.ua.edu/libraries/"+this.library.libraryId+"/";
+        }
+        myWebView.loadUrl(libraryUrl);
 
 
     }
