@@ -337,14 +337,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
         this.googleMap = googleMap;
 
-        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-
-                //TODO pass Place ID (tag) to LibraryDetailsFragment
-            }
-        });
-
         googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
             @Override
