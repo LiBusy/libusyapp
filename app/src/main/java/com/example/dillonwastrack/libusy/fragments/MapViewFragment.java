@@ -446,11 +446,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     private void syncActionBarArrowState() {
         try {
-            int backStackEntryCount =
-                    getFragmentManager().getBackStackEntryCount();
+            int backStackEntryCount = getFragmentManager().getBackStackEntryCount();
             mDrawerToggle.setDrawerIndicatorEnabled(backStackEntryCount == 0);
-        }catch (NullPointerException e){
-        }
+        }catch (NullPointerException e){}
 
     }
 
