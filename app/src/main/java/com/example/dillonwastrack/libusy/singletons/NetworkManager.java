@@ -2,7 +2,6 @@ package com.example.dillonwastrack.libusy.singletons;
 
 import android.content.Context;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -30,6 +29,8 @@ public class NetworkManager
 {
     private static NetworkManager instance = null;
 
+    private Context context;
+
     private static final String key = "333C949CDEEBAB5ED3C747AF3EBBE"; // api key
 
     //for Volley API
@@ -38,6 +39,7 @@ public class NetworkManager
     private NetworkManager(Context context)
     {
         requestQueue = Volley.newRequestQueue(context.getApplicationContext());
+        this.context = context;
     }
 
     public static synchronized NetworkManager getInstance(Context context)
@@ -70,7 +72,6 @@ public class NetworkManager
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("level", "you suck");
             }
         });
         // Add the request to the RequestQueue.
@@ -89,7 +90,7 @@ public class NetworkManager
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("level", "you suck");
+                Toast.makeText(context, "Error communicating with the server.", Toast.LENGTH_SHORT).show();
             }
         });
         // Add the request to the RequestQueue.
@@ -125,7 +126,7 @@ public class NetworkManager
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("level", "you suck");
+                Toast.makeText(context, "Error communicating with the server.", Toast.LENGTH_SHORT).show();
             }
         });
         // Add the request to the RequestQueue.
@@ -177,7 +178,7 @@ public class NetworkManager
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, "Error reading list of locations", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Error communicating with the server.", Toast.LENGTH_SHORT).show();
             }
         });
         // Add the request to the RequestQueue.
@@ -209,7 +210,7 @@ public class NetworkManager
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, "Error reading list of locations", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Error communicating with the server.", Toast.LENGTH_SHORT).show();
             }
         });
         // Add the request to the RequestQueue.
@@ -253,7 +254,7 @@ public class NetworkManager
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, "Error reading list of locations", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Error communicating with the server.", Toast.LENGTH_SHORT).show();
             }
         });
         // Add the request to the RequestQueue.

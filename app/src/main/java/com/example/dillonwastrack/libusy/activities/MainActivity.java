@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private boolean nearLibrary = false;
     private boolean hasCheckedIn = false;
+    private boolean hasShownToast = false;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -346,6 +347,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             else
             {
                 nearLibrary = false;
+            }
+
+            if(nearLibrary && !hasCheckedIn && !hasShownToast)
+            {
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+                Toast.makeText(this,
+                        "Press the map marker to check into "+sharedPref.getString("nearestLibrary", "the")+ " library.",
+                        Toast.LENGTH_LONG).show();
+
+                hasShownToast = true;
+
             }
         }
     }
