@@ -335,6 +335,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 if(! libraryAndDistance.first.equals(sharedPref.getString("nearestLibrary", "the")))
                 {
                     hasCheckedIn = false;
+                    hasShownToast = false;
                 }
 
                 SharedPreferences.Editor editor = sharedPref.edit();
