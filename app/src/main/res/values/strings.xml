@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LiBusy</string>
+    <string name="app_name">UA Stacks</string>
     <string name="title_activity_interactive_map">Map</string>
     <string name="search_hint">Search by library name or busyness</string>
     <string name="library_image_description">Library Image</string>
