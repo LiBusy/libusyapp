@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private boolean nearLibrary = false;
     private boolean hasCheckedIn = false;
-    private boolean sameLibrary = false;
 
     private GoogleApiClient mGoogleApiClient;
 
