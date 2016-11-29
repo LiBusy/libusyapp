@@ -3,6 +3,7 @@ package com.example.dillonwastrack.libusy.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -81,8 +82,18 @@ public class ListViewFragment extends Fragment {
 
                         // get Library object based on item clicked
                         Library selectedLibrary = getLibrary(locations, library);
-                        final Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://www.lib.ua.edu/libraries/"+selectedLibrary.libraryId+"/"));
-                        mainActivity.startActivity(intent);
+
+                        LibraryDetailsFragment detailsFragment = new LibraryDetailsFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("library", selectedLibrary);
+                        detailsFragment.setArguments(bundle);
+
+                        // add the fragment
+                        FragmentManager fm = getFragmentManager();
+                        fm.beginTransaction().replace(R.id.contentContainer, detailsFragment)
+                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                .addToBackStack(null)
+                                .commit();
 
                     }
                 });
@@ -113,8 +124,18 @@ public class ListViewFragment extends Fragment {
 
                                 // get Library object based on item clicked
                                 Library selectedLibrary = getLibrary(locations, library);
-                                final Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://www.lib.ua.edu/libraries/"+selectedLibrary.libraryId+"/"));
-                                mainActivity.startActivity(intent);
+
+                                LibraryDetailsFragment detailsFragment = new LibraryDetailsFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable("library", selectedLibrary);
+                                detailsFragment.setArguments(bundle);
+
+                                // add the fragment
+                                FragmentManager fm = getFragmentManager();
+                                fm.beginTransaction().replace(R.id.contentContainer, detailsFragment)
+                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                        .addToBackStack(null)
+                                        .commit();
 
                             }
                         });

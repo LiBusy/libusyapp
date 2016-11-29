@@ -7,4 +7,8 @@
     <string name="location_cannot_be_determined">Your location cannot be determined.</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="total_check_ins">"Total check ins: %s"</string>
+    <string name="very_busy_votes">"\u2022 Very busy votes in past hour: %s"</string>
+    <string name="busy_votes">"\u2022 Busy votes in past hour: %s"</string>
+    <string name="not_busy_votes">"\u2022 Not busy votes in past hour: %s"</string>
 </resources>

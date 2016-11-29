@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Created by dillonwastrack on 11/3/16.
  */
 
-public class Library implements Parcelable {
+public class Library implements Parcelable, Comparable {
 
     public String libraryName;
     public double lat;
@@ -22,6 +22,10 @@ public class Library implements Parcelable {
     public String checkIns;
     public String hours;
     public String libraryId;
+    public String totalCheckIns;
+    public String veryBusyVotes;
+    public String busyVotes;
+    public String notBusyVotes;
 
     public Library() // empty constructor for use in NetworkManager
     {
@@ -40,6 +44,10 @@ public class Library implements Parcelable {
         checkIns = in.readString();
         hours = in.readString();
         libraryId = in.readString();
+        totalCheckIns = in.readString();
+        veryBusyVotes = in.readString();
+        busyVotes = in.readString();
+        notBusyVotes = in.readString();
     }
 
     public static final Creator<Library> CREATOR = new Creator<Library>() {
@@ -72,5 +80,14 @@ public class Library implements Parcelable {
         parcel.writeString(checkIns);
         parcel.writeString(hours);
         parcel.writeString(libraryId);
+        parcel.writeString(totalCheckIns);
+        parcel.writeString(veryBusyVotes);
+        parcel.writeString(busyVotes);
+        parcel.writeString(notBusyVotes);
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return 0;
     }
 }

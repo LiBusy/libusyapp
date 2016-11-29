@@ -242,8 +242,11 @@ public class NetworkManager
                                 library.checkIns = object.getString("check_ins");
                                 library.hours = object.getString("hours");
                                 library.libraryId = object.getString("library");
+                                library.totalCheckIns = object.getString("total_check_ins");
+                                library.veryBusyVotes = object.getString("very_busy_votes");
+                                library.busyVotes = object.getString("busy_votes");
+                                library.notBusyVotes = object.getString("not_busy_votes");
                                 locations.add(library);
-                                //locations.put(object.getString("library"), new LatLng(lat, lng));
 
                             }
                             callback.onSuccess(locations);
@@ -260,6 +263,5 @@ public class NetworkManager
         // Add the request to the RequestQueue.
         requestQueue.add(stringRequest);
     }
-
 
 }

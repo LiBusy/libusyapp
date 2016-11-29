@@ -1,7 +1,9 @@
 package com.example.dillonwastrack.libusy.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,6 +19,7 @@ import com.example.dillonwastrack.libusy.models.Library;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,6 +37,12 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public LibraryListAdapter(Context context, List<Library> data){
         this.context = context;
         inflater = LayoutInflater.from(context);
+        Collections.sort(data, new Comparator<Library>() {
+            @Override
+            public int compare(Library library, Library t1) {
+                return library.libraryName.compareTo(t1.libraryName);
+            }
+        });
         this.data = data;
         this.dataCopy = new ArrayList<Library>();
         dataCopy.addAll(this.data);
@@ -139,16 +148,6 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             distanceAway = (TextView) itemView.findViewById(R.id.library_distance);
             hours = (TextView) itemView.findViewById(R.id.library_hours);
             libraryImage = (ImageView) itemView.findViewById(R.id.library_image);
-            final CardView cv = (CardView)itemView.findViewById(R.id.learn_more);
-            cv.setTag(R.id.library_name, libraryName);
-            cv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TextView text = (TextView) cv.getTag(R.id.library_name);
-                    String id = text.getText().toString();
-                    mItemClickListener.onItemClick(v, getAdapterPosition(), id);
-                }
-            });
             itemView.setOnClickListener(this);
         }
 
