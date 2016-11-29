@@ -2,8 +2,6 @@ package com.example.dillonwastrack.libusy.activities;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.SearchManager;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -14,17 +12,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.example.dillonwastrack.libusy.R;
@@ -49,10 +41,9 @@ import com.roughike.bottombar.OnTabSelectListener;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    private BottomBar mBottomBar;
-
-    public static boolean nearLibrary = false;
-    public static boolean hasCheckedIn = false;
+    private boolean nearLibrary = false;
+    private boolean hasCheckedIn = false;
+    private boolean sameLibrary = false;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -338,7 +329,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             if (libraryAndDistance.second < 50) // user is within 50 meters
             {
                 nearLibrary = true;
+
+
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+                if(! libraryAndDistance.first.equals(sharedPref.getString("nearestLibrary", "the")))
+                {
+                    hasCheckedIn = false;
+                }
+
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString("nearestLibrary", libraryAndDistance.first);
                 editor.putLong("userLat", Double.doubleToRawLongBits(userLatLng.latitude)); // save current location
