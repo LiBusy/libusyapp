@@ -106,25 +106,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
         });
 
-//        ActionBar ab = getSupportActionBar();
-//        ab.setDisplayHomeAsUpEnabled();
-//        ab.setDisplayShowHomeEnabled(true);
-
-
     }
-
-//    @Override
-//    protected void onNewIntent(Intent intent) {
-//        handleIntent(intent);
-//    }
-
-//    private void handleIntent(Intent intent) {
-//
-//        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-//            String query = intent.getStringExtra(SearchManager.QUERY);
-//            // TODO do something with the search
-//        }
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -144,32 +126,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onStop() {
         mGoogleApiClient.disconnect();
-//        if (nearLibrary && !hasCheckedIn)
-//        {
-//            setCheckInAlarm();
-//        }
         super.onStop();
     }
-
-    /**
-     * Set the alarm for asking the
-     * user to check in.
-     *
-     */
-//    private void setCheckInAlarm()
-//    {
-//
-//        AlarmManager am = (AlarmManager)(this.getSystemService( Context.ALARM_SERVICE ));
-//        Intent intent = new Intent(getBaseContext(), OnCheckInAlarmReceive.class);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-//                MainActivity.this, 0, intent,
-//                PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//        Calendar calCurrent = Calendar.getInstance();
-//        long tenSeconds = 10 * 1000; // change to 10 minutes or whatever
-//
-//        am.set(AlarmManager.RTC_WAKEUP, calCurrent.getTimeInMillis() + tenSeconds, pendingIntent); // 10 seconds for now
-//    }
 
     protected void onDestroy()
     {
@@ -200,7 +158,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         // request location updates
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(5000); //10 minutes
-        //mLocationRequest.setFastestInterval(3000); //3 seconds
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(this.mGoogleApiClient, mLocationRequest, this);
 
@@ -370,10 +327,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         hasCheckedIn = true;
         FragmentManager fm = getFragmentManager();
         fm.popBackStack();
-        //fm.beginTransaction().remove(this).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).commit();
 
         // post user location to heatmap
-
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         Double userLat = Double.longBitsToDouble(sharedPref.getLong("userLat", 0));
         Double userLng = Double.longBitsToDouble(sharedPref.getLong("userLng", 0));

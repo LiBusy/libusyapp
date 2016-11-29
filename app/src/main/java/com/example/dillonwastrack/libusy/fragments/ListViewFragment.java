@@ -350,7 +350,6 @@ public class ListViewFragment extends Fragment {
     private void setupDrawer() {
         mDrawerToggle = new ActionBarDrawerToggle(mainActivity,
                 mDrawerLayout,
-                // R.drawable.ic_drawer,
                 R.string.drawer_open,
                 R.string.drawer_close) {
 
