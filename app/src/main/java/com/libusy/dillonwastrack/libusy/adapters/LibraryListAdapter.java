@@ -1,21 +1,17 @@
-package com.example.dillonwastrack.libusy.adapters;
+package com.libusy.dillonwastrack.libusy.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.dillonwastrack.libusy.activities.MainActivity;
-import com.example.dillonwastrack.libusy.R;
-import com.example.dillonwastrack.libusy.models.Library;
+import com.libusy.dillonwastrack.libusy.activities.MainActivity;
+import com.libusy.dillonwastrack.libusy.R;
+import com.libusy.dillonwastrack.libusy.models.Library;
 
 import java.util.ArrayList;
 import java.util.Collections;

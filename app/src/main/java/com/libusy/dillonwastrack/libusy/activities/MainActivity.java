@@ -1,4 +1,4 @@
-package com.example.dillonwastrack.libusy.activities;
+package com.libusy.dillonwastrack.libusy.activities;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -19,12 +19,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.dillonwastrack.libusy.R;
-import com.example.dillonwastrack.libusy.callbacks.MarkerCallback;
-import com.example.dillonwastrack.libusy.fragments.CheckInFragment;
-import com.example.dillonwastrack.libusy.fragments.ListViewFragment;
-import com.example.dillonwastrack.libusy.fragments.MapViewFragment;
-import com.example.dillonwastrack.libusy.singletons.NetworkManager;
+import com.libusy.dillonwastrack.libusy.R;
+import com.libusy.dillonwastrack.libusy.callbacks.MarkerCallback;
+import com.libusy.dillonwastrack.libusy.fragments.CheckInFragment;
+import com.libusy.dillonwastrack.libusy.fragments.ListViewFragment;
+import com.libusy.dillonwastrack.libusy.fragments.MapViewFragment;
+import com.libusy.dillonwastrack.libusy.singletons.NetworkManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;

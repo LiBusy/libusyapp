@@ -1,4 +1,4 @@
-package com.example.dillonwastrack.libusy;
+package com.libusy.dillonwastrack.libusy;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

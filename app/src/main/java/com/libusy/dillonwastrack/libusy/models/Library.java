@@ -1,9 +1,7 @@
-package com.example.dillonwastrack.libusy.models;
+package com.libusy.dillonwastrack.libusy.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.io.Serializable;
 
 /**
  * Created by dillonwastrack on 11/3/16.

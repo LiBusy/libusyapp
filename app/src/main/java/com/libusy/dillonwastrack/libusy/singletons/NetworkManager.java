@@ -1,4 +1,4 @@
-package com.example.dillonwastrack.libusy.singletons;
+package com.libusy.dillonwastrack.libusy.singletons;
 
 import android.content.Context;
 import android.util.ArrayMap;
@@ -10,11 +10,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.dillonwastrack.libusy.callbacks.HeatmapCallback;
-import com.example.dillonwastrack.libusy.callbacks.LocationCallback;
-import com.example.dillonwastrack.libusy.callbacks.MarkerCallback;
-import com.example.dillonwastrack.libusy.callbacks.ServerCallback;
-import com.example.dillonwastrack.libusy.models.Library;
+import com.libusy.dillonwastrack.libusy.callbacks.HeatmapCallback;
+import com.libusy.dillonwastrack.libusy.callbacks.LocationCallback;
+import com.libusy.dillonwastrack.libusy.callbacks.MarkerCallback;
+import com.libusy.dillonwastrack.libusy.callbacks.ServerCallback;
+import com.libusy.dillonwastrack.libusy.models.Library;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;

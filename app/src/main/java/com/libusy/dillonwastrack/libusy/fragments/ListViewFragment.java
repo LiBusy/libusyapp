@@ -1,4 +1,4 @@
-package com.example.dillonwastrack.libusy.fragments;
+package com.libusy.dillonwastrack.libusy.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -29,12 +29,12 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.support.v7.widget.SearchView;
 
-import com.example.dillonwastrack.libusy.activities.MainActivity;
-import com.example.dillonwastrack.libusy.singletons.NetworkManager;
-import com.example.dillonwastrack.libusy.R;
-import com.example.dillonwastrack.libusy.adapters.LibraryListAdapter;
-import com.example.dillonwastrack.libusy.callbacks.LocationCallback;
-import com.example.dillonwastrack.libusy.models.Library;
+import com.libusy.dillonwastrack.libusy.activities.MainActivity;
+import com.libusy.dillonwastrack.libusy.singletons.NetworkManager;
+import com.libusy.dillonwastrack.libusy.R;
+import com.libusy.dillonwastrack.libusy.adapters.LibraryListAdapter;
+import com.libusy.dillonwastrack.libusy.callbacks.LocationCallback;
+import com.libusy.dillonwastrack.libusy.models.Library;
 
 import java.util.ArrayList;
 

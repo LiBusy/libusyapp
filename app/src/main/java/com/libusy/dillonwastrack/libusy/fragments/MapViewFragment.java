@@ -1,4 +1,4 @@
-package com.example.dillonwastrack.libusy.fragments;
+package com.libusy.dillonwastrack.libusy.fragments;
 
 import android.Manifest;
 import android.app.Activity;
@@ -36,11 +36,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
-import com.example.dillonwastrack.libusy.activities.MainActivity;
-import com.example.dillonwastrack.libusy.singletons.NetworkManager;
-import com.example.dillonwastrack.libusy.R;
-import com.example.dillonwastrack.libusy.callbacks.HeatmapCallback;
-import com.example.dillonwastrack.libusy.callbacks.MarkerCallback;
+import com.libusy.dillonwastrack.libusy.activities.MainActivity;
+import com.libusy.dillonwastrack.libusy.singletons.NetworkManager;
+import com.libusy.dillonwastrack.libusy.R;
+import com.libusy.dillonwastrack.libusy.callbacks.HeatmapCallback;
+import com.libusy.dillonwastrack.libusy.callbacks.MarkerCallback;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
