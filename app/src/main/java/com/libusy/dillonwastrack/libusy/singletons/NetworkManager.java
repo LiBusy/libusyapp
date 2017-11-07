@@ -168,7 +168,7 @@ public class NetworkManager
                                                 +"\n"
                                                 +object.getString("check_ins")
                                                 +"\n"
-                                                +object.getString("open_now"))); //TODO SET MARKER TAG TO PLACE ID HERE
+                                                +object.getString("open_now")));
                             }
                             callback.onSuccess(locations);
                         } catch (JSONException e) {

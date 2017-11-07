@@ -34,6 +34,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 
 /**
  * Created by dillonwastrack on 10/11/16.
@@ -64,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        //handleIntent(getIntent());
         NetworkManager.getInstance(this.getApplicationContext());
 
         setContentView(R.layout.activity_main);
@@ -100,12 +101,52 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             @Override
             public void onSuccess(ArrayMap<String, LatLng> result) {
                 locations = result;
-
                 checkDistance();
-
             }
         });
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(
+                                this,
+                                new String[]{ACCESS_FINE_LOCATION},
+                                1);
+                        return;
+
+                    }
+
+
+                    this.mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                            mGoogleApiClient);
+
+                    if (this.mLastLocation != null)
+                    {
+                        this.userLatLng = new LatLng(this.mLastLocation.getLatitude(), this.mLastLocation.getLongitude());
+                    }
+
+                    checkDistance();
+                    // request location updates
+                    LocationRequest mLocationRequest = new LocationRequest();
+                    mLocationRequest.setInterval(5000); //10 minutes
+                    mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+                    LocationServices.FusedLocationApi.requestLocationUpdates(this.mGoogleApiClient, mLocationRequest, this);
+
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
     @Override
@@ -138,28 +179,31 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onConnected(@Nullable Bundle bundle)
     {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                     this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    new String[]{ACCESS_FINE_LOCATION},
                     1);
+            return;
 
+        }else{
+            this.mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+
+            if (this.mLastLocation != null)
+            {
+                this.userLatLng = new LatLng(this.mLastLocation.getLatitude(), this.mLastLocation.getLongitude());
+            }
+
+            checkDistance();
+            // request location updates
+            LocationRequest mLocationRequest = new LocationRequest();
+            mLocationRequest.setInterval(5000); //10 minutes
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+            LocationServices.FusedLocationApi.requestLocationUpdates(this.mGoogleApiClient, mLocationRequest, this);
         }
 
-        this.mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
 
-        if (this.mLastLocation != null)
-        {
-            this.userLatLng = new LatLng(this.mLastLocation.getLatitude(), this.mLastLocation.getLongitude());
-        }
-
-        checkDistance();
-        // request location updates
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(5000); //10 minutes
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        LocationServices.FusedLocationApi.requestLocationUpdates(this.mGoogleApiClient, mLocationRequest, this);
 
     }
 
@@ -191,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
      * @param lat1 latitude of first point
      * @param lon1 longitude of first point
      * @param lat2 latitude of second point
-     * @param lon2 longitude of second pount
+     * @param lon2 longitude of second point
      * @return distance between 2 points in meters
      */
     private double distance(double lat1, double lon1, double lat2, double lon2)
